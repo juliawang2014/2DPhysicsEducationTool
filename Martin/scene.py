@@ -4,7 +4,7 @@ import pygame
 import button
 pygame.init()
 
-
+#--------------Start of program----------------------
 X = 1000
 Y = 600
 #Background color is rbg color number.
@@ -41,7 +41,7 @@ start_button = button.Button(100, 200, start_img, 0.45)
 exit_button = button.Button(550, 200, exit_img, 0.35)
 
 
-
+#----------Screen after start button!------------------------
 def physics_selector():
     print('physics selector')
     X = 1000
@@ -50,16 +50,18 @@ def physics_selector():
     pygame.display.set_caption("Select Physics Simulation")
     background = pygame.Surface(screen.get_size())
     background = background.convert()
-    background.fill((20, 20, 40))
+    
+    background.fill((100, 20, 40))
     screen.blit(background,[0,0])
+    
     #background_color = (White)
    # screen.fill(background_color)
     #screen.blit(screen,[0,0])
     pygame.display.flip()
 
 
-pygame.display.flip()
 
+#-----------where the game runs!-----------------------------
 running = True
 #game loop here: 
 
