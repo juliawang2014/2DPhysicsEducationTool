@@ -23,16 +23,38 @@ pygame.display.set_caption('2DPhysicsEducationTool')
 #set the color of scene 
 screen.fill(background_color)
 
-pygame.display.flip()
+
+pygame.draw.rect(screen , Red, pygame.Rect(50,300,60,60),2)
+pygame.draw.rect(screen , Red, pygame.Rect(150,300,60,60))
+pygame.draw.rect(screen , Red, pygame.Rect(250,300,60,60))
+pygame.draw.rect(screen , Red, pygame.Rect(350,300,60,60))
+pygame.draw.rect(screen , Red, pygame.Rect(450,300,60,60))
 
 #information for font on the screen:
 font1 = pygame.font.Font("C:\Windows\Fonts\Arial.ttf", 24)
 font1Color = (0,150,250)
 text1 = font1.render('2D Physics Education Tool', True, font1Color)
 
-
+pygame.display.flip()
 
 running = True
+
+start_img = pygame.image.load('img/start_btn.png').convert_alpha()
+exit_img = pygame.image.load('img/quit_btn.png').convert_alpha()
+
+#button class
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+
+    def draw (self):
+        #draw on screen
+        screen.blit(self.image, (self.rext.x, self.rect.y))
+#button instances
+start_button = Button(100, 200, start_img)
+exit_button = Button(450, 200, exit_img)
 
 #game loop here: 
 
