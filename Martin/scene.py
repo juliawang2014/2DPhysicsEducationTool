@@ -7,6 +7,9 @@ White = (255,255,255)
 Red = (255,0,0)
 background_color = (White)
 
+#fps variable
+clock = pygame.time.Clock()
+
 #Dimensions of the screen for the scene 
 screen = pygame.display.set_mode((1000,600))
 
@@ -23,8 +26,10 @@ running = True
 #game loop here: 
 
 while running:
+    clock.tick(60)
     #for loop for the event queue
     for event in pygame.event.get():
+
 
         if event.type == pygame.QUIT:
             running = False
