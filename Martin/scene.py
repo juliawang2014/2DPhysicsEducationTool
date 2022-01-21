@@ -27,7 +27,9 @@ screen = pygame.display.set_mode((X,Y))
 start_img = pygame.image.load('img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('img/quit_btn.jpg').convert_alpha()
 blank_img = pygame.image.load('img/blank.png').convert_alpha()
-
+button1_img = pygame.image.load('img/button1.jpg').convert_alpha()
+button2_img = pygame.image.load('img/button2.jpg').convert_alpha()
+button3_img = pygame.image.load('img/button3.jpg').convert_alpha()
 #Set the caption of screen(top left corner words)
 pygame.display.set_caption('2DPhysicsEducationTool')
 #set the color of scene 
@@ -42,7 +44,7 @@ exit_button = button.Button(550, 200, exit_img, 0.35)
 
 
 #---------------------------------------------------------------
-
+#button1 = button.Button(50, 100, button1_img, 0.45)
 #----------Screen after start button!------------------------
 def physics_selector():
     
@@ -57,8 +59,17 @@ def physics_selector():
     screen.fill(pygame.Color(Purple))
 
     screen.blit(text2,(300,60))
-    
+    button1 = button.Button(50, 100, button1_img, 0.45)
+    button2 = button.Button(375, 100, button2_img, 0.45)
+    button3 = button.Button(700, 100, button3_img, 0.45)
+    #puts buttons on the screen 
+    button1.draw(screen)
+    button2.draw(screen)
+    button3.draw(screen)
+    if button1.draw(screen) == True:
+        print ("button 1 cliked")
     pygame.display.flip()
+    
     
 #--------------------------------------------------------------
 
@@ -79,7 +90,6 @@ while running:
         physics_selector()
 
     
-
 
     if exit_button.draw(screen) == True:
         running = False
