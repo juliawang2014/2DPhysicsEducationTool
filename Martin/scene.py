@@ -12,8 +12,8 @@ Black = (0,0,0)
 Purple = (100, 20, 140)
 
 #Fonts and color for fonts
-font1 = pygame.font.Font("fonts\Arial.ttf", 24)
-font2 = pygame.font.Font("fonts\Arial.ttf", 16)
+font1 = pygame.font.Font("fonts/arial.ttf", 24)
+font2 = pygame.font.Font("fonts/arial.ttf", 16)
 
 #--------------Start of program----------------------
 X = 1000
