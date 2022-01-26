@@ -1,16 +1,29 @@
+import enum
+import random
 import libraries.shapes as shapes
 import pygame
 import globals
+import math
 
 #Set the caption of screen
 pygame.display.set_caption('2DPhysicsEducationTool')
 
 #set the color of scene 
 
-circle = shapes.Circle(pygame.Vector2(150,50), 100.0, globals.Red, 2)
-circle.angle = 50.0
-circle.speed = 300.0
-circle.display()
+
+
+number_of_circles = 5
+circles = []
+
+for n in range(number_of_circles):
+    size = random.randint(50,100)
+    x = random.randint(size, globals.screen_width-size)
+    y = random.randint(size, globals.screen_height-size)
+
+    circle = shapes.Circle(pygame.Vector2(x,y), size, globals.Red, 2)
+    circle.angle = random.uniform(0, math.pi*2)
+    circle.speed = random.random()*6
+    circles.append(circle)
 
 running = True
 
@@ -23,7 +36,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     globals.screen.fill(globals.background_color)
-    circle.move()
-    circle.bounce()
-    circle.display()
+    for i, c in enumerate(circles):
+
+        c.move()
+        c.bounce()
+        for c2 in circles[i+1:]:
+            shapes.collide(c, c2)
+        c.display()
+
     pygame.display.flip()
