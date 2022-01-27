@@ -22,7 +22,7 @@ def collide(p1, p2):
     dy = p1.y - p2.y
 
     dist = math.hypot(dx, dy)
-    if dist < p1.size + p2.size:
+    if (dist < p1.size_w + p2.size_w) or (dist < p1.size_h + p2.size_h):
         tangent = math.atan2(dy, dx)
 
         p1.angle = 2*tangent - p1.angle
@@ -42,6 +42,8 @@ def collide(p1, p2):
 class Circle:
     def __init__(self, position: pygame.Vector2, size: double, color, thickness: int):
         self.x, self.y = position
+        self.size_w = size
+        self.size_h = size
         self.size = size
         self.color = color
         self.thickness = thickness
@@ -77,3 +79,22 @@ class Circle:
             self.y = 2 * self.size - self.y
             self.angle = math.pi - self.angle
             self.speed *= elasticity
+
+class Rectangle:
+    def __init__(self, position: pygame.Vector2, size_w: double, size_h: double, color, thickness: int):
+        self.x, self.y = position
+        self.size_w = size_w
+        self.size_h = size_h
+        self.color = color
+        self.thickness = thickness
+        self.speed = 0
+        self.angle = 0
+    
+    def display(self):
+        pygame.draw.rect(globals.screen, self.color, pygame.Rect(self.x, self.y, self.size_w, self.size_h), self.thickness)
+    
+    def move(self):
+        (self.angle, self.speed) = addVectors(pygame.Vector2(self.angle, self.speed), gravity)
+    
+    def bounce(self):
+        pass

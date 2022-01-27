@@ -1,4 +1,4 @@
-import enum
+import itertools
 import random
 import libraries.shapes as shapes
 import pygame
@@ -8,9 +8,20 @@ import math
 #Set the caption of screen
 pygame.display.set_caption('2DPhysicsEducationTool')
 
-#set the color of scene 
+number_of_rects = 3
+rects = []
 
+for n in range(number_of_rects):
+    size_w = random.randint(50, 100)
+    size_h = random.randint(50,100)
+    biggest = (max(size_w, size_h))
+    x = random.randint(biggest, globals.screen_width-biggest)
+    y = random.randint(biggest, globals.screen_height-biggest)
 
+    r = shapes.Rectangle(pygame.Vector2(x,y), size_w, size_h, globals.Red, 3)
+    r.angle = random.uniform(0, math.pi*2)
+    r.speed = random.random()*6
+    rects.append(r)
 
 number_of_circles = 5
 circles = []
@@ -25,6 +36,7 @@ for n in range(number_of_circles):
     circle.speed = random.random()*6
     circles.append(circle)
 
+object_list = circles + rects
 running = True
 
 #game loop here: 
@@ -36,12 +48,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     globals.screen.fill(globals.background_color)
-    for i, c in enumerate(circles):
-
-        c.move()
-        c.bounce()
-        for c2 in circles[i+1:]:
-            shapes.collide(c, c2)
-        c.display()
+    for i, object in enumerate(object_list):
+        object.move()
+        object.bounce()
+        for object2 in object_list[i+1:]:
+            shapes.collide(object, object2)
+        object.display()
 
     pygame.display.flip()
