@@ -60,10 +60,7 @@ button3.draw(screen)
 button4.draw(screen)
 button5.draw(screen)
 
-def gravity_window():
-    pygame.init()
-    pygame.display.set_caption('Gravity')
-    pygame.display.set_mode((X,Y))
+
     
 
 #---------------------------------------------------------------
@@ -81,7 +78,7 @@ while running:
     if button1.draw(screen) == True:
         print("Button 1 clicked")
         os.system('phyEdTool.py')
-        gravity_window()
+       
        
         
         
