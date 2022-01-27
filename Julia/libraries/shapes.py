@@ -6,7 +6,7 @@ import math
 
 drag = 0.3
 elasticity = 0.75
-gravity = pygame.Vector2(math.pi, -0.1)
+gravity = pygame.Vector2(math.pi, -0.009)
 
 def addVectors(vectorA: pygame.Vector2, vectorB: pygame.Vector2):
     x = math.sin(vectorA.x) * vectorA.y + math.sin(vectorB.x) * vectorB.y
