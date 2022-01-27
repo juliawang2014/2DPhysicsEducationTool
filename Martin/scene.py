@@ -2,6 +2,7 @@
 from numpy import true_divide
 import pygame
 import button
+import os
 pygame.init()
 
 #preset colors
@@ -58,6 +59,13 @@ button2.draw(screen)
 button3.draw(screen)
 button4.draw(screen)
 button5.draw(screen)
+
+def gravity_window():
+    pygame.init()
+    pygame.display.set_caption('Gravity')
+    pygame.display.set_mode((X,Y))
+    
+
 #---------------------------------------------------------------
 
 
@@ -72,6 +80,12 @@ while running:
 
     if button1.draw(screen) == True:
         print("Button 1 clicked")
+        os.system('phyEdTool.py')
+        gravity_window()
+       
+        
+        
+       
 
     if button2.draw(screen) == True:
         print("Button 2 clicked")
