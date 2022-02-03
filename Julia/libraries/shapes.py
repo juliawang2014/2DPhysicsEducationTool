@@ -1,79 +1,64 @@
-from turtle import Screen, width
 from numpy import double
 import pygame
 import globals
 import math
+import pymunk as pm
+import pymunk.util as u
+from pymunk import Vec2d
 
-drag = 0.3
-elasticity = 0.75
-gravity = pygame.Vector2(math.pi, -0.009)
+COLLTYPE_DEFAULT = 0
+COLLTYPE_MOUSE = 1
 
-def addVectors(vectorA: pygame.Vector2, vectorB: pygame.Vector2):
-    x = math.sin(vectorA.x) * vectorA.y + math.sin(vectorB.x) * vectorB.y
-    y = math.cos(vectorA.x) * vectorA.y + math.cos(vectorB.x) * vectorB.y
+class Shape:
+    def flipyv(self, v):
+        return int(v.x), int(-v.y + self.h)
 
-    angle = 0.5 * math.pi - math.atan2(y, x)
-    length = math.hypot(x, y)
-
-    return (angle, length)
-
-def collide(p1, p2):
-    dx = p1.x - p2.x
-    dy = p1.y - p2.y
-
-    dist = math.hypot(dx, dy)
-    if dist < p1.size + p2.size:
-        tangent = math.atan2(dy, dx)
-
-        p1.angle = 2*tangent - p1.angle
-        p2.angle = 2*tangent - p2.angle
-
-        (p1.speed, p2.speed) = (p2.speed, p1.speed)
-        p1.speed *= elasticity
-        p2.speed *= elasticity
-
-        angle = 0.5 * math.pi + tangent
-
-        p1.x += math.sin(angle)
-        p1.y -= math.cos(angle)
-        p2.x -= math.sin(angle)
-        p2.y += math.cos(angle)
-
-class Circle:
-    def __init__(self, position: pygame.Vector2, size: double, color, thickness: int):
-        self.x, self.y = position
-        self.size = size
-        self.color = color
-        self.thickness = thickness
-        self.speed = 0
-        self.angle = 0
+    def __init__(self):
+        self.shape_to_remove = None
+        self.mouse_contact = None
     
-    def display(self):
-        pygame.draw.circle(globals.screen, self.color, (self.x, self.y), self.size, self.thickness)
+    def create_ball(self, point, mass=1.0, radius=15.0, elasticity=0.95, friction=0.9):
+        moment = pm.moment_for_circle(mass, 0.0, radius)
+        ball_body = pm.Body(mass, moment)
+        ball_body.position = Vec2d(*point)
 
-    def move(self):
-        (self.angle, self.speed) = addVectors(pygame.Vector2(self.angle, self.speed), gravity)
-        self.x += math.sin(self.angle) * self.speed
-        self.y += math.cos(self.angle) * self.speed
+        ball_shape = pm.Circle(ball_body, radius)
+        ball_shape.elasticity = elasticity
+        ball_shape.friction = friction
+        ball_shape.collision_type = COLLTYPE_DEFAULT
+        #self.space.add(ball_body, ball_shape)
+        return ball_body, ball_shape
     
-    def bounce(self):
-        w = globals.screen_width
-        h = globals.screen_height
-        if self.x > (w - self.size):
-            self.x = 2 * (w - self.size) - self.x
-            self.angle = -self.angle
-            self.speed *= elasticity
-        elif self.x < self.size:
-            self.x = 2 * self.size - self.x
-            self.angle = -self.angle
-            self.speed *= elasticity
-        
-        if self.y > (h - self.size):
-            self.y = 2 * (h - self.size) - self.y
-            self.angle = math.pi - self.angle
-            self.speed *= elasticity
-        
-        elif self.y < self.size:
-            self.y = 2 * self.size - self.y
-            self.angle = math.pi - self.angle
-            self.speed *= elasticity
+    def create_box(self, pos, size=10, mass=5.0):
+        box_points = [(-size, -size), (-size, size), (size, size), (size, -size)]
+        return self.create_poly(box_points, mass=mass, pos=pos)
+    
+    def create_poly(self, points, mass=5.0, pos=(0, 0)):
+        moment = pm.moment_for_poly(mass, points)
+
+        body = pm.Body(mass, moment)
+        body.position = Vec2d(*pos)
+        shape = pm.Poly(body, points)
+        shape.friction = 0.5
+        shape.collision_type = COLLTYPE_DEFAULT
+        self.space.add(body, shape)
+        return shape
+    
+    def draw_ball(self, ball):
+        body = ball.body
+        v = body.position + ball.offset.cpvrotate(body.rotation_vector)
+        p = self.flipyv(v)
+        r = ball.radius
+        pygame.draw.circle(globals.screen, pygame.Color("Blue"), p, int(r), 2)
+    
+    def draw_poly(self, poly):
+        body = poly.body
+        ps = [p.rotated(body.angle) + body.position for p in poly.get_vertices()]
+        ps.append(ps[0])
+        ps = list(map(self.flipyv, ps))
+        if u.is_clockwise(ps):
+            color = pygame.Color("green")
+        else:
+            color = pygame.Color("red")
+        pygame.draw.lines(globals.screen, color, False, ps)
+    
