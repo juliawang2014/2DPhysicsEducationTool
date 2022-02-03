@@ -1,9 +1,9 @@
-import random
 from typing import List
 import globals
 
 # Library imports
 import pygame
+import libraries.shapes as shapes
 
 # pymunk imports
 import pymunk
@@ -18,8 +18,8 @@ class BouncyBalls(object):
 
     def __init__(self) -> None:
         # Space
-        self._space = pymunk.Space()
-        self._space.gravity = (0.0, 900.0)
+        self._space = globals.space
+        self._space.gravity = globals.gravity
 
         # Physics
         # Time step
@@ -30,7 +30,7 @@ class BouncyBalls(object):
         # pygame
         pygame.init()
         self._screen = globals.screen
-        self._clock = pygame.time.Clock()
+        self._clock = globals.clock
 
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
 
@@ -40,9 +40,8 @@ class BouncyBalls(object):
         # Balls that exist in the world
         self._balls: List[pymunk.Circle] = []
 
-        # Execution control and time until the next ball spawns
+        # Execution control
         self._running = True
-        self._ticks_to_next_ball = 10
 
     def run(self) -> None:
         """
@@ -56,7 +55,6 @@ class BouncyBalls(object):
                 self._space.step(self._dt)
 
             self._process_events()
-            #self._update_balls()
             self._clear_screen()
             self._draw_objects()
             pygame.display.flip()
@@ -96,39 +94,7 @@ class BouncyBalls(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self._create_ball(pygame.mouse.get_pos())
-
-    def _update_balls(self) -> None:
-        """
-        Create/remove balls as necessary. Call once per frame only.
-        :return: None
-        """
-        self._ticks_to_next_ball -= 1
-        if self._ticks_to_next_ball <= 0:
-            self._create_ball()
-            self._ticks_to_next_ball = 100
-        # Remove balls that fall below 100 vertically
-        #balls_to_remove = [ball for ball in self._balls if ball.body.position.y > 500]
-        #for ball in balls_to_remove:
-        #    self._space.remove(ball, ball.body)
-        #    self._balls.remove(ball)
-
-    def _create_ball(self, point) -> None:
-        """
-        Create a ball.
-        :return:
-        """
-        mass = 10
-        radius = 25
-        inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
-        body = pymunk.Body(mass, inertia)
-        #x = random.randint(115, 350)
-        body.position = point
-        shape = pymunk.Circle(body, radius, (0, 0))
-        shape.elasticity = 0.95
-        shape.friction = 0.9
-        self._space.add(body, shape)
-        self._balls.append(shape)
+                shapes.create_ball(self, pygame.mouse.get_pos())
 
     def _clear_screen(self) -> None:
         """
