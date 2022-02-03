@@ -1,0 +1,45 @@
+import pygame
+import pygame_gui
+from pygame_gui.elements import UITextEntryLine
+
+from pygame_gui import UIManager
+
+pygame.init()
+
+pygame.display.set_caption('Physics Tutorial')
+window = pygame.display.set_mode((1000,600))
+clock = pygame.time.Clock()
+
+backcolor = pygame.Surface((1000,600))
+backcolor.fill(pygame.Color('#FFFF00'))
+
+guimanager = pygame_gui.UIManager((1000,600))
+
+text_box = UITextEntryLine(
+     relative_rect=pygame.Rect(100, 100, 200, 50),
+     manager=guimanager)
+
+#size1 = text_box.get_text()
+#print(size1)
+size = ""
+
+while True:
+    time_delta = clock.tick(60)/1000.0
+    #used to close program
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+        
+        guimanager.process_events(event)
+
+    newSize = text_box.get_text()
+    if (size != newSize):
+        size = newSize
+        print(size)
+
+    guimanager.update(time_delta)
+
+    window.blit(backcolor, (0,0))
+    guimanager.draw_ui(window)
+
+    pygame.display.update()
