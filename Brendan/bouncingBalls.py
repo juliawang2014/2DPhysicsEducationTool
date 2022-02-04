@@ -12,6 +12,9 @@ import libraries.shapes as shapes
 import pymunk
 import pymunk.pygame_util
 
+#pygame imports
+import pygame_gui
+
 
 class BouncyBalls(object):
     """
@@ -46,6 +49,13 @@ class BouncyBalls(object):
 
         # Execution control
         self._running = True
+        
+        #set up pygame stuff
+        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height))
+        hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
+                                             text='Say Hello',
+                                             manager=self.manager)
+        self.time_delta = 0.0
 
     def run(self) -> None:
         """
@@ -63,7 +73,7 @@ class BouncyBalls(object):
             self._draw_objects()
             pygame.display.flip()
             # Delay fixed time between frames
-            self._clock.tick(60)
+            self.time_delta = self._clock.tick(60)
             pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
 
     def _add_static_scenery(self) -> None:
@@ -101,6 +111,7 @@ class BouncyBalls(object):
                 #add logic for dead space at bottom later, let's see what happens
                 print(event.pos)
                 shapes.create_ball(self, pygame.mouse.get_pos())
+            self.manager.process_events(event)
 
     def _clear_screen(self) -> None:
         """
@@ -115,6 +126,9 @@ class BouncyBalls(object):
         :return: None
         """
         self._space.debug_draw(self._draw_options)
+        self.manager.update(self.time_delta)
+        #self._screen.blit()
+        self.manager.draw_ui(self._screen)
 
 
 if __name__ == "__main__":
