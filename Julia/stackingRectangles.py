@@ -37,6 +37,9 @@ class StackingRectangles(object):
         # Static barrier walls (lines)
         self._add_static_scenery()
 
+        # Rects that exist in the world
+        self._rects: List[pymunk.Poly] = []
+
         # Execution control
         self._running = True
 

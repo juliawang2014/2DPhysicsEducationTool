@@ -61,7 +61,7 @@ class StackingRectangles(object):
             pygame.display.flip()
             # Delay fixed time between frames
             self._clock.tick(50)
-            pygame.display.set_caption("Stacking Rectangles - fps: " + str(self._clock.get_fps()))
+            pygame.display.set_caption("Static objects example - fps: " + str(self._clock.get_fps()))
 
     def _add_static_scenery(self) -> None:
         """
@@ -85,6 +85,7 @@ class StackingRectangles(object):
     def _process_events(self) -> None:
         """
         Handle game and events like keyboard input. Call once per frame only.
+        Left click to spawn square, right click to spawn ball, middle click to spawn static shape
         :return: None
         """
         for event in pygame.event.get():
@@ -95,11 +96,13 @@ class StackingRectangles(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                choice = random.randint(0, 1)
-                if choice == 0:
+                state = event.button
+                if state == 1:
                     shapes.create_rectangle(self, pygame.mouse.get_pos())
-                else:
+                elif state == 3:
                     shapes.create_ball(self, pygame.mouse.get_pos())
+                elif state == 2:
+                    shapes.create_static_circle(pygame.mouse.get_pos(), 30)
 
     def _clear_screen(self) -> None:
         """

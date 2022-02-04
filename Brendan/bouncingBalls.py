@@ -1,20 +1,26 @@
+import sys
+sys.path.append('../Julia')
+
 from typing import List
 import globals
 
 # Library imports
 import pygame
 import libraries.shapes as shapes
-import random
 
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
 
+#pygame imports
+import pygame_gui
 
-class StackingRectangles(object):
+
+class BouncyBalls(object):
     """
     This class implements a simple scene in which there is a static platform (made up of a couple of lines)
-    that don't move. Rectangles spawn on mouse click.
+    that don't move. Balls appear spawn on mouse click and drop onto the platform. They bounce around.
+    Brendan here, hahaha I copied Julia's code
     """
 
     def __init__(self) -> None:
@@ -38,11 +44,22 @@ class StackingRectangles(object):
         # Static barrier walls (lines) that the balls bounce off of
         self._add_static_scenery()
 
-        # Shapes that exist in the world
+        # Balls that exist in the world
         self._balls: List[pymunk.Circle] = []
-        self._rects: List[pymunk.Poly] = []
+
         # Execution control
         self._running = True
+        
+        #set up pygame stuff
+        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height))
+        #hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
+        #                                     text='Say Hello',
+        #                                     manager=self.manager)
+        self.ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager)
+        self.time_delta = 0.0
+        
+        #BALL SIZE
+        self.ball_size = 25 #default is 25 from shapes.py
 
     def run(self) -> None:
         """
@@ -60,8 +77,8 @@ class StackingRectangles(object):
             self._draw_objects()
             pygame.display.flip()
             # Delay fixed time between frames
-            self._clock.tick(50)
-            pygame.display.set_caption("Stacking Rectangles - fps: " + str(self._clock.get_fps()))
+            self.time_delta = self._clock.tick(60)
+            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
 
     def _add_static_scenery(self) -> None:
         """
@@ -75,7 +92,7 @@ class StackingRectangles(object):
             pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
             pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
             pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
-            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
+            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h), 5.0),
         ]
         for line in static_lines:
             line.elasticity = 0.95
@@ -95,11 +112,16 @@ class StackingRectangles(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                choice = random.randint(0, 1)
-                if choice == 0:
-                    shapes.create_rectangle(self, pygame.mouse.get_pos())
-                else:
-                    shapes.create_ball(self, pygame.mouse.get_pos())
+                #check to see if we are above the slanted line, so the ballz don't fall forever
+                #check is less than because up is negative
+                if (event.pos[1] <= event.pos[0]*0.2 + 400):
+                    shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size)
+                print(event.pos)
+                
+            elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+                print(event.value)
+                self.ball_size = event.value
+            self.manager.process_events(event)
 
     def _clear_screen(self) -> None:
         """
@@ -114,8 +136,11 @@ class StackingRectangles(object):
         :return: None
         """
         self._space.debug_draw(self._draw_options)
+        self.manager.update(self.time_delta)
+        #self._screen.blit()
+        self.manager.draw_ui(self._screen)
 
 
 if __name__ == "__main__":
-    game = StackingRectangles()
+    game = BouncyBalls()
     game.run()
