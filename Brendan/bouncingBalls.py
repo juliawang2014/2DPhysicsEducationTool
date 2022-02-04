@@ -112,9 +112,12 @@ class BouncyBalls(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                #add logic for dead space at bottom later, let's see what happens
+                #check to see if we are above the slanted line, so the ballz don't fall forever
+                #check is less than because up is negative
+                if (event.pos[1] <= event.pos[0]*0.2 + 400):
+                    shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size)
                 print(event.pos)
-                shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size)
+                
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 print(event.value)
                 self.ball_size = event.value
