@@ -52,9 +52,10 @@ class BouncyBalls(object):
         
         #set up pygame stuff
         self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height))
-        hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
-                                             text='Say Hello',
-                                             manager=self.manager)
+        #hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
+        #                                     text='Say Hello',
+        #                                     manager=self.manager)
+        self.ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(0, 100), manager=self.manager)
         self.time_delta = 0.0
 
     def run(self) -> None:
