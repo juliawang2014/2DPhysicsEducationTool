@@ -19,7 +19,7 @@ font2 = pygame.font.Font("fonts/arial.ttf", 16)
 #--------------Start of program----------------------
 X = 1000
 Y = 600
-background_color = (Purple)
+background_color = (Blue)
 #fps variable
 clock = pygame.time.Clock()
 
@@ -35,7 +35,7 @@ button3_img = pygame.image.load('img/button3.jpg').convert_alpha()
 button4_img = pygame.image.load('img/button4.jpg').convert_alpha()
 button5_img = pygame.image.load('img/button5.jpg').convert_alpha()
 #Set the caption of screen(top left corner words)
-pygame.display.set_caption('2DPhysicsEducationTool')
+pygame.display.set_caption("2DPhysicsEducationTool - fps: " + str(clock.get_fps()))
 #set the color of scene 
 screen.fill(background_color)
 
@@ -45,7 +45,7 @@ text1 = font1.render('2D Physics Education Tool', True, Black)
 #button instances
 #start_button = button.Button(100, 200, start_img, 0.45)
 exit_button = button.Button(835,500,exit_img, .2)
-text2 = font2.render('Please select which simulation you would like to run :)', True, White)
+text2 = font2.render('Please select which simulation you would like to run :)', True, Black)
 
 screen.blit(text2,(300,60))
 button1 = button.Button(50, 100, button1_img, 0.45)
