@@ -4,16 +4,17 @@ import globals
 # Library imports
 import pygame
 import libraries.shapes as shapes
+import random
 
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
 
 
-class BouncyBalls(object):
+class StackingRectangles(object):
     """
     This class implements a simple scene in which there is a static platform (made up of a couple of lines)
-    that don't move. Balls appear spawn on mouse click and drop onto the platform. They bounce around.
+    that don't move. Rectangles spawn on mouse click.
     """
 
     def __init__(self) -> None:
@@ -37,9 +38,9 @@ class BouncyBalls(object):
         # Static barrier walls (lines) that the balls bounce off of
         self._add_static_scenery()
 
-        # Balls that exist in the world
+        # Shapes that exist in the world
         self._balls: List[pymunk.Circle] = []
-
+        self._rects: List[pymunk.Poly] = []
         # Execution control
         self._running = True
 
@@ -60,7 +61,7 @@ class BouncyBalls(object):
             pygame.display.flip()
             # Delay fixed time between frames
             self._clock.tick(50)
-            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
+            pygame.display.set_caption("Stacking Rectangles - fps: " + str(self._clock.get_fps()))
 
     def _add_static_scenery(self) -> None:
         """
@@ -94,7 +95,11 @@ class BouncyBalls(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                shapes.create_ball(self, pygame.mouse.get_pos())
+                choice = random.randint(0, 1)
+                if choice == 0:
+                    shapes.create_rectangle(self, pygame.mouse.get_pos())
+                else:
+                    shapes.create_ball(self, pygame.mouse.get_pos())
 
     def _clear_screen(self) -> None:
         """
@@ -112,5 +117,5 @@ class BouncyBalls(object):
 
 
 if __name__ == "__main__":
-    game = BouncyBalls()
+    game = StackingRectangles()
     game.run()
