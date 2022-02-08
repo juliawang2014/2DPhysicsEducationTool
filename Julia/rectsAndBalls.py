@@ -1,3 +1,4 @@
+from tkinter.tix import MAX
 from typing import List
 import globals
 
@@ -82,6 +83,8 @@ class StackingRectangles(object):
             line.friction = 0.9
         self._space.add(*static_lines)
 
+    draging = False
+    rectangle_draging = False
     def _process_events(self) -> None:
         """
         Handle game and events like keyboard input. Call once per frame only.
@@ -100,6 +103,7 @@ class StackingRectangles(object):
                     shapes.create_rectangle(self, pygame.mouse.get_pos())
                 else:
                     shapes.create_ball(self, pygame.mouse.get_pos())
+            
 
     def _clear_screen(self) -> None:
         """
