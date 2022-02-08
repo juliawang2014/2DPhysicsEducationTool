@@ -12,6 +12,13 @@ clock = pygame.time.Clock()
 #myrec = pygame.Rect((20,20),(50,100))
 #inbox = pygame.draw.rect( (20, 20), (255, 255, 255), (50, 100))
 
+class inputText:
+    def __init__(self):
+        pass
+    def passInput (inputVal):
+        event = pygame.event.get(inputVal)
+        input.update(event)
+
 while True:
 
     backcolor = (255,255,0)
