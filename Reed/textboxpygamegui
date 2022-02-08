@@ -1,6 +1,7 @@
 import pygame
 import pygame_gui
 from pygame_gui.elements import UITextEntryLine
+from pygame_gui.elements import UITextBox
 
 from pygame_gui import UIManager
 
@@ -9,6 +10,8 @@ pygame.init()
 pygame.display.set_caption('Physics Tutorial')
 window = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
+
+circlesz = pygame.Surface((200,200))
 
 backcolor = pygame.Surface((1000,600))
 backcolor.fill(pygame.Color('#FFFF00'))
@@ -23,6 +26,16 @@ text_box = UITextEntryLine(
 #print(size1)
 size = ""
 
+circsize = 100
+
+text_box_update = UITextBox(
+        html_text=size,
+        relative_rect=pygame.Rect(400, 100, 200, 100),
+        manager=guimanager)
+
+
+#pygame.draw.circle(circlesz, (255,255,255), (400,200), 100)
+
 while True:
     time_delta = clock.tick(60)/1000.0
     #used to close program
@@ -30,6 +43,11 @@ while True:
         if event.type == pygame.QUIT:
             exit()
         
+        if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+            print("Entered text:", event.text)
+            text_box_update.full_redraw()
+            text_box_update.append_html_text(event.text)
+            
         guimanager.process_events(event)
 
     newSize = text_box.get_text()
@@ -37,9 +55,12 @@ while True:
         size = newSize
         print(size)
 
+    pygame.draw.circle(circlesz, (255,255,255), (100,100), 100,10)
+    #pygame.draw.rect(400, 100, 200, 100) 
     guimanager.update(time_delta)
 
     window.blit(backcolor, (0,0))
+    window.blit(circlesz, (200,200))
     guimanager.draw_ui(window)
 
     pygame.display.update()
