@@ -48,7 +48,7 @@ class ToggleButtonExample(object):
 
         # pygame_gui stuff
         self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height))
-        self.togglebutton = ToggleButton(rect=pygame.Rect((80, 500),(250, 50)), text="text1", manager=self.manager)
+        self.togglebutton = ToggleButton(rect=pygame.Rect((80, 500),(250, 50)), text="Toggle spawn", manager=self.manager)
         self.time_delta = 0.0
 
 

@@ -10,11 +10,7 @@ class ToggleButton():
         pygame_gui.elements.UIButton(self.rect, self.text, self.manager)
     
     def toggle(self):
-        if self.toggled:
-            self.toggled = False
-        else:
-            self.toggled = True
-#        self.toggled != self.toggled
+        self.toggled = not self.toggled
     
     def get_state(self):
         return self.toggled
