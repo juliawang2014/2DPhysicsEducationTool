@@ -94,7 +94,7 @@ while running:
 
     if button1.draw(screen) == True:
         print("Button 1 clicked")
-        exec(open("Plinko.py").read())
+        os.system('Plinko.py')
 
     if button2.draw(screen) == True:
         print("Button 2 clicked")
