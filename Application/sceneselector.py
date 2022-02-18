@@ -52,8 +52,10 @@ text1 = font1.render('2D Physics Education Tool', True, White)
 #start_button = button.Button(100, 200, start_img, 0.45)
 exit_button = button.Button(845,525,exit_img, .3)
 text2 = font2.render('- Please select which simulation you would like to run -', True, White)
+text3 = font2.render('Plinko Example',True,White)
 screen.blit(text1,(300,20))
 screen.blit(text2,(220,60))
+
 button1 = button.Button(85, 125, button1_img, 0.40)
 button2 = button.Button(400, 125, button1_img, 0.40)
 button3 = button.Button(715, 125, button1_img, 0.40)
@@ -94,14 +96,14 @@ while running:
 
     if button1.draw(screen) == True:
         print("Button 1 clicked")
-        os.system('Plinko.py')
+        os.system('plinko.py')
 
     if button2.draw(screen) == True:
         print("Button 2 clicked")
-
+        os.system('slider.py')
     if button3.draw(screen) == True:
         print("Button 3 clicked")
-
+        os.system('rectsAndBalls.py')
     if button4.draw(screen) == True:
         print("Button 4 clicked")
 
