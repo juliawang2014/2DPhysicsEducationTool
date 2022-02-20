@@ -1,5 +1,7 @@
 from tkinter.tix import MAX
 from typing import List
+
+from zmq import PROTOCOL_ERROR_ZMTP_MALFORMED_COMMAND_READY
 import globals
 
 # Library imports
@@ -44,6 +46,7 @@ class StackingRectangles(object):
         self._rects: List[pymunk.Poly] = []
         # Execution control
         self._running = True
+        self._pause = False
 
     def run(self) -> None:
         """
@@ -53,9 +56,9 @@ class StackingRectangles(object):
         # Main loop
         while self._running:
             # Progress time forward
-            for _ in range(self._physics_steps_per_frame):
-                self._space.step(self._dt)
-
+            if not self._pause:
+                for _ in range(self._physics_steps_per_frame):
+                    self._space.step(self._dt)
             self._process_events()
             self._clear_screen()
             self._draw_objects()
@@ -95,14 +98,15 @@ class StackingRectangles(object):
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 choice = random.randint(0, 1)
                 if choice == 0:
                     shapes.create_rectangle(self, pygame.mouse.get_pos())
                 else:
                     shapes.create_ball(self, pygame.mouse.get_pos())
+            # Pause key
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                self._pause = not self._pause
             
 
     def _clear_screen(self) -> None:
