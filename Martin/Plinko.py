@@ -1,29 +1,6 @@
 from turtle import width
 import pygame,sys,pymunk
-def __init__(self) -> None:
-        # Space
-        self._space = pymunk.space()
-        self._space.gravity = globals.gravity
 
-        # Physics
-        # Time step
-        self._dt = 1.0 / 60.0
-        # Number of physics steps per screen frame
-        self._physics_steps_per_frame = 1
-
-        # pygame
-        pygame.init()
-        self._screen = globals.screen
-        self._clock = globals.clock
-
-        self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
-
-        # Static barrier walls (lines) that the balls bounce off of
-        self._add_static_scenery()
-
-       
-        # Execution control
-        self._running = True
 def _add_static_scenery(self) -> None:
         """
         Create the static bodies.
@@ -94,6 +71,17 @@ def draw_static_wall():
             line.elasticity = 0.95
             line.friction = 0.9
     space.add(*static_lines)
+reset_b = False
+def reset():
+    pause = True
+    reset_b = False
+    for b in space.shapes:
+        space.remove(b)
+    draw_static_wall()
+  
+    draw_static_ball(balls)
+
+
 pygame.init()
 
 screen = pygame.display.set_mode((1000,600))
@@ -187,13 +175,26 @@ balls.append(static_ball(space,(900,550)))
 
 
 draw_static_wall()
-while True:
+running = True
+pause = True
+
+physics_steps_per_frame = 1
+dt = 1.0 / 60.0
+
+while running:
     for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+            reset_b = True
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             coins.append(create_coin(space,event.pos))
+        if not pause:
+                for _ in range(physics_steps_per_frame):
+                    space.step(dt)
+        if reset_b:
+            reset()
     screen.fill((0,150,255))
     draw_coins(coins)
     draw_static_ball(balls)
