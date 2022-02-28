@@ -162,8 +162,15 @@ balls.append(static_ball(space,(600,590)))
 balls.append(static_ball(space,(700,590)))
 balls.append(static_ball(space,(800,590)))
 balls.append(static_ball(space,(900,590)))
-
-
+#floor
+balls.append(static_ball(space,(0,745)))
+balls.append(static_ball(space,(175,745)))
+balls.append(static_ball(space,(325,745)))
+balls.append(static_ball(space,(450,745)))
+balls.append(static_ball(space,(575,745)))
+balls.append(static_ball(space,(725,745)))
+balls.append(static_ball(space,(850,745)))
+balls.append(static_ball(space,(1000,745)))
 draw_static_wall()
 running = True
 pause = True
@@ -178,7 +185,47 @@ def draw_boundary():
 
     draw_static_wall()
     pygame.display.update()
+def draw_letters():
+    Brown = (138,79,3) 
+    Red = (255,0,0)
+    Orange = (255,128,0)
+    Yellow = (255,255,0)
+    Green = (0,255,0)
+    Blue = (0,225,225)
+    Purple = (127,0,255)
 
+
+
+    font1 = pygame.font.Font("fonts/Xolonium-Regular.ttf", 45)
+    text1 = font1.render('O', True, Brown)
+    text2 = font1.render('A', True, Brown)
+    text3 = font1.render('K', True, Brown)
+    text4 = font1.render('L', True, Brown)
+    text5 = font1.render('A', True, Brown)
+    text6 = font1.render('N', True, Brown)
+    text7 = font1.render('D', True, Brown)
+
+    text8 = font1.render('P', True, Red)
+    text9 = font1.render('L', True, Orange)
+    text10 = font1.render('I', True, Yellow)
+    text11 = font1.render('N', True, Green)
+    text12 = font1.render('K', True, Blue)
+    text13 = font1.render('O', True, Purple)
+
+    screen.blit(text1,(90,700))
+    screen.blit(text2,(225,700))
+    screen.blit(text3,(375,700))
+    screen.blit(text4,(500,700))
+    screen.blit(text5,(625,700))
+    screen.blit(text6,(775,700))
+    screen.blit(text7,(900,700))
+
+    screen.blit(text8,(375,0))
+    screen.blit(text9,(430,0))
+    screen.blit(text10,(490,0))
+    screen.blit(text11,(530,0))
+    screen.blit(text12,(585,0))
+    screen.blit(text13,(630,0))
 
 while running:
     for event in pygame.event.get():
@@ -197,11 +244,11 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
             reset_b = False
             draw_boundary()
-            draw_static_ball(balls)
+            
     screen.fill((0,150,255))
     draw_coins(coins)
     draw_static_ball(balls)
-    
+    draw_letters()
     space.step(1/50)
     pygame.display.update()
     clock.tick(120)
