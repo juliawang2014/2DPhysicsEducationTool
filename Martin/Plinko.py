@@ -1,5 +1,47 @@
 from turtle import width
 import pygame,sys,pymunk
+def __init__(self) -> None:
+        # Space
+        self._space = pymunk.space()
+        self._space.gravity = globals.gravity
+
+        # Physics
+        # Time step
+        self._dt = 1.0 / 60.0
+        # Number of physics steps per screen frame
+        self._physics_steps_per_frame = 1
+
+        # pygame
+        pygame.init()
+        self._screen = globals.screen
+        self._clock = globals.clock
+
+        self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
+
+        # Static barrier walls (lines) that the balls bounce off of
+        self._add_static_scenery()
+
+       
+        # Execution control
+        self._running = True
+def _add_static_scenery(self) -> None:
+        """
+        Create the static bodies.
+        :return: None
+        """
+        window_w = pygame.display.Info().current_w
+        window_h = pygame.display.Info().current_h
+        static_body = self._space.static_body
+        static_lines = [
+            pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
+            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
+        ]
+        for line in static_lines:
+            line.elasticity = 0.95
+            line.friction = 0.9
+        self._space.add(*static_lines)
 
 def create_coin(space,pos):
     body = pymunk.Body(1,100,body_type = pymunk.Body.DYNAMIC)
@@ -30,17 +72,28 @@ def draw_static_ball(balls):
         pygame.draw.circle(screen,(255,255,255),(pos_x,pos_y),15)
 
 def static_wall(space,pos):
+    
     body = pymunk.Body(body_type = pymunk.Body.STATIC)
     body.position = pos
     shape = pymunk.Circle(body,200)
     space.add(body,shape)
     return shape
 
-def draw_static_wall(walls):
-    for wall in walls:
-        pos_x = int(wall.body.position.x)
-        pos_y = int(wall.body.position.y)
-        pygame.draw.circle(screen,(0,0,0),(pos_x,pos_y),200)
+def draw_static_wall():
+    
+    window_w = pygame.display.Info().current_w
+    window_h = pygame.display.Info().current_h
+    static_body = space.static_body
+    static_lines = [
+            pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
+            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
+        ]
+    for line in static_lines:
+            line.elasticity = 0.95
+            line.friction = 0.9
+    space.add(*static_lines)
 pygame.init()
 
 screen = pygame.display.set_mode((1000,600))
@@ -133,41 +186,7 @@ balls.append(static_ball(space,(800,550)))
 balls.append(static_ball(space,(900,550)))
 
 
-
-
-walls = []
-#walls left side
-walls.append(static_wall(space,(-190,0)))
-walls.append(static_wall(space,(-190,50)))
-walls.append(static_wall(space,(-190,100)))
-walls.append(static_wall(space,(-190,150)))
-walls.append(static_wall(space,(-190,200)))
-walls.append(static_wall(space,(-190,250)))
-walls.append(static_wall(space,(-190,300)))
-walls.append(static_wall(space,(-190,350)))
-walls.append(static_wall(space,(-190,400)))
-walls.append(static_wall(space,(-190,450)))
-walls.append(static_wall(space,(-190,500)))
-walls.append(static_wall(space,(-190,550)))
-walls.append(static_wall(space,(-190,600)))
-
-
-#walls right side
-walls.append(static_wall(space,(1190,0)))
-walls.append(static_wall(space,(1190,50)))
-walls.append(static_wall(space,(1190,100)))
-walls.append(static_wall(space,(1190,150)))
-walls.append(static_wall(space,(1190,200)))
-walls.append(static_wall(space,(1190,250)))
-walls.append(static_wall(space,(1190,300)))
-walls.append(static_wall(space,(1190,350)))
-walls.append(static_wall(space,(1190,400)))
-walls.append(static_wall(space,(1190,450)))
-walls.append(static_wall(space,(1190,500)))
-walls.append(static_wall(space,(1190,550)))
-walls.append(static_wall(space,(1190,600)))
-
-
+draw_static_wall()
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -178,7 +197,7 @@ while True:
     screen.fill((0,150,255))
     draw_coins(coins)
     draw_static_ball(balls)
-    draw_static_wall(walls)
+    
     space.step(1/50)
     pygame.display.update()
     clock.tick(120)
