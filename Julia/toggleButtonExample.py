@@ -1,23 +1,22 @@
-from tkinter.tix import MAX
 from typing import List
 
-from zmq import PROTOCOL_ERROR_ZMTP_MALFORMED_COMMAND_READY
+import pygame_gui
+from libraries.toggleButton import ToggleButton
 import globals
 
 # Library imports
 import pygame
 import libraries.shapes as shapes
-import random
 
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
 
 
-class StackingRectangles(object):
+class ToggleButtonExample(object):
     """
     This class implements a simple scene in which there is a static platform (made up of a couple of lines)
-    that don't move. Rectangles spawn on mouse click.
+    that don't move. Balls appear spawn on mouse click and drop onto the platform. They bounce around.
     """
 
     def __init__(self) -> None:
@@ -41,12 +40,17 @@ class StackingRectangles(object):
         # Static barrier walls (lines) that the balls bounce off of
         self._add_static_scenery()
 
-        # Shapes that exist in the world
+        # Balls that exist in the world
         self._balls: List[pymunk.Circle] = []
-        self._rects: List[pymunk.Poly] = []
+
         # Execution control
         self._running = True
-        self._pause = False
+
+        # pygame_gui stuff
+        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height))
+        self.togglebutton = ToggleButton(rect=pygame.Rect((80, 500),(250, 50)), text="Toggle spawn", manager=self.manager)
+        self.time_delta = 0.0
+
 
     def run(self) -> None:
         """
@@ -56,17 +60,19 @@ class StackingRectangles(object):
         # Main loop
         while self._running:
             # Progress time forward
-            if not self._pause:
-                for _ in range(self._physics_steps_per_frame):
-                    self._space.step(self._dt)
+            for _ in range(self._physics_steps_per_frame):
+                self._space.step(self._dt)
+
             self._process_events()
             self._clear_screen()
             self._draw_objects()
+            #self.window_surface.blit(self.background, (0,0))
             pygame.display.flip()
+            #pygame.display.update()
             # Delay fixed time between frames
-            self._clock.tick(50)
-            pygame.display.set_caption("Stacking Rectangles - fps: " + str(self._clock.get_fps()))
-
+            self.time_delta = self._clock.tick(60)
+            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
+    
     def _add_static_scenery(self) -> None:
         """
         Create the static bodies.
@@ -86,8 +92,6 @@ class StackingRectangles(object):
             line.friction = 0.9
         self._space.add(*static_lines)
 
-    draging = False
-    rectangle_draging = False
     def _process_events(self) -> None:
         """
         Handle game and events like keyboard input. Call once per frame only.
@@ -98,16 +102,15 @@ class StackingRectangles(object):
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                choice = random.randint(0, 1)
-                if choice == 0:
-                    shapes.create_rectangle(self, pygame.mouse.get_pos())
-                else:
-                    shapes.create_ball(self, pygame.mouse.get_pos())
-            # Pause key
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                self._pause = not self._pause
-            
+                pygame.image.save(self._screen, "bouncing_balls.png")
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED:
+                self.togglebutton.toggle()
+                print(self.togglebutton.get_state())
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.togglebutton.get_state():
+                    shapes.create_ball(self, pygame.mouse.get_pos())
+            self.manager.process_events(event)
 
     def _clear_screen(self) -> None:
         """
@@ -123,7 +126,11 @@ class StackingRectangles(object):
         """
         self._space.debug_draw(self._draw_options)
 
+        self.manager.update(self.time_delta)
+        
+        self.manager.draw_ui(self._screen)
+
 
 if __name__ == "__main__":
-    game = StackingRectangles()
+    game = ToggleButtonExample()
     game.run()
