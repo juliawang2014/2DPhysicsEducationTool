@@ -73,13 +73,10 @@ def draw_static_wall():
     space.add(*static_lines)
 reset_b = False
 def reset():
-    pause = True
-    reset_b = False
-    for b in space.shapes:
-        space.remove(b)
-    draw_static_wall()
-  
-    draw_static_ball(balls)
+    for c in coins:
+        space.remove(c)
+    coins.clear()
+    return False
 
 
 pygame.init()
@@ -240,7 +237,7 @@ while running:
                 for _ in range(physics_steps_per_frame):
                     space.step(dt)
         if reset_b:
-            reset()
+            reset_b = reset()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
             reset_b = False
             draw_boundary()
