@@ -1,7 +1,7 @@
 from tkinter.tix import MAX
 from typing import List
 
-from zmq import PROTOCOL_ERROR_ZMTP_MALFORMED_COMMAND_READY
+#from zmq import PROTOCOL_ERROR_ZMTP_MALFORMED_COMMAND_READY
 import globals
 
 # Library imports
@@ -101,9 +101,9 @@ class StackingRectangles(object):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 choice = random.randint(0, 1)
                 if choice == 0:
-                    shapes.create_rectangle(self, pygame.mouse.get_pos())
-                else:
                     shapes.create_ball(self, pygame.mouse.get_pos())
+                else:
+                    shapes.create_triangle(self, pygame.mouse.get_pos())
             # Pause key
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 self._pause = not self._pause
