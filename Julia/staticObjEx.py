@@ -100,7 +100,7 @@ class StackingRectangles(object):
                 if state == 1:
                     shapes.create_rectangle(self, pygame.mouse.get_pos())
                 elif state == 3:
-                    shapes.create_ball(self, pygame.mouse.get_pos())
+                    shapes.create_static_triangle(pygame.mouse.get_pos(), 20)
                 elif state == 2:
                     shapes.create_static_circle(pygame.mouse.get_pos(), 30)
 
