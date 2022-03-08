@@ -42,15 +42,15 @@ def create_static_rect(point, size_x=10, size_y=10):
     r = pymunk.Poly.create_box(body, (size_x, size_y))
     globals.space.add(body, r)
 
+def create_static_circle(point, radius=25):
+    body = pymunk.Body(body_type=pymunk.Body.STATIC)
+    body.position = point
+    c = pymunk.Circle(body, radius)
+    globals.space.add(body, c)
+
 def create_static_triangle(point, size_x=20, size_y=20):
     body = pymunk.Body(body_type=pymunk.Body.STATIC)
     body.position = point
     space = globals.space
     t = pymunk.Poly(body, [(-size_x, -size_y), (size_x, -size_y), (0,size_x)])
     space.add(body, t)
-
-def create_static_circle(point, radius=25):
-    body = pymunk.Body(body_type=pymunk.Body.STATIC)
-    body.position = point
-    c = pymunk.Circle(body, radius)
-    globals.space.add(body, c)

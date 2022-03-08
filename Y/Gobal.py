@@ -1,9 +1,7 @@
 import Math
 import sys
-sys.path.insert(0, 'Martin')
+sys.path.insert(0, 'Reed')
 
-value = False
-if value == True:
-    import scene
-else:
-    print("Error")
+force = Math.force.calculateForce(0, 50, 10)
+import testing
+
