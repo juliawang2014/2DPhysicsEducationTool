@@ -55,7 +55,8 @@ class BouncyBalls(object):
         #hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
         #                                     text='Say Hello',
         #                                     manager=self.manager)
-        self.ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager)
+        self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="gravity") #gravity
         self.time_delta = 0.0
         
         #BALL SIZE
@@ -119,7 +120,7 @@ class BouncyBalls(object):
                 print(event.pos)
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                print(event.value)
+                print(event.ui_object_id)
                 self.ball_size = event.value
             self.manager.process_events(event)
 
