@@ -56,7 +56,7 @@ class BouncyBalls(object):
         #                                     text='Say Hello',
         #                                     manager=self.manager)
         self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="gravity") #gravity
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(-2000, 2000), manager=self.manager, object_id="gravity") #gravity
         self.time_delta = 0.0
         
         #BALL SIZE
@@ -120,8 +120,14 @@ class BouncyBalls(object):
                 print(event.pos)
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                print(event.ui_object_id)
-                self.ball_size = event.value
+                if event.ui_object_id == "size":
+                    self.ball_size = event.value
+                elif event.ui_object_id == "gravity":
+                    globals.gravity = (0, event.value)
+                    self._space.gravity = globals.gravity
+                    print(self._space.gravity)
+                
+                
             self.manager.process_events(event)
 
     def _clear_screen(self) -> None:
