@@ -127,7 +127,7 @@ class BouncyBalls(object):
                 elif event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:
                         #make there be a dead zone in the middle of the slider
-                        if event.value < 10 && event.value > -10:
+                        if event.value < 50 and event.value > -50:
                             event.value = 0
                         self._space.gravity = (0, event.value)
                         self.ui_textbox.clear_text_surface()
