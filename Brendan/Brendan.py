@@ -92,14 +92,14 @@ class BouncyBalls(object):
         window_h = pygame.display.Info().current_h
         static_body = self._space.static_body
         static_lines = [
-            pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
-            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
-            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
-            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h), 5.0),
+            pymunk.Segment(static_body, (0, 0), (window_w, 0), 10.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 10.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 10.0),
+            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h), 10.0),
         ]
         for line in static_lines:
-            line.elasticity = 0.95
-            line.friction = 0.9
+            line.elasticity = 1.0
+            line.friction = 0.99
         self._space.add(*static_lines)
 
     def _process_events(self) -> None:
@@ -118,7 +118,7 @@ class BouncyBalls(object):
                 #check to see if we are above the slanted line, so the ballz don't fall forever
                 #check is less than because up is negative
                 if (event.pos[1] <= event.pos[0]*0.2 + 400):
-                    shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size)
+                    shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size, elasticity=1.1)
                 #print(event.pos)
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
