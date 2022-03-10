@@ -56,7 +56,15 @@ class BouncyBalls(object):
             for _ in range(self._physics_steps_per_frame):
                 self._space.step(self._dt)
             if self.queried_item is not None:
-                fDisplay.display_values(self.queried_item)
+                print("Velocity " + str(fDisplay.display_values(self.queried_item, "velocity")))
+                print("Angular Velocity " + str(fDisplay.display_values(self.queried_item, "angular_velocity")))
+                print("Mass " + str(fDisplay.display_values(self.queried_item, "mass")))
+                print("Moment " + str(fDisplay.display_values(self.queried_item, "moment")))
+                print("Force " + str(fDisplay.display_values(self.queried_item, "force")))
+                print("Angle " + str(fDisplay.display_values(self.queried_item, "angle")))
+                print("Position " + str(fDisplay.display_values(self.queried_item, "position")))
+                print("Center of Gravity " + str(fDisplay.display_values(self.queried_item, "center_of_gravity")))
+                print("Torque " + str(fDisplay.display_values(self.queried_item, "torque")))
             self._process_events()
             self._clear_screen()
             self._draw_objects()
@@ -105,6 +113,7 @@ class BouncyBalls(object):
         if len(shape_list) > 0:
             self.queried_item = shape_list[0].shape.body
         else:
+            self.queried_item = None
             shapes.create_ball(self, pygame.mouse.get_pos())
 
     def _clear_screen(self) -> None:
