@@ -57,7 +57,6 @@ def post_solve_football_hit(arbiter, space, data):
 
 width, height = 1200, 700
 
-
 def main():
     ### PyGame init
     pygame.init()
@@ -82,7 +81,8 @@ def main():
 
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
-    slider= pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rec=pygame.Rect((10,470), (250,50)), start_value=.00002, value_range = (0,.002), manager= manager)
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=100, value_range = (0,200), manager= manager)
+    
    # ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=manager)
     # this is where the firing of the football is located
     cannon_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
@@ -108,10 +108,10 @@ def main():
                 and (event.key in [pygame.K_ESCAPE, pygame.K_q])
             ):
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
             
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and event.pos[1] < 560:
                 end_time = pygame.time.get_ticks()
 
                 diff = end_time - start_time
@@ -170,9 +170,10 @@ def main():
         ### Draw stuff
         space.debug_draw(draw_options)
         
+        
 
         # Power meter
-        if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[0] and pygame.mouse.get_pos()[1] < 560:
             current_time = pygame.time.get_ticks()
             diff = current_time - start_time
             power = max(min(diff, 1000), 10)
@@ -197,15 +198,20 @@ def main():
         screen.blit(font.render("70",True,pygame.Color("black"),),(810,560),)
         screen.blit(font.render("80",True,pygame.Color("black"),),(910,560),)
         screen.blit(font.render("90",True,pygame.Color("black"),),(1010,560),)
-        pygame.display.flip()
+        #pygame.display.flip()
 
         ### Update physics
         fps = 60
         dt = 1.0 / fps
         space.step(dt)
 
-        clock.tick(fps)
-
+        delta = clock.tick(fps)
+        
+        #update GUI stuff
+        manager.update(delta)
+        manager.draw_ui(screen)
+        pygame.display.flip()
+        
 
 if __name__ == "__main__":
     sys.exit(main())
