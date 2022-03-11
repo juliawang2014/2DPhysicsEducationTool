@@ -126,6 +126,9 @@ def main():
 
                 football_body, football_shape = create_football()
                 space.add(football_body, football_shape)
+                
+            elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+                print(event.value)
 
 
         mouse_position = pymunk.pygame_util.from_pygame(
