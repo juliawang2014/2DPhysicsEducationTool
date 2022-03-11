@@ -81,7 +81,7 @@ def main():
 
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=100, value_range = (0,200), manager= manager)
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.00002, value_range = (0,.002), manager= manager)
     
    # ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=manager)
     # this is where the firing of the football is located
@@ -129,6 +129,7 @@ def main():
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 print(event.value)
+            manager.process_events(event)
 
 
         mouse_position = pymunk.pygame_util.from_pygame(
