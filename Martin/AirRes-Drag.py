@@ -6,7 +6,7 @@ import sys
 from typing import List
 
 import pygame
-
+import pygame_gui
 import pymunk
 import pymunk.pygame_util
 from pymunk.vec2d import Vec2d
@@ -71,6 +71,7 @@ def main():
     space.gravity = 0, 1000
     draw_options = pymunk.pygame_util.DrawOptions(screen)
 
+    
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
         pymunk.Segment(space.static_body, (50, 550), (50, 50), 5),
@@ -80,7 +81,9 @@ def main():
     ]
 
     space.add(*static)
-
+    manager = pygame_gui.UIManager((width, height))
+    slider= pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rec=pygame.Rect((10,470), (250,50)), start_value=.00002, value_range = (0,.002), manager= manager)
+   # ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=manager)
     # this is where the firing of the football is located
     cannon_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
     cannon_shape = pymunk.Circle(cannon_body, 25)
