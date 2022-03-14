@@ -69,7 +69,7 @@ def main():
     space = pymunk.Space()
     space.gravity = 0, 1000
     draw_options = pymunk.pygame_util.DrawOptions(screen)
-
+    drag_constant = 0.0002
     
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
@@ -81,7 +81,7 @@ def main():
 
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.00002, value_range = (0,.002), manager= manager)
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.0002, value_range = (0,.002), manager= manager)
     
    # ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=manager)
     # this is where the firing of the football is located
@@ -129,6 +129,7 @@ def main():
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 print(event.value)
+                drag_constant = event.value
             manager.process_events(event)
 
 
@@ -144,7 +145,7 @@ def main():
         #print(football_body.angle)
 
         for flying_football in flying_footballs:
-            drag_constant = 0.0002
+            
 
             pointing_direction = Vec2d(1, 0).rotated(flying_football.angle)
             # print(pointing_direction.angle, flying_football.angle)
