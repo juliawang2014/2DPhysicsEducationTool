@@ -55,7 +55,10 @@ class BouncyBalls(object):
         #hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
         #                                     text='Say Hello',
         #                                     manager=self.manager)
-        self.ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager)
+        self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(-2000, 2000), manager=self.manager, object_id="gravity") #gravity
+        self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((300, 540), (250, 50)), manager=self.manager, object_id="gravityInfoTextBox")
+        #self.ui_textbox.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR,params={'time_per_letter':1})
         self.time_delta = 0.0
         
         #BALL SIZE
@@ -116,11 +119,17 @@ class BouncyBalls(object):
                 #check is less than because up is negative
                 if (event.pos[1] <= event.pos[0]*0.2 + 400):
                     shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size)
-                print(event.pos)
+                #print(event.pos)
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                print(event.value)
-                self.ball_size = event.value
+                if event.ui_object_id == "size":
+                    self.ball_size = event.value
+                elif event.ui_object_id == "gravity":
+                    if event.value != self._space.gravity.int_tuple[1]:
+                        self._space.gravity = (0, event.value)
+                        self.ui_textbox.clear_text_surface()
+                        self.ui_textbox.set_text("Gravity: " + str(self._space.gravity.int_tuple[1]))         
+                
             self.manager.process_events(event)
 
     def _clear_screen(self) -> None:
