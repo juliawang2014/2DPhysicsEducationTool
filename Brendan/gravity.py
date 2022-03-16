@@ -15,6 +15,8 @@ import pymunk.pygame_util
 #pygame imports
 import pygame_gui
 
+#other imports
+import datetime
 
 class BouncyBalls(object):
     """
@@ -57,8 +59,9 @@ class BouncyBalls(object):
         #                                     text='Say Hello',
         #                                     manager=self.manager)
         self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(-2000, 2000), manager=self.manager, object_id="gravity") #gravity
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, object_id="gravity") #gravity
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((300, 540), (250, 50)), manager=self.manager, object_id="gravityInfoTextBox")
+        self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 270), (250, 50)), text="Spawn Ball", manager=self.manager, object_id="spawn")
         #self.ui_textbox.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR,params={'time_per_letter':1})
         self.time_delta = 0.0
         
@@ -93,14 +96,14 @@ class BouncyBalls(object):
         window_h = pygame.display.Info().current_h
         static_body = self._space.static_body
         static_lines = [
-            pymunk.Segment(static_body, (0, 0), (window_w, 0), 10.0),
-            pymunk.Segment(static_body, (0, 0), (0, window_h), 10.0),
-            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 10.0),
-            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h), 10.0),
+            pymunk.Segment(static_body, (0, 0), (window_w, 0), 1.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 1.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 1.0),
+            pymunk.Segment(static_body, (0, window_h-400), (window_w, window_h-300), 5.0),
         ]
         for line in static_lines:
-            line.elasticity = 1.0
-            line.friction = 0.99
+            line.elasticity = 0.0
+            line.friction = 10.0
         self._space.add(*static_lines)
 
     def _process_events(self) -> None:
@@ -115,13 +118,11 @@ class BouncyBalls(object):
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                #check to see if we are above the slanted line, so the ballz don't fall forever
-                #check is less than because up is negative
-                if (event.pos[1] <= event.pos[0]*0.2 + 400):
-                    shapes.create_ball(self, pygame.mouse.get_pos(), 10, self.ball_size, elasticity=1.1)
-                #print(event.pos)
-                
+        #    elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_object_id == "spawn":
+                    self._deleteAllBalls()
+                    shapes.create_ball(self, (33,173), 10, self.ball_size, elasticity=0.1)
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "size":
                     self.ball_size = event.value
@@ -154,6 +155,12 @@ class BouncyBalls(object):
         self.manager.update(self.time_delta)
         #self._screen.blit()
         self.manager.draw_ui(self._screen)
+        
+    def _deleteAllBalls(self) -> None:
+        """remove all balls from self._balls"""
+        for ball in self._balls:
+            self._space.remove(ball)
+        self._balls = []
 
 
 if __name__ == "__main__":
