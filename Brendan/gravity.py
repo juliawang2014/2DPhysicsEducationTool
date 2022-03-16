@@ -58,8 +58,8 @@ class BouncyBalls(object):
         #hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((80, 500), (250, 50)),
         #                                     text='Say Hello',
         #                                     manager=self.manager)
-        self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, object_id="gravity") #gravity
+        #self.ui_slider1 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 470), (250, 50)), start_value=25, value_range=(1, 100), manager=self.manager, object_id="size") #ball size
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((300, 540), (250, 50)), manager=self.manager, object_id="gravityInfoTextBox")
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 270), (250, 50)), text="Spawn Ball", manager=self.manager, object_id="spawn")
         #self.ui_textbox.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR,params={'time_per_letter':1})
@@ -124,15 +124,8 @@ class BouncyBalls(object):
                     self._deleteAllBalls()
                     shapes.create_ball(self, (33,173), 10, self.ball_size, elasticity=0.1)
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                if event.ui_object_id == "size":
-                    self.ball_size = event.value
-                elif event.ui_object_id == "gravity":
+                if event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:
-                        #make there be a dead zone in the middle of the slider
-                        if event.value < 50 and event.value > -50:
-                            event.value = 0
-                            event.ui_element.set_current_value(0)
-                            
                         self._space.gravity = (0, event.value)
                         self.ui_textbox.clear_text_surface()
                         self.ui_textbox.set_text("Gravity: " + str(self._space.gravity.int_tuple[1]))         
