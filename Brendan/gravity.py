@@ -62,6 +62,7 @@ class BouncyBalls(object):
         self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((10, 540), (250, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((300, 540), (250, 50)), manager=self.manager, object_id="gravityInfoTextBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((600, 340), (350, 250)), manager=self.manager, object_id="doneBox")
+        self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((300, 340), (250, 50)), manager=self.manager, object_id="velocityBox")
         self.done_box_text = ""
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 270), (250, 50)), text="Spawn Ball", manager=self.manager, object_id="spawn")
         #self.ui_textbox.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR,params={'time_per_letter':1})
@@ -86,6 +87,7 @@ class BouncyBalls(object):
                 self._space.step(self._dt)
 
             self._handle_ball_timing()
+            self._show_ball_velocity()
             self._process_events()
             self._clear_screen()
             self._draw_objects()
@@ -178,6 +180,21 @@ class BouncyBalls(object):
             self.done_box_text += "ball done rolling, time:" + str(time_delta) + "<br>"
             self.ui_textbox2.set_text(self.done_box_text)
             self.is_ball_done_rolling = True
+            
+    def _show_ball_velocity(self) -> None:
+        """update velocity text box to show ball velocity"""
+        
+        if self._balls:
+            if abs(self._balls[0].body.velocity) > 0.01:
+                self.ui_textbox3.set_text("Velocity: " + str(abs(self._balls[0].body.velocity)))
+            else:
+                self.ui_textbox3.set_text("Velocity: 0.0")
+                #print(abs(self._balls[0].body.velocity))
+         #   if not self.ball_previous_coords:
+         #       self.ball_previous_coords = self._balls[0].body.position
+         #   else:
+         #       print(pymunk.vec2d.Vec2d.get_distance(self._balls[0].body.position, self.ball_previous_coords))
+         #       self.ball_previous_coords = self._balls[0].body.position
 
 
 if __name__ == "__main__":
