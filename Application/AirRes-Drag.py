@@ -9,31 +9,10 @@ import pygame
 import pygame_gui
 import pymunk
 import pymunk.pygame_util
-import math
 from pymunk.vec2d import Vec2d
 
 
 football_img = pygame.image.load('img/football.png')
-
-def flipy(y):
-    return -y + 600
-
-def draw_football(footballs, screen):
-    for f in footballs:
-        p = f.body.position
-        p = Vec2d(p.x, flipy(p.y))
-
-        angle_degrees = math.degrees(f.body.angle) + 180
-        rotated_img = pygame.transform.rotate(football_img, angle_degrees)
-
-        offset = Vec2d(*rotated_img.get_size()) / 2
-        p = p - offset
-        #pos_x = int(f.position.x)
-        #pos_y = int(f.position.y)
-        #pygame.draw.rect(screen,(0,0,0),pygame.Rect(0.0,0.0,10.0,10.0))
-       # football_rect = rotated_img.get_rect(center = (p.x,p.y))
-
-        screen.blit(rotated_img, (round(p.x), round(p.y)))
 
 def create_football():
     vs = [(-30, 0), (0, 3), (10, 0), (0, -3)]
@@ -191,8 +170,6 @@ def main():
 
             flying_football.angular_velocity *= .5
 
-        #draw_football(football_shapes, screen)
-
         ### Clear screen
         screen.fill(pygame.Color("skyblue"))
 
@@ -230,25 +207,11 @@ def main():
         #pygame.display.flip()
 
         for f in football_shapes:
-            p = f.body.position
-            p = Vec2d(p.x, flipy(p.y))
-
-            #angle_degrees = math.degrees(f.body.angle) + 180
-            #rotated_img = pygame.transform.rotate(football_img, angle_degrees)
-
-            #offset = Vec2d(*rotated_img.get_size()) / 2
-            #p = p - offset
-            #pos_x = int(f.position.x)
-            #pos_y = int(f.position.y)
-            #pygame.draw.rect(screen,(0,0,0),pygame.Rect(0.0,0.0,10.0,10.0))
-        # football_rect = rotated_img.get_rect(center = (p.x,p.y))
-
-            screen.blit(football_img, (round(p.x), round(p.y)))
-            #pos_x = int(f.body.position.x)
-            #pos_y = int(f.body.position.y)
-            #pygame.draw.circle(screen,(0,0,0),(pos_x,pos_y),27)
-            #coin_rect = football_img.get_rect(center = (pos_x,pos_y))
-            #screen.blit(football_img,coin_rect)
+            pos_x = int(f.body.position.x)
+            pos_y = int(f.body.position.y)
+            pygame.draw.circle(screen,(0,0,0),(pos_x,pos_y),27)
+            coin_rect = football_img.get_rect(center = (pos_x,pos_y))
+            screen.blit(football_img,coin_rect)
         ### Update physics
         fps = 60
         dt = 1.0 / fps
