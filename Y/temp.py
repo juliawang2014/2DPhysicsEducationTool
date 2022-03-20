@@ -1,81 +1,117 @@
-import turtle
-from math import *
+from typing import List
+import sys
+sys.path.append('Julia')
+import globals
 
-win = turtle.Screen()
-win.title("SHM vertical spring")
-win.setup(700,800)
-win.bgcolor('cyan')
-win.tracer(0)
+# Library imports
+import pygame
+import libraries.shapes as shapes
+
+# pymunk imports
+import pymunk
+import pymunk.pygame_util
+
+class BouncyBalls(object):
+    """
+    This class implements a simple scene in which there is a static platform (made up of a couple of lines)
+    that don't move. Balls appear spawn on mouse click and drop onto the platform. They bounce around.
+    """
+
+    def __init__(self) -> None:
+        # Space
+        self._space = globals.space
+        self._space.gravity = globals.gravity
+
+        # Physics
+        # Time step
+        self._dt = 1.0 / 60.0
+        # Number of physics steps per screen frame
+        self._physics_steps_per_frame = 1
+
+        # pygame
+        pygame.init()
+        self._screen = globals.screen
+        self._clock = globals.clock
+
+        self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
+
+        # Static barrier walls (lines) that the balls bounce off of
+        self._add_static_scenery()
+
+        # Balls that exist in the world
+        self._balls: List[pymunk.Circle] = []
+
+        # Execution control
+        self._running = True
+
+    def run(self) -> None:
+        """
+        The main loop of the game.
+        :return: None
+        """
+        # Main loop
+        while self._running:
+            # Progress time forward
+            for _ in range(self._physics_steps_per_frame):
+                self._space.step(self._dt)
+
+            self._process_events()
+            self._clear_screen()
+            self._draw_objects()
+            pygame.display.flip()
+            # Delay fixed time between frames
+            self._clock.tick(50)
+            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
+
+    def _add_static_scenery(self) -> None:
+        """
+        Create the static bodies.
+        :return: None
+        """
+        window_w = pygame.display.Info().current_w
+        window_h = pygame.display.Info().current_h
+        static_body = self._space.static_body
+        static_lines = [
+            pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
+            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
+        ]
+        for line in static_lines:
+            line.elasticity = 0.95
+            line.friction = 0.9
+        self._space.add(*static_lines)
+
+    def _process_events(self) -> None:
+        """
+        Handle game and events like keyboard input. Call once per frame only.
+        :return: None
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self._running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self._running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                pygame.image.save(self._screen, "bouncing_balls.png")
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                shapes.create_ball(self, pygame.mouse.get_pos())
+
+    def _clear_screen(self) -> None:
+        """
+        Clears the screen.
+        :return: None
+        """
+        self._screen.fill(globals.background_color)
+
+    def _draw_objects(self) -> None:
+        """
+        Draw the objects.
+        :return: None
+        """
+        self._space.debug_draw(self._draw_options)
 
 
-spring = turtle.Turtle()
-spring.shape('square')
-spring.color('red')
-spring.up()
-spring.goto(0,300)
-spring.down()
-
-m = turtle.Turtle()
-m.shape('square')
-m.color('black')
-m.up()
-m.goto(300,330)
-m.down()
-m.pensize(10)
-m.goto(-300,330)
-m.up()
-
-pen = turtle.Pen()
-pen.color('red')
-pen.ht()
-pen.up()
-pen.goto(0,-300)
-
-def spring_length(number,stretch):
-    spring.clear()
-    for i in range(number):
-        angle = 0
-        while angle<=2*pi:
-            angle = angle+0.01
-            x = 0.2*cos(angle)
-            y = 0.2*sin(angle)
-            spring.goto(spring.xcor()+x,spring.ycor()+y-stretch)
-    spring.goto(spring.xcor(),spring.ycor()-20)
-    
-
-length = 30  # Spring length at equilibrium
-
-spring_length(15,length/1000)
-m.goto(spring.xcor(),spring.ycor())
-m.down()
-m.pensize(1)
-m.color('white')
-m.goto(-200,m.ycor())
-m.goto(200,m.ycor())
-m.shapesize(0.1,1)
-m.color('blue')
-spring.up()
-spring.goto(0,300)
-spring.down()
-
-omega = 2
-t = 0
-
-while True:
-
-    t += 0.1
-    y = 10*cos(omega*t+pi)
-    v = -10*omega*sin(omega*t+pi)
-    a = -10*omega*omega*cos(omega*t+pi)
-    
-    length = 30 - y
-    
-    s = length/1000
-    spring_length(15,s)
-    m.goto(m.xcor(),spring.ycor())
-    pen.write("y = {:.2f}\tVy = {:.2f}\tAy = {:.2f}".format(y,v,a),align='center',font=('Courier',15,'normal'))
-    win.update()
-    spring.clear()
-    spring.goto(0,300)
-    pen.clear()
-    
+if __name__ == "__main__":
+    game = BouncyBalls()
+    game.run()

@@ -1,6 +1,15 @@
+from tkinter.tix import *
 from vpython import *
+import _thread
 
-canvas(height=100, length=1000)
+sphere = None
+
+def vthread():
+    global sphere
+    scene.title = "Sphere in space (3D drag with right mouse button)"
+    scene.autoscale = False
+    
+
 
 def acc():
     dr_right = ball.pos - wall_right.pos
@@ -27,8 +36,10 @@ massball = 1
 mass = massball
 radius = 2.5
 
-scene2 = canvas(title='Mass Spring System', width=400, height=200, center=vector(0,0,0), background=color.white) 
+root = Tk()
+root.title("Mass Spring")
 
+#scene2 = canvas(title='Mass Spring System', width=500, height=250, center=vector(0,0,0), background=color.white) 
 ball = sphere(pos=vector(2,0,0), velocity=vector(0,0,0), radius=radius, mass=massball, color=color.blue)
 
 wall_right = box(pos=vector(length,0,0), size=vector(0.2, 5, 5), color=color.green)
@@ -54,3 +65,7 @@ while t < 100:
     spring_left.axis = ball.pos - wall_left.pos
     ball.trail.append(pos=ball.pos)
     t = t + dt
+
+sphere = _thread.start_new_thread(vthread, ())
+
+root.mainloop()
