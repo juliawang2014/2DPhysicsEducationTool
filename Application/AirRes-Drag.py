@@ -28,12 +28,20 @@ def create_football():
     return football_body, football_shape
 
 
+pivot = []
+gear = []
+
 def stick_football_to_target(space, football_body, target_body, position, flying_footballs):
     pivot_joint = pymunk.PivotJoint(football_body, target_body, position)
+    
     phase = target_body.angle - football_body.angle
     gear_joint = pymunk.GearJoint(football_body, target_body, phase, 1)
     space.add(pivot_joint)
     space.add(gear_joint)
+
+    pivot.append(pivot_joint)
+    gear.append(gear_joint)
+
     try:
         flying_footballs.remove(football_body)
     except:
@@ -106,6 +114,12 @@ def main():
 
     reset_b = False
     def reset():
+        for x in pivot:
+            space.remove(x)
+
+        for x in gear:
+            space.remove(x)
+            
         for c in football_shapes:
             space.remove(c)
             football_shapes.clear()
@@ -117,10 +131,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
-
             if reset_b:
                 reset_b = reset()
-
+                
             if (
                 event.type == pygame.QUIT
                 or event.type == pygame.KEYDOWN
