@@ -83,7 +83,7 @@ def main():
 
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.0002, value_range = (0,.002), manager= manager)
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.002, value_range = (0,.02), manager= manager)
     
    # ui_slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 500), (250, 50)), start_value=25, value_range=(1, 100), manager=manager)
     # this is where the firing of the football is located
@@ -104,8 +104,23 @@ def main():
     handler.data["flying_footballs"] = flying_footballs
     handler.post_solve = post_solve_football_hit
 
+    reset_b = False
+    def reset():
+        for c in football_shapes:
+            space.remove(c)
+            football_shapes.clear()
+            
+
+            return False
+
     while running:
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                reset_b = True
+
+            if reset_b:
+                reset_b = reset()
+
             if (
                 event.type == pygame.QUIT
                 or event.type == pygame.KEYDOWN
@@ -138,8 +153,11 @@ def main():
             manager.process_events(event)
 
 
+
         mouse_position = pymunk.pygame_util.from_pygame(
             Vec2d(*pygame.mouse.get_pos()), screen
+
+            
         )
         cannon_body.angle = (mouse_position - cannon_body.position).angle
         # move the unfired football
