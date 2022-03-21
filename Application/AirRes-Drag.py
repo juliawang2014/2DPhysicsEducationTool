@@ -116,16 +116,16 @@ def main():
     def reset():
         for x in pivot:
             space.remove(x)
-
+        pivot.clear()
         for x in gear:
             space.remove(x)
-            
+        gear.clear()   
         for c in football_shapes:
             space.remove(c)
             football_shapes.clear()
             
 
-            return False
+        return False
 
     while running:
         for event in pygame.event.get():
