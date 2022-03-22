@@ -31,15 +31,15 @@ screen = pygame.display.set_mode((X,Y))
 exit_img = pygame.image.load('img/quit_btn.png').convert_alpha()
 blank_img = pygame.image.load('img/blank.png').convert_alpha()
 atom_img = pygame.image.load('img/atom.png').convert_alpha()
-button1_img = pygame.image.load('img/button1.png').convert_alpha()
-button2_img = pygame.image.load('img/button1.png').convert_alpha()
-button3_img = pygame.image.load('img/button1.png').convert_alpha()
-button4_img = pygame.image.load('img/button1.png').convert_alpha()
+button1_img = pygame.image.load('img/GravityButton.png').convert_alpha()
+button2_img = pygame.image.load('img/PlinkoButton.png').convert_alpha()
+button3_img = pygame.image.load('img/Airresistance.png').convert_alpha()
+button4_img = pygame.image.load('img/SpringsButton.png').convert_alpha()
 button5_img = pygame.image.load('img/button1.png').convert_alpha()
 button6_img = pygame.image.load('img/button1.png').convert_alpha()
 button7_img = pygame.image.load('img/button1.png').convert_alpha()
 button8_img = pygame.image.load('img/button1.png').convert_alpha()
-button9_img = pygame.image.load('img/button1.png').convert_alpha()
+button9_img = pygame.image.load('img/SandboxButton.png').convert_alpha()
 #Set the caption of screen(top left corner words)
 pygame.display.set_caption("2DPhysicsEducationTool")
 #set the color of scene 
@@ -56,15 +56,15 @@ text3 = font2.render('Plinko Example',True,White)
 screen.blit(text1,(300,20))
 screen.blit(text2,(220,60))
 
-button1 = button.Button(85, 125, button1_img, 0.40)
-button2 = button.Button(400, 125, button1_img, 0.40)
-button3 = button.Button(715, 125, button1_img, 0.40)
-button4 = button.Button(85, 250, button1_img, 0.40)
-button5 = button.Button(400, 250, button1_img, 0.40)
-button6 = button.Button(715, 250, button1_img, 0.40)
-button7 = button.Button(85, 375, button1_img, 0.40)
-button8 = button.Button(400, 375, button1_img, 0.40)
-button9 = button.Button(715, 375, button1_img, 0.40)
+button1 = button.Button(85, 125, button1_img, 0.2)
+button2 = button.Button(400, 125, button2_img, 0.2)
+button3 = button.Button(715, 125, button3_img, 0.2)
+button4 = button.Button(85, 250, button4_img, 0.2)
+button5 = button.Button(400, 250, button5_img, 0.43)
+button6 = button.Button(715, 250, button5_img, 0.43)
+button7 = button.Button(85, 375, button5_img, 0.43)
+button8 = button.Button(400, 375, button5_img, 0.43)
+button9 = button.Button(715, 375, button9_img, 0.2)
 atom = button.Button(70,0,atom_img,.3)
 atom1 = button.Button(820,0,atom_img,.3)
 button1.draw(screen)
@@ -95,15 +95,15 @@ while running:
     
 
     if button1.draw(screen) == True:
-        print("Button 1 clicked")
-        os.system('plinko.py')
+        print("Gravity Button Clicked")
+        os.system('gravity.py')
 
     if button2.draw(screen) == True:
-        print("Button 2 clicked")
-        os.system('slider.py')
+        print("Plinko Button clicked")
+        os.system('Plinko.py')
     if button3.draw(screen) == True:
-        print("Button 3 clicked")
-        os.system('rectsAndBalls.py')
+        print("Air Resistance clicked")
+        os.system('AirRes-Drag.py')
     if button4.draw(screen) == True:
         print("Button 4 clicked")
 
@@ -112,6 +112,8 @@ while running:
 
     if button6.draw(screen) == True:
         print("Button 6 clicked")
+        
+        
     
     if button7.draw(screen) == True:
         print("Button 7 clicked")
@@ -120,7 +122,8 @@ while running:
         print("Button 8 clicked")
 
     if button9.draw(screen) == True:
-        print("Button 9 clicked")
+        print("SandBox Button Clicked")
+        os.system('rectsandballs.py')
 
     if exit_button.draw(screen) == True:
         running = False
