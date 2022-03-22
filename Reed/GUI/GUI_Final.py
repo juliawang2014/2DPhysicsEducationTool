@@ -13,7 +13,7 @@ window = pygame.display.set_mode((1000,600))
 backcolor = pygame.Surface((1000,100))
 
 #Create main GUI, reference GUI theme
-guimanager = pygame_gui.UIManager((1000,600),'Reed/GUI/GUI_Theme.json')
+guimanager = pygame_gui.UIManager((1000,200),'Reed/GUI/GUI_Theme.json')
 
 def mainGUI():
     #textboxes and buttons for main gui
@@ -66,7 +66,7 @@ while True:
         if event.type == pygame.QUIT:
             exit()
         
-        guimanager.process_events(event)
+        
 
     guimanager.update(time_delta)
 
