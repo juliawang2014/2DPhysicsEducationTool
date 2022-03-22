@@ -1,15 +1,4 @@
-from tkinter.tix import *
 from vpython import *
-import _thread
-
-sphere = None
-
-def vthread():
-    global sphere
-    scene.title = "Sphere in space (3D drag with right mouse button)"
-    scene.autoscale = False
-    
-
 
 def acc():
     dr_right = ball.pos - wall_right.pos
@@ -36,10 +25,8 @@ massball = 1
 mass = massball
 radius = 2.5
 
-root = Tk()
-root.title("Mass Spring")
+scene2 = canvas(title='Masa con dos sistemas', width=400, height=200, center=vector(0,0,0), background=color.white) 
 
-#scene2 = canvas(title='Mass Spring System', width=500, height=250, center=vector(0,0,0), background=color.white) 
 ball = sphere(pos=vector(2,0,0), velocity=vector(0,0,0), radius=radius, mass=massball, color=color.blue)
 
 wall_right = box(pos=vector(length,0,0), size=vector(0.2, 5, 5), color=color.green)
@@ -47,6 +34,8 @@ wall_left = box(pos=vector(-length,0,0), size=vector(0.2, 5, 5), color=color.gre
 
 spring_right = helix(pos=wall_right.pos, axis=ball.pos-wall_right.pos, constant=1, coils=10, thickness=0.2, radius=1, color=color.red)
 spring_left = helix(pos=wall_left.pos, axis=ball.pos-wall_left.pos, constant=1, coils=10, thickness=0.2, radius=1, color=color.red)
+
+scene2.caption = "Variación de la masa: Variación del radio:"
 
 sl1 = slider(min=0.3, max=10, value=massball, length=220, bind=change_massball, right=15)
 sl2 = slider(min=0.3, max=10, value=radius,   length=220, bind=change_radius,   right=15)
@@ -65,7 +54,3 @@ while t < 100:
     spring_left.axis = ball.pos - wall_left.pos
     ball.trail.append(pos=ball.pos)
     t = t + dt
-
-sphere = _thread.start_new_thread(vthread, ())
-
-root.mainloop()
