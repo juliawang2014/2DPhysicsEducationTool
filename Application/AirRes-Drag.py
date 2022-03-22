@@ -123,7 +123,6 @@ def main():
         for c in football_shapes:
             space.remove(c)
         football_shapes.clear()
-            
 
         return False
 
