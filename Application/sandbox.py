@@ -12,7 +12,6 @@ import pygame_gui
 import pymunk
 import pymunk.pygame_util
 import libraries.shapes as shapes
-import random
 import globals
 
 class Sandbox(object):
@@ -109,13 +108,14 @@ class Sandbox(object):
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+            elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (self._pause_button.process_event(event)):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.on_mouse_press()
+                if (event.pos[1] <= event.pos[0] - 200):
+                    self.on_mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_release()
-        
+
         self.on_mouse_motion()
             
 
@@ -144,37 +144,37 @@ class Sandbox(object):
         text_box = UITextBox(html_text="Text1",relative_rect=pygame.Rect(50, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #first text box
-        text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 2
         text_box = UITextBox(html_text="Text2",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #second text box
-        text_box2 = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._text_box2 = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 3
         text_box = UITextBox(html_text="Text3",relative_rect=pygame.Rect(250, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #third text box
-        text_box3 = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._text_box3 = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 4
         text_box = UITextBox(html_text="Text4",relative_rect=pygame.Rect(350, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #fourth text box
-        text_box4 = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._text_box4 = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 5
         text_box = UITextBox(html_text="Text5",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #second text box
-        text_box5 = UITextEntryLine(relative_rect=pygame.Rect(450,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._text_box5 = UITextEntryLine(relative_rect=pygame.Rect(450,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #Menu Button
-        menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
+        self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 
         #Info Button
-        info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=self._guimanager,object_id='button')
+        self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=self._guimanager,object_id='button')
         
         ### Reed Code -----------------------------------------------------------
 
