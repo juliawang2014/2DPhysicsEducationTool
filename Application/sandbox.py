@@ -13,6 +13,8 @@ import pymunk
 import pymunk.pygame_util
 import libraries.shapes as shapes
 import globals
+import libraries.formulaDisplay as fDisplay
+import libraries.toggleButton as toggleButton
 
 class Sandbox(object):
     def __init__(self) -> None:
@@ -47,12 +49,14 @@ class Sandbox(object):
         self._pause = False
         # GUI
         font = pygame.font.SysFont("Arial", 16)
-        self._guimanager = pygame_gui.UIManager((1200,200),'/themes/GUI_Theme.json')
+        self._guimanager = pygame_gui.UIManager((1200,700),'/themes/GUI_Theme.json')
         self._backcolor = pygame.Surface((1200,100))
+        self.console_text = ""
         self._GUI()
 
         # Mouse interaction
         self.shape_being_dragged = None
+        self.queried_item = None
 
     def run(self) -> None:
         """
@@ -65,7 +69,9 @@ class Sandbox(object):
             if not self._pause:
                 for _ in range(self._physics_steps_per_frame):
                     self._space.step(self._dt)
-
+            if self.queried_item is not None:
+                self.console_text = "Velocity: " + str(fDisplay.display_values(self.queried_item, "velocity"))
+                self.console_output.set_text(self.console_text)
             self._process_events()
             self._clear_screen()
             self._draw_objects()
@@ -108,16 +114,26 @@ class Sandbox(object):
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
-            elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (self._pause_button.process_event(event)):
+            elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pos()[1] >= 100:
                     self.on_mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_release()
+            elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+                self.update_values()
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_query.pressed():
+                self.toggle_query.toggle()
 
         self.on_mouse_motion()
             
+    def update_values(self):
+        if self._gravity_box.get_text() == '':
+            grav_value = 0.0
+        else:
+            grav_value = int(self._gravity_box.get_text())    
+        self._space.gravity = (0.0, grav_value)
 
     def _clear_screen(self) -> None:
         """
@@ -145,7 +161,7 @@ class Sandbox(object):
 
         #first text box
         self._gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
-
+        self._gravity_box.set_allowed_characters('numbers')
         #text 2
         text_box = UITextBox(html_text="Text2",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
@@ -177,12 +193,21 @@ class Sandbox(object):
         self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=self._guimanager,object_id='button')
         
         ### Reed Code -----------------------------------------------------------
+        self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="doneBox")
+
+        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
 
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
 
         if len(shape_list) > 0:
-            self.shape_being_dragged = shape_list[0]
+
+            if self.toggle_query.get_state():
+                self.shape_being_dragged = None
+                self.queried_item = shape_list[0].shape.body
+            else:
+                self.queried_item = None
+                self.shape_being_dragged = shape_list[0]
         else:
             shapes.create_ball(self, pygame.mouse.get_pos())
 
@@ -190,7 +215,7 @@ class Sandbox(object):
         self.shape_being_dragged = None
     
     def on_mouse_motion(self):
-        if self.shape_being_dragged is not None:
+        if self.shape_being_dragged is not None and not self.toggle_query.get_state():
             self.shape_being_dragged.shape.body.position = pygame.mouse.get_pos()
             self.shape_being_dragged.shape.body.velocity = 0, 0
 
