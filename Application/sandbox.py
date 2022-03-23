@@ -16,6 +16,8 @@ import globals
 import libraries.formulaDisplay as fDisplay
 import libraries.toggleButton as toggleButton
 
+GUI_background = pygame.image.load('img/4999GUIbackground.png')
+
 class Sandbox(object):
     def __init__(self) -> None:
         # Space
@@ -49,7 +51,7 @@ class Sandbox(object):
         self._pause = False
         # GUI
         font = pygame.font.SysFont("Arial", 16)
-        self._guimanager = pygame_gui.UIManager((1200,700),'/themes/GUI_Theme.json')
+        self._guimanager = pygame_gui.UIManager((1200,700),'themes/GUI_Theme.json')
         self._backcolor = pygame.Surface((1200,100))
         self.console_text = ""
         self._GUI()
@@ -76,7 +78,7 @@ class Sandbox(object):
             # Delay fixed time between frames
             self._clock.tick(60)
             self._guimanager.update(self._clock.get_fps())
-            self._screen.blit(self._backcolor, (0,0))
+            self._screen.blit(GUI_background, (0,0))
             self._guimanager.draw_ui(self._screen)
             if self.queried_item is not None:
                 r = self.queried_item.radius + 10
@@ -96,10 +98,10 @@ class Sandbox(object):
         window_h = pygame.display.Info().current_h
         static_body = self._space.static_body
         static_lines = [
-            pymunk.Segment(static_body, (0, 100), (window_w, 100), 0.0),
-            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
-            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
-            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
+            pymunk.Segment(static_body, (0, 100), (window_w, 100), 1.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 1.0),
+            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 1.0),
+            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 1.0),
         ]
         for line in static_lines:
             line.elasticity = 0.95
@@ -200,11 +202,11 @@ class Sandbox(object):
         self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=self._guimanager,object_id='button')
         
         ### Reed Code -----------------------------------------------------------
-        self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="doneBox")
+        self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="textb")
 
-        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,100),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
-        self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((1000,150),(200,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager)
-        self.toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=self._guimanager)
+        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((950,100),(250,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager, object_id="toggleButton")
+        self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,150),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager, object_id="toggleButton")
+        self.toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=self._guimanager, object_id="toggleButton")
 
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
