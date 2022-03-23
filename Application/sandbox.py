@@ -130,6 +130,8 @@ class Sandbox(object):
                 self.toggle_query.toggle()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_spawn.pressed():
                 self.toggle_spawn.toggle()
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_kinematic.pressed():
+                self.toggle_kinematic.toggle()
 
         self.on_mouse_motion()
             
@@ -202,7 +204,8 @@ class Sandbox(object):
 
         self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,100),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
         self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((1000,150),(200,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager)
-    
+        self.toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=self._guimanager)
+
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
 
@@ -219,8 +222,14 @@ class Sandbox(object):
                 else:
                     self.queried_item = None
                     self.shape_being_dragged = shape_list[0]
+        #Spawn shapes
         elif self.toggle_spawn.get_state():
-            shapes.create_ball(self, pygame.mouse.get_pos())
+            #Spawn kinematic shapes
+            if self.toggle_kinematic.get_state():
+                shapes.create_ball(self, pygame.mouse.get_pos())
+            #Spawn static shapes
+            else:
+                shapes.create_static_circle(pygame.mouse.get_pos())
 
     def on_mouse_release(self):
         self.shape_being_dragged = None
