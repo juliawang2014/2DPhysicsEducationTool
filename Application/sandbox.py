@@ -69,9 +69,6 @@ class Sandbox(object):
             if not self._pause:
                 for _ in range(self._physics_steps_per_frame):
                     self._space.step(self._dt)
-            if self.queried_item is not None:
-                self.console_text = "Velocity: " + str(fDisplay.display_values(self.queried_item, "velocity"))
-                self.console_output.set_text(self.console_text)
             self._process_events()
             self._clear_screen()
             self._draw_objects()
@@ -81,6 +78,12 @@ class Sandbox(object):
             self._guimanager.update(self._clock.get_fps())
             self._screen.blit(self._backcolor, (0,0))
             self._guimanager.draw_ui(self._screen)
+            if self.queried_item is not None:
+                r = self.queried_item.radius + 10
+                p = pymunk.pygame_util.to_pygame(self.queried_item.body.position, self._screen)
+                pygame.draw.circle(self._screen, pygame.Color("red"), p, int(r), 6)
+                self.console_text = "Velocity: " + str(fDisplay.display_values(self.queried_item.body, "velocity"))
+                self.console_output.set_text(self.console_text)
             pygame.display.update()
             pygame.display.set_caption("Sandbox - fps: " + str(self._clock.get_fps()))
 
@@ -195,8 +198,9 @@ class Sandbox(object):
         ### Reed Code -----------------------------------------------------------
         self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="doneBox")
 
-        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
-
+        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,150),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
+        self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager)
+    
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
 
@@ -204,7 +208,7 @@ class Sandbox(object):
 
             if self.toggle_query.get_state():
                 self.shape_being_dragged = None
-                self.queried_item = shape_list[0].shape.body
+                self.queried_item = shape_list[0].shape
             else:
                 self.queried_item = None
                 self.shape_being_dragged = shape_list[0]
