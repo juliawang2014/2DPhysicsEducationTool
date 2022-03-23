@@ -128,6 +128,8 @@ class Sandbox(object):
                 self.update_values()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_query.pressed():
                 self.toggle_query.toggle()
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_spawn.pressed():
+                self.toggle_spawn.toggle()
 
         self.on_mouse_motion()
             
@@ -198,21 +200,26 @@ class Sandbox(object):
         ### Reed Code -----------------------------------------------------------
         self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="doneBox")
 
-        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,150),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
-        self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((1000,200),(200,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager)
+        self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((1000,100),(200,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager)
+        self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((1000,150),(200,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager)
     
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
 
         if len(shape_list) > 0:
-
-            if self.toggle_query.get_state():
-                self.shape_being_dragged = None
-                self.queried_item = shape_list[0].shape
+            #Destroy
+            if not self.toggle_spawn.get_state():
+                self._space.remove(shape_list[0].shape)
             else:
-                self.queried_item = None
-                self.shape_being_dragged = shape_list[0]
-        else:
+                #Drag shape
+                if self.toggle_query.get_state():
+                    self.shape_being_dragged = None
+                    self.queried_item = shape_list[0].shape
+                #Query shape
+                else:
+                    self.queried_item = None
+                    self.shape_being_dragged = shape_list[0]
+        elif self.toggle_spawn.get_state():
             shapes.create_ball(self, pygame.mouse.get_pos())
 
     def on_mouse_release(self):
