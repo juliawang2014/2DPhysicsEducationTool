@@ -193,7 +193,7 @@ class Sandbox(object):
         #second text box
         self._text_box5 = UITextEntryLine(relative_rect=pygame.Rect(450,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
-        #Menu Button
+        #Pause Button
         self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 
         #Info Button
