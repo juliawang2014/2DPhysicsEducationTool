@@ -111,7 +111,7 @@ class Sandbox(object):
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (self._pause_button.process_event(event)):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if (event.pos[1] <= event.pos[0] - 200):
+                if pygame.mouse.get_pos()[1] >= 100:
                     self.on_mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_release()
@@ -141,10 +141,10 @@ class Sandbox(object):
         pygame.display.set_caption('Physics Tutorial')
         
         #Text 1
-        text_box = UITextBox(html_text="Text1",relative_rect=pygame.Rect(50, 17, 100, 35),manager=self._guimanager,object_id='textb')
+        text_box = UITextBox(html_text="Gravity",relative_rect=pygame.Rect(50, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #first text box
-        self._text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 2
         text_box = UITextBox(html_text="Text2",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
