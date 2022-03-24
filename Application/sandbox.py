@@ -48,6 +48,8 @@ class Sandbox(object):
         # Shapes that exist in the world
         self._balls: List[pymunk.Circle] = []
         self._rects: List[pymunk.Poly] = []
+        self._new_size_x = 25
+        self._new_size_y = 25
         # Execution control
         self._running = True
         self._pause = False
@@ -250,10 +252,10 @@ class Sandbox(object):
         elif self.toggle_spawn.get_state():
             #Spawn kinematic shapes
             if self.toggle_kinematic.get_state():
-                shapes.create_ball(self, pygame.mouse.get_pos(), color=self._custom_color)
+                shapes.create_ball(self, pygame.mouse.get_pos(), color=self._custom_color, radius=self._size_slider_x.get_current_value())
             #Spawn static shapes
             else:
-                shapes.create_static_circle(pygame.mouse.get_pos())
+                shapes.create_static_circle(pygame.mouse.get_pos(), color=self._custom_color, radius=self._size_slider_x.get_current_value())
 
     def on_mouse_release(self):
         self.shape_being_dragged = None
