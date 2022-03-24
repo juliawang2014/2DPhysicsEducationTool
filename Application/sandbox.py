@@ -3,7 +3,6 @@
 import pygame_gui
 from pygame_gui.elements import UITextEntryLine
 from pygame_gui.elements import UITextBox
-from pygame_gui.elements import UIDropDownMenu
 from pygame_gui.elements import UIHorizontalSlider
 from pygame_gui.windows import UIColourPickerDialog
 # Reed Code
@@ -53,7 +52,7 @@ class Sandbox(object):
         self._running = True
         self._pause = False
         # GUI
-        font = pygame.font.SysFont("Arial", 16)
+        self._font = pygame.font.SysFont("Arial", 16)
         self._guimanager = pygame_gui.UIManager((1200,700),'themes/GUI_Theme.json')
         self._backcolor = pygame.Surface((1200,100))
         self.console_text = ""
@@ -84,6 +83,9 @@ class Sandbox(object):
             self._clock.tick(60)
             self._guimanager.update(self._clock.get_fps())
             self._screen.blit(GUI_background, (0,0))
+            self._screen.blit(source=self._font.render("Width", True, pygame.Color("White")), dest=(575, 37))
+            self._screen.blit(source=self._font.render("Height", True, pygame.Color("White")), dest=(575, 70))
+            self._screen.blit(source=self._font.render("Size sliders", True, pygame.Color("White")), dest=(715, 17))
             self._guimanager.draw_ui(self._screen)
             if self.queried_item is not None:
                 r = self.queried_item.radius + 10
@@ -211,8 +213,10 @@ class Sandbox(object):
         self._color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='toggleButton')
 
         #second text box
-        #self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
+        self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
 
+        self._size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
+        self._size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
         #Pause Button
         self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 
