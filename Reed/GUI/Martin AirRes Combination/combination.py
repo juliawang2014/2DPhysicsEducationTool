@@ -77,7 +77,7 @@ def main():
 
     ### Reed Code -------------------------------
     backcolor = pygame.Surface((1200,100))
-    guimanager = pygame_gui.UIManager((1200,200),'/Users/reedsikorski/Documents/GitHub/2DPhysicsEducationTool/Reed/GUI/Martin AirRes Combination/GUI_theme.json')
+    guimanager = pygame_gui.UIManager((1200,200),'Reed/GUI/Martin AirRes Combination/GUI_theme.json')
 
     #textboxes and buttons for main gui
     backcolor.fill(pygame.Color('#1d1135'))
