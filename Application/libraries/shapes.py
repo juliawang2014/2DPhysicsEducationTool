@@ -2,7 +2,7 @@ import pygame
 import globals
 import pymunk
 
-def create_ball(obj, point, mass=10, radius=25, elasticity=0.95, friction=0.9) -> None:
+def create_ball(obj, point, mass=10, radius=25, elasticity=0.95, friction=0.9, color=pygame.Color("Black")) -> None:
     """
     Create a ball.
     :return:
@@ -13,6 +13,7 @@ def create_ball(obj, point, mass=10, radius=25, elasticity=0.95, friction=0.9) -
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.elasticity = elasticity
     shape.friction = friction
+    shape.color = color
     globals.space.add(body, shape)
     obj._balls.append(shape)
 

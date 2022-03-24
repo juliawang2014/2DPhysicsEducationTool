@@ -3,6 +3,9 @@
 import pygame_gui
 from pygame_gui.elements import UITextEntryLine
 from pygame_gui.elements import UITextBox
+from pygame_gui.elements import UIDropDownMenu
+from pygame_gui.elements import UIHorizontalSlider
+from pygame_gui.windows import UIColourPickerDialog
 # Reed Code
 
 from typing import List
@@ -55,6 +58,8 @@ class Sandbox(object):
         self._backcolor = pygame.Surface((1200,100))
         self.console_text = ""
         self._GUI()
+        self._custom_color = pygame.Color(0,0,0)
+        self._color_opened = False
 
         # Mouse interaction
         self.shape_being_dragged = None
@@ -134,6 +139,20 @@ class Sandbox(object):
                 self.toggle_spawn.toggle()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_kinematic.pressed():
                 self.toggle_kinematic.toggle()
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_button.check_pressed():
+                if not self._color_opened:
+                    self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
+                if self._color_choice.visible == 0:
+                    self._color_choice.show()
+                    self._color_opened = True
+                else:
+                    self._color_choice.hide()
+                    self._color_opened = False
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_choice.ok_button.check_pressed():
+                self._custom_color = self._color_choice.current_colour
+                self._color_opened = False
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_choice.cancel_button.check_pressed():
+                self._color_opened = False
 
         self.on_mouse_motion()
             
@@ -163,7 +182,6 @@ class Sandbox(object):
 
         #textboxes and buttons for main gui
         self._backcolor.fill(pygame.Color('#1d1135'))
-        pygame.display.set_caption('Physics Tutorial')
         
         #Text 1
         text_box = UITextBox(html_text="Gravity",relative_rect=pygame.Rect(50, 17, 100, 35),manager=self._guimanager,object_id='textb')
@@ -172,28 +190,28 @@ class Sandbox(object):
         self._gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
         self._gravity_box.set_allowed_characters('numbers')
         #text 2
-        text_box = UITextBox(html_text="Text2",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
+        text_box = UITextBox(html_text="Mass",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #second text box
-        self._text_box2 = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._mass_box = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 3
-        text_box = UITextBox(html_text="Text3",relative_rect=pygame.Rect(250, 17, 100, 35),manager=self._guimanager,object_id='textb')
+        text_box = UITextBox(html_text="Elasticity",relative_rect=pygame.Rect(250, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #third text box
-        self._text_box3 = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._elas_box = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 4
-        text_box = UITextBox(html_text="Text4",relative_rect=pygame.Rect(350, 17, 100, 35),manager=self._guimanager,object_id='textb')
+        text_box = UITextBox(html_text="Friction",relative_rect=pygame.Rect(350, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #fourth text box
-        self._text_box4 = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        self._friction_box = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=self._guimanager,object_id='entryb')
 
         #text 5
-        text_box = UITextBox(html_text="Text5",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='textb')
+        self._color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='toggleButton')
 
         #second text box
-        self._text_box5 = UITextEntryLine(relative_rect=pygame.Rect(450,50, 100, 35),manager=self._guimanager,object_id='entryb')
+        #self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
 
         #Pause Button
         self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
@@ -228,7 +246,7 @@ class Sandbox(object):
         elif self.toggle_spawn.get_state():
             #Spawn kinematic shapes
             if self.toggle_kinematic.get_state():
-                shapes.create_ball(self, pygame.mouse.get_pos())
+                shapes.create_ball(self, pygame.mouse.get_pos(), color=self._custom_color)
             #Spawn static shapes
             else:
                 shapes.create_static_circle(pygame.mouse.get_pos())
