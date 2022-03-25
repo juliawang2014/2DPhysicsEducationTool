@@ -51,23 +51,26 @@ def create_line(obj, point_a, point_b, thickness=5, mass=1.0, friction=1, elasti
     globals.space.add(body, shape)
     obj._rects.append(shape)
 
-def create_static_rect(point, size_x=10, size_y=10):
+def create_static_rect(point, size_x=10, size_y=10, color=pygame.Color("Black")):
     body = pymunk.Body(body_type=pymunk.Body.STATIC)
     body.position = point
     r = pymunk.Poly.create_box(body, (size_x, size_y))
+    r.color = color
     globals.space.add(body, r)
 
-def create_static_circle(point, radius=25):
+def create_static_circle(point, radius=25, color=pygame.Color("Black")):
     body = pymunk.Body(body_type=pymunk.Body.STATIC)
     body.position = point
     c = pymunk.Circle(body, radius)
+    c.color = color
     globals.space.add(body, c)
 
-def create_static_triangle(point, size_x=20, size_y=20):
+def create_static_triangle(point, size_x=20, size_y=20, color=pygame.Color("Black")):
     body = pymunk.Body(body_type=pymunk.Body.STATIC)
     body.position = point
     space = globals.space
     t = pymunk.Poly(body, [(-size_x, -size_y), (size_x, -size_y), (0,size_x)])
+    t.color = color
     space.add(body, t)
 
 def create_static_line(point_a, point_b, thickness=5):

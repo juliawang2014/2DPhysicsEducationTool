@@ -60,7 +60,13 @@ class Sandbox(object):
         self._custom_color = pygame.Color(0,0,0)
         self._color_opened = False
         self._shape_selected = "Circle"
-
+        self._point_a = None
+        self._point_b = None
+        self._mass = 10.0
+        self._friction = 0.9
+        self._elasticity = 0.95
+        self._size_text_x = "Radius"
+        self._size_text_y = ""
         # Mouse interaction
         self.shape_being_dragged = None
         self.queried_item = None
@@ -84,8 +90,8 @@ class Sandbox(object):
             self._clock.tick(60)
             self._guimanager.update(self._clock.get_fps())
             self._screen.blit(GUI_background, (0,0))
-            self._screen.blit(source=self._font.render("Width", True, pygame.Color("White")), dest=(575, 37))
-            self._screen.blit(source=self._font.render("Height", True, pygame.Color("White")), dest=(575, 70))
+            self._screen.blit(source=self._font.render(self._size_text_x, True, pygame.Color("White")), dest=(575, 37))
+            self._screen.blit(source=self._font.render(self._size_text_y, True, pygame.Color("White")), dest=(575, 70))
             self._screen.blit(source=self._font.render("Size sliders", True, pygame.Color("White")), dest=(715, 17))
             self._guimanager.draw_ui(self._screen)
             if self.queried_item is not None:
@@ -158,21 +164,50 @@ class Sandbox(object):
                 self._color_opened = False
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._circle_button.check_pressed():
                 self._shape_selected = "Circle"
+                self._size_text_x = "Radius"
+                self._size_text_y = ""
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._square_button.check_pressed():
                 self._shape_selected = "Square"
+                self._size_text_x = "Width"
+                self._size_text_y = "Height"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._tri_button.check_pressed():
                 self._shape_selected = "Triangle"
+                self._size_text_x = "Width"
+                self._size_text_y = "Height"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._line_button.check_pressed():
                 self._shape_selected = "Line"
+                self._size_text_x = ""
+                self._size_text_y = ""
 
         self.on_mouse_motion()
             
     def update_values(self):
-        if self._gravity_box.get_text() == '':
+        grav = self._gravity_box.get_text()
+        elas = self._elas_box.get_text()
+        fric = self._friction_box.get_text()
+        mass = self._mass_box.get_text()
+
+        if grav == '':
             grav_value = 0.0
         else:
-            grav_value = int(self._gravity_box.get_text())    
+            grav_value = int(grav)
+
         self._space.gravity = (0.0, grav_value)
+
+        if elas == '':
+            self._elasticity = 0.0
+        else:
+            self._elasticity = int(elas)
+
+        if fric == '':
+            self._friction = 0.0
+        else:
+            self._friction = int(fric)
+        
+        if mass == '':
+            self._mass = 0.0
+        else:
+            self._mass = int(mass)
 
     def _clear_screen(self) -> None:
         """
@@ -247,6 +282,9 @@ class Sandbox(object):
 
     def on_mouse_press(self):
         shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+        self._point_a = pygame.mouse.get_pos()
+        size_x = self._size_slider_x.get_current_value()
+        size_y = self._size_slider_y.get_current_value()
 
         if len(shape_list) > 0:
             #Destroy
@@ -265,10 +303,45 @@ class Sandbox(object):
         elif self.toggle_spawn.get_state():
             #Spawn kinematic shapes
             if self.toggle_kinematic.get_state():
-                shapes.create_ball(self, pygame.mouse.get_pos(), color=self._custom_color, radius=self._size_slider_x.get_current_value())
+                if self._shape_selected == "Circle":
+                    shapes.create_ball(self, self._point_a, 
+                        color=self._custom_color, 
+                        radius=size_x,
+                        elasticity=self._elasticity,
+                        friction=self._friction,
+                        mass=self._mass)
+                elif self._shape_selected == "Square":
+                    shapes.create_rectangle(self, self._point_a, 
+                    size_x=size_x, 
+                    size_y=size_y,
+                    elasticity=self._elasticity,
+                    friction=self._friction,
+                    mass=self._mass,
+                    color=self._custom_color)
+                elif self._shape_selected == "Triangle":
+                    shapes.create_triangle(self, self._point_a, 
+                    size_x=size_x, 
+                    size_y=size_y,
+                    elasticity=self._elasticity,
+                    friction=self._friction,
+                    mass=self._mass,
+                    color=self._custom_color)
             #Spawn static shapes
             else:
-                shapes.create_static_circle(pygame.mouse.get_pos(), color=self._custom_color, radius=self._size_slider_x.get_current_value())
+                if self._shape_selected == "Circle":
+                    shapes.create_static_circle(self._point_a, 
+                        color=self._custom_color, 
+                        radius=size_x)
+                elif self._shape_selected == "Square":
+                    shapes.create_static_rect(self._point_a,
+                        color=self._custom_color,
+                        size_x=size_x,
+                        size_y=size_y)
+                elif self._shape_selected == "Triangle":
+                    shapes.create_static_triangle(self._point_a,
+                        color=self._custom_color,
+                        size_x=size_x,
+                        size_y=size_y)
 
     def on_mouse_release(self):
         self.shape_being_dragged = None
