@@ -101,5 +101,145 @@
             "text_horiz_alignment": "center",
             "text_vert_alignment": "center"
         }
+    },
+    "circleButton":
+    {
+        "colours":
+        {
+            "dark_bg": "#1d1135",
+            "selected_bg": "#0c164f",
+            "selected_text": "#0c164f",
+            "normal_text": "#FFFFFF"
+            
+        },
+        "font":
+        {
+            "name": "arial",
+            "size": "15",
+            "regular_resource": {
+                "package": "fonts",
+                "resource": "arial.ttf"  
+            }
+        },
+        "images":
+        {
+            "normal_image":{
+                "package": "img",
+                "resource": "Circle.png",
+                "sub_surface_rect": "0,0,79,79"
+            }
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "5",
+            "text_horiz_alignment": "center",
+            "text_vert_alignment": "center"
+        }
+    },
+    "squareButton":
+    {
+        "colours":
+        {
+            "dark_bg": "#1d1135",
+            "selected_bg": "#0c164f",
+            "selected_text": "#0c164f",
+            "normal_text": "#FFFFFF"
+            
+        },
+        "font":
+        {
+            "name": "arial",
+            "size": "15",
+            "regular_resource": {
+                "package": "fonts",
+                "resource": "arial.ttf"  
+            }
+        },
+        "images":
+        {
+            "normal_image":{
+                "package": "img",
+                "resource": "Square.png",
+                "sub_surface_rect": "0,0,76,76"
+            }
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "5",
+            "text_horiz_alignment": "center",
+            "text_vert_alignment": "center"
+        }
+    },
+    "triButton":
+    {
+        "colours":
+        {
+            "dark_bg": "#1d1135",
+            "selected_bg": "#0c164f",
+            "selected_text": "#0c164f",
+            "normal_text": "#FFFFFF"
+            
+        },
+        "font":
+        {
+            "name": "arial",
+            "size": "15",
+            "regular_resource": {
+                "package": "fonts",
+                "resource": "arial.ttf"  
+            }
+        },
+        "images":
+        {
+            "normal_image":{
+                "package": "img",
+                "resource": "Triangle.png",
+                "sub_surface_rect": "0,0,70,60"
+            }
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "5",
+            "text_horiz_alignment": "center",
+            "text_vert_alignment": "center"
+        }
+    },
+    "lineButton":
+    {
+        "colours":
+        {
+            "dark_bg": "#1d1135",
+            "selected_bg": "#0c164f",
+            "selected_text": "#0c164f",
+            "normal_text": "#FFFFFF"
+            
+        },
+        "font":
+        {
+            "name": "arial",
+            "size": "15",
+            "regular_resource": {
+                "package": "fonts",
+                "resource": "arial.ttf"  
+            }
+        },
+        "images":
+        {
+            "normal_image":{
+                "package": "img",
+                "resource": "Line.png",
+                "sub_surface_rect": "0,0,78,78"
+            }
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "5",
+            "text_horiz_alignment": "center",
+            "text_vert_alignment": "center"
+        }
     }
 }

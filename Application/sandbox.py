@@ -48,8 +48,6 @@ class Sandbox(object):
         # Shapes that exist in the world
         self._balls: List[pymunk.Circle] = []
         self._rects: List[pymunk.Poly] = []
-        self._new_size_x = 25
-        self._new_size_y = 25
         # Execution control
         self._running = True
         self._pause = False
@@ -61,6 +59,7 @@ class Sandbox(object):
         self._GUI()
         self._custom_color = pygame.Color(0,0,0)
         self._color_opened = False
+        self._shape_selected = "Circle"
 
         # Mouse interaction
         self.shape_being_dragged = None
@@ -107,10 +106,10 @@ class Sandbox(object):
         window_h = pygame.display.Info().current_h
         static_body = self._space.static_body
         static_lines = [
-            pymunk.Segment(static_body, (0, 100), (window_w, 100), 1.0),
-            pymunk.Segment(static_body, (0, 0), (0, window_h), 1.0),
-            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 1.0),
-            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 1.0),
+            pymunk.Segment(static_body, (0, 100), (window_w, 100), 0.0),
+            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
+            pymunk.Segment(static_body, (window_w-250, 0), (window_w-250, window_h), 0.0),
+            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
         ]
         for line in static_lines:
             line.elasticity = 0.95
@@ -131,7 +130,7 @@ class Sandbox(object):
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pos()[1] >= 100:
+                if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                     self.on_mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_release()
@@ -157,6 +156,14 @@ class Sandbox(object):
                 self._color_opened = False
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_choice.cancel_button.check_pressed():
                 self._color_opened = False
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._circle_button.check_pressed():
+                self._shape_selected = "Circle"
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._square_button.check_pressed():
+                self._shape_selected = "Square"
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._tri_button.check_pressed():
+                self._shape_selected = "Triangle"
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._line_button.check_pressed():
+                self._shape_selected = "Line"
 
         self.on_mouse_motion()
             
@@ -219,6 +226,12 @@ class Sandbox(object):
 
         self._size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
         self._size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
+
+        #Shapes buttons
+        self._circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 250), (100, 100)),text='',manager=self._guimanager,object_id='circleButton')
+        self._square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 250), (100, 100)),text='',manager=self._guimanager,object_id='squareButton')
+        self._tri_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 350), (100, 100)),text='',manager=self._guimanager,object_id='triButton')
+        self._line_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 350), (100, 100)),text='',manager=self._guimanager,object_id='lineButton')
         #Pause Button
         self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 

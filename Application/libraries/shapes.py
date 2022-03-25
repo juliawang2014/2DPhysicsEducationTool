@@ -17,23 +17,37 @@ def create_ball(obj, point, mass=10, radius=25, elasticity=0.95, friction=0.9, c
     globals.space.add(body, shape)
     obj._balls.append(shape)
 
-def create_rectangle(obj, point, size_x=10, size_y=10, mass=1.0, friction=1):
+def create_rectangle(obj, point, size_x=10, size_y=10, mass=1.0, friction=1, elasticity=0.95, color=pygame.Color("Black")):
     points = [(-size_x, -size_y), (-size_x, size_y), (size_x, size_y), (size_x, -size_y)]
     moment = pymunk.moment_for_poly(mass, points, (0, 0))
     body = pymunk.Body(mass, moment)
     body.position = point
     shape = pymunk.Poly(body, points)
+    shape.elasticity = elasticity
     shape.friction = friction
+    shape.color = color
     globals.space.add(body, shape)
     obj._rects.append(shape)
 
-def create_triangle (obj, point, size_x=20, size_y=20, mass=1.0, friction=1):
+def create_triangle (obj, point, size_x=20, size_y=20, mass=1.0, friction=1, elasticity=0.95, color=pygame.Color("Black")):
     points = [(-size_x, -size_y), (size_x, -size_y), (0,size_x)]
     moment = pymunk.moment_for_poly(mass, points, (0,0))
     body = pymunk.Body(mass, moment)
     body.position = point
     shape = pymunk.Poly(body, points)
+    shape.elasticity = elasticity
     shape.friction = friction
+    shape.color = color
+    globals.space.add(body, shape)
+    obj._rects.append(shape)
+
+def create_line(obj, point_a, point_b, thickness=5, mass=1.0, friction=1, elasticity=0.95, color=pygame.Color("Black")):
+    moment = pymunk.moment_for_segment(mass, point_a, point_b, thickness)
+    body = pymunk.Body(mass, moment)
+    shape = pymunk.Segment(body, point_a, point_b, thickness)
+    shape.elasticity = elasticity
+    shape.friction = friction
+    shape.color = color
     globals.space.add(body, shape)
     obj._rects.append(shape)
 
@@ -55,3 +69,8 @@ def create_static_triangle(point, size_x=20, size_y=20):
     space = globals.space
     t = pymunk.Poly(body, [(-size_x, -size_y), (size_x, -size_y), (0,size_x)])
     space.add(body, t)
+
+def create_static_line(point_a, point_b, thickness=5):
+    body = pymunk.Body(body_type=pymunk.Body.STATIC)
+    l = pymunk.Segment(body, point_a, point_b, thickness)
+    globals.space.add(body, l)
