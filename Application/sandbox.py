@@ -56,10 +56,10 @@ class Sandbox(object):
         self._guimanager = pygame_gui.UIManager((1200,700),'themes/GUI_Theme.json')
         self._backcolor = pygame.Surface((1200,100))
         self.console_text = ""
-        self._GUI()
         self._custom_color = pygame.Color(0,0,0)
         self._color_opened = False
         self._shape_selected = "Circle"
+        self._line = None
         self._point_a = None
         self._point_b = None
         self._mass = 10.0
@@ -67,9 +67,12 @@ class Sandbox(object):
         self._elasticity = 0.95
         self._size_text_x = "Radius"
         self._size_text_y = ""
+        self._GUI()
         # Mouse interaction
         self.shape_being_dragged = None
         self.queried_item = None
+        self.rotate_amount = 1.0
+        self._new_angle = 0.0
 
     def run(self) -> None:
         """
@@ -90,8 +93,8 @@ class Sandbox(object):
             self._clock.tick(60)
             self._guimanager.update(self._clock.get_fps())
             self._screen.blit(GUI_background, (0,0))
-            self._screen.blit(source=self._font.render(self._size_text_x, True, pygame.Color("White")), dest=(575, 37))
-            self._screen.blit(source=self._font.render(self._size_text_y, True, pygame.Color("White")), dest=(575, 70))
+            self._screen.blit(source=self._font.render(self._size_text_x, True, pygame.Color("White")), dest=(570, 37))
+            self._screen.blit(source=self._font.render(self._size_text_y, True, pygame.Color("White")), dest=(570, 70))
             self._screen.blit(source=self._font.render("Size sliders", True, pygame.Color("White")), dest=(715, 17))
             self._guimanager.draw_ui(self._screen)
             if self.queried_item is not None:
@@ -136,10 +139,17 @@ class Sandbox(object):
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
+                if event.button == 4:
+                    self.rotate_shape_left()
+                elif event.button == 5:
+                    self.rotate_shape_right()
+                elif pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                     self.on_mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP:
-                self.on_mouse_release()
+                if event.button == 4 or event.button == 5:
+                    pass
+                else:
+                    self.on_mouse_release()
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 self.update_values()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_query.pressed():
@@ -176,38 +186,61 @@ class Sandbox(object):
                 self._size_text_y = "Height"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._line_button.check_pressed():
                 self._shape_selected = "Line"
-                self._size_text_x = ""
+                self._size_text_x = "Thickness"
                 self._size_text_y = ""
 
         self.on_mouse_motion()
             
     def update_values(self):
-        grav = self._gravity_box.get_text()
-        elas = self._elas_box.get_text()
-        fric = self._friction_box.get_text()
-        mass = self._mass_box.get_text()
+        try:
+            num_grav = float(self._gravity_box.get_text())
+        except:
+            grav = ''
+        else:
+            grav = num_grav
+
+        try:
+            num_elas = float(self._elas_box.get_text())
+        except:
+            elas = ''
+        else:
+            elas = num_elas
+        
+        try:
+            num_fric = float(self._friction_box.get_text())
+        except:
+            fric = ''
+        else:
+            fric = num_fric
+        
+        try:
+            num_mass = float(self._mass_box.get_text())
+        except:
+            mass = ''
+        else:
+            mass = num_mass
 
         if grav == '':
             grav_value = 0.0
         else:
-            grav_value = int(grav)
-
+            grav_value = float(grav)
+            
         self._space.gravity = (0.0, grav_value)
 
         if elas == '':
             self._elasticity = 0.0
         else:
-            self._elasticity = int(elas)
+            self._elasticity = float(elas)
 
         if fric == '':
             self._friction = 0.0
         else:
-            self._friction = int(fric)
+            self._friction = float(fric)
         
         if mass == '':
-            self._mass = 0.0
+            self._mass = 1.0
         else:
-            self._mass = int(mass)
+            self._mass = float(mass)
 
     def _clear_screen(self) -> None:
         """
@@ -234,25 +267,26 @@ class Sandbox(object):
 
         #first text box
         self._gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=self._guimanager,object_id='entryb')
-        self._gravity_box.set_allowed_characters('numbers')
+        self._gravity_box.set_text("900")
+
         #text 2
         text_box = UITextBox(html_text="Mass",relative_rect=pygame.Rect(150, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #second text box
         self._mass_box = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=self._guimanager,object_id='entryb')
-
+        self._mass_box.set_text("10")
         #text 3
         text_box = UITextBox(html_text="Elasticity",relative_rect=pygame.Rect(250, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #third text box
         self._elas_box = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=self._guimanager,object_id='entryb')
-
+        self._elas_box.set_text("0.95")
         #text 4
         text_box = UITextBox(html_text="Friction",relative_rect=pygame.Rect(350, 17, 100, 35),manager=self._guimanager,object_id='textb')
 
         #fourth text box
         self._friction_box = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=self._guimanager,object_id='entryb')
-
+        self._friction_box.set_text('0.9')
         #text 5
         self._color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='toggleButton')
 
@@ -281,8 +315,10 @@ class Sandbox(object):
         self.toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=self._guimanager, object_id="toggleButton")
 
     def on_mouse_press(self):
-        shape_list = self._space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+        
         self._point_a = pygame.mouse.get_pos()
+        shape_list = self._space.point_query(self._point_a, 1, pymunk.ShapeFilter())
+        
         size_x = self._size_slider_x.get_current_value()
         size_y = self._size_slider_y.get_current_value()
 
@@ -291,11 +327,11 @@ class Sandbox(object):
             if not self.toggle_spawn.get_state():
                 self._space.remove(shape_list[0].shape)
             else:
-                #Drag shape
+                #Query shape
                 if self.toggle_query.get_state():
                     self.shape_being_dragged = None
                     self.queried_item = shape_list[0].shape
-                #Query shape
+                #Drag shape
                 else:
                     self.queried_item = None
                     self.shape_being_dragged = shape_list[0]
@@ -312,20 +348,28 @@ class Sandbox(object):
                         mass=self._mass)
                 elif self._shape_selected == "Square":
                     shapes.create_rectangle(self, self._point_a, 
-                    size_x=size_x, 
-                    size_y=size_y,
-                    elasticity=self._elasticity,
-                    friction=self._friction,
-                    mass=self._mass,
-                    color=self._custom_color)
+                        size_x=size_x, 
+                        size_y=size_y,
+                        elasticity=self._elasticity,
+                        friction=self._friction,
+                        mass=self._mass,
+                        color=self._custom_color)
                 elif self._shape_selected == "Triangle":
                     shapes.create_triangle(self, self._point_a, 
-                    size_x=size_x, 
-                    size_y=size_y,
-                    elasticity=self._elasticity,
-                    friction=self._friction,
-                    mass=self._mass,
-                    color=self._custom_color)
+                        size_x=size_x, 
+                        size_y=size_y,
+                        elasticity=self._elasticity,
+                        friction=self._friction,
+                        mass=self._mass,
+                        color=self._custom_color)
+                if self._shape_selected == "Line":
+                    shapes.create_line(self, point_a=self._point_a,
+                        point_b=self._point_a, 
+                        thickness=size_x,
+                        elasticity=self._elasticity,
+                        friction=self._friction,
+                        mass=self._mass,
+                        color=self._custom_color)
             #Spawn static shapes
             else:
                 if self._shape_selected == "Circle":
@@ -343,13 +387,26 @@ class Sandbox(object):
                         size_x=size_x,
                         size_y=size_y)
 
+    def rotate_shape_left(self):
+        if self.shape_being_dragged is not None:
+            self.shape_being_dragged.shape.body.angle += self.rotate_amount
+            self._new_angle = self.shape_being_dragged.shape.body.angle
+    
+    def rotate_shape_right(self):
+        if self.shape_being_dragged is not None:
+            self.shape_being_dragged.shape.body.angle -= self.rotate_amount
+            self._new_angle = self.shape_being_dragged.shape.body.angle
+
     def on_mouse_release(self):
         self.shape_being_dragged = None
-    
+        self._new_angle = 0.0
+
     def on_mouse_motion(self):
         if self.shape_being_dragged is not None and not self.toggle_query.get_state():
             self.shape_being_dragged.shape.body.position = pygame.mouse.get_pos()
             self.shape_being_dragged.shape.body.velocity = 0, 0
+            if self.shape_being_dragged.shape.body.angle != self._new_angle:
+                self.shape_being_dragged.shape.body.angle = self._new_angle
 
 if __name__ == "__main__":
     game = Sandbox()

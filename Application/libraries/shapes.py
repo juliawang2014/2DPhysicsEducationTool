@@ -73,7 +73,8 @@ def create_static_triangle(point, size_x=20, size_y=20, color=pygame.Color("Blac
     t.color = color
     space.add(body, t)
 
-def create_static_line(point_a, point_b, thickness=5):
+def create_static_line(point_a, point_b, thickness=5, color=pygame.Color("Black")):
     body = pymunk.Body(body_type=pymunk.Body.STATIC)
     l = pymunk.Segment(body, point_a, point_b, thickness)
+    l.color = color
     globals.space.add(body, l)
