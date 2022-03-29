@@ -57,7 +57,7 @@ class Sandbox(object):
         self._backcolor = pygame.Surface((1200,100))
         self.console_text = ""
         self._custom_color = pygame.Color(0,0,0)
-        self._color_opened = False
+        self._color_choice = None
         self._shape_selected = "Circle"
         self._line = None
         self._point_a = None
@@ -139,7 +139,9 @@ class Sandbox(object):
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:
+                if self._color_choice is not None:
+                    pass
+                elif event.button == 4:
                     self.rotate_shape_left()
                 elif event.button == 5:
                     self.rotate_shape_right()
@@ -159,19 +161,13 @@ class Sandbox(object):
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self.toggle_kinematic.pressed():
                 self.toggle_kinematic.toggle()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_button.check_pressed():
-                if not self._color_opened:
-                    self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
-                if self._color_choice.visible == 0:
-                    self._color_choice.show()
-                    self._color_opened = True
-                else:
-                    self._color_choice.hide()
-                    self._color_opened = False
-            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_choice.ok_button.check_pressed():
+                self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=1)
+                self._color_button.disable()
+            elif event.type == pygame_gui.UI_COLOUR_PICKER_COLOUR_PICKED:
                 self._custom_color = self._color_choice.current_colour
-                self._color_opened = False
-            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._color_choice.cancel_button.check_pressed():
-                self._color_opened = False
+            elif (event.type == pygame_gui.UI_WINDOW_CLOSE and event.ui_element == self._color_choice):
+                self._color_button.enable()
+                self._color_choice = None
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._circle_button.check_pressed():
                 self._shape_selected = "Circle"
                 self._size_text_x = "Radius"
@@ -291,7 +287,7 @@ class Sandbox(object):
         self._color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=self._guimanager,object_id='toggleButton')
 
         #second text box
-        self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
+        #self._color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=self._guimanager,object_id='textb', visible=0)
 
         self._size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
         self._size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=self._guimanager, object_id='button')
