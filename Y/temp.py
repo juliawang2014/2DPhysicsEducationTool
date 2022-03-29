@@ -1,117 +1,49 @@
-from typing import List
-import sys
-sys.path.append('Julia')
-import globals
+import pygame, sys, math
 
-# Library imports
-import pygame
-import libraries.shapes as shapes
+pygame.init()
 
-# pymunk imports
-import pymunk
-import pymunk.pygame_util
+FPS = 60 # frames per second setting
+fpsClock = pygame.time.Clock()
 
-class BouncyBalls(object):
-    """
-    This class implements a simple scene in which there is a static platform (made up of a couple of lines)
-    that don't move. Balls appear spawn on mouse click and drop onto the platform. They bounce around.
-    """
+# set up the window
+screen = pygame.display.set_mode((400, 300), 0, 32)
+pygame.display.set_caption('Projectile Motion')
 
-    def __init__(self) -> None:
-        # Space
-        self._space = globals.space
-        self._space.gravity = globals.gravity
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
-        # Physics
-        # Time step
-        self._dt = 1.0 / 60.0
-        # Number of physics steps per screen frame
-        self._physics_steps_per_frame = 1
+delta_t = 0.01
+m = 1
+g = 9.8
 
-        # pygame
-        pygame.init()
-        self._screen = globals.screen
-        self._clock = globals.clock
+fx = 0
+fy = m * g
 
-        self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
+x = 0
+y = 300
 
-        # Static barrier walls (lines) that the balls bounce off of
-        self._add_static_scenery()
+angle = 50
+theta = math.radians(angle)
 
-        # Balls that exist in the world
-        self._balls: List[pymunk.Circle] = []
+v = 60
+vx = v * math.cos(theta) 
+vy = -v * math.sin(theta)
 
-        # Execution control
-        self._running = True
+while True:
+    screen.fill(BLACK)
 
-    def run(self) -> None:
-        """
-        The main loop of the game.
-        :return: None
-        """
-        # Main loop
-        while self._running:
-            # Progress time forward
-            for _ in range(self._physics_steps_per_frame):
-                self._space.step(self._dt)
+    vx = vx + (fx / m) * delta_t
+    vy = vy + (fy / m) * delta_t
 
-            self._process_events()
-            self._clear_screen()
-            self._draw_objects()
-            pygame.display.flip()
-            # Delay fixed time between frames
-            self._clock.tick(50)
-            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
+    x = x + vx * delta_t
+    y = y + vy * delta_t
 
-    def _add_static_scenery(self) -> None:
-        """
-        Create the static bodies.
-        :return: None
-        """
-        window_w = pygame.display.Info().current_w
-        window_h = pygame.display.Info().current_h
-        static_body = self._space.static_body
-        static_lines = [
-            pymunk.Segment(static_body, (0, 0), (window_w, 0), 0.0),
-            pymunk.Segment(static_body, (0, 0), (0, window_h), 0.0),
-            pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 0.0),
-            pymunk.Segment(static_body, (0, window_h), (window_w, window_h), 0.0),
-        ]
-        for line in static_lines:
-            line.elasticity = 0.95
-            line.friction = 0.9
-        self._space.add(*static_lines)
+    pygame.draw.circle(screen, WHITE, (int(x), int(y)), 5)
 
-    def _process_events(self) -> None:
-        """
-        Handle game and events like keyboard input. Call once per frame only.
-        :return: None
-        """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self._running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self._running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                pygame.image.save(self._screen, "bouncing_balls.png")
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                shapes.create_ball(self, pygame.mouse.get_pos())
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-    def _clear_screen(self) -> None:
-        """
-        Clears the screen.
-        :return: None
-        """
-        self._screen.fill(globals.background_color)
-
-    def _draw_objects(self) -> None:
-        """
-        Draw the objects.
-        :return: None
-        """
-        self._space.debug_draw(self._draw_options)
-
-
-if __name__ == "__main__":
-    game = BouncyBalls()
-    game.run()
+    pygame.display.update()
+    fpsClock.tick(FPS)
