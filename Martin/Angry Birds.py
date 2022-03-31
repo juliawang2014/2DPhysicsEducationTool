@@ -31,7 +31,19 @@ def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None
     shape.friction = friction
     return body,shape
 
-football_img = pygame.image.load('img/football.png')
+def create_rectangle(point, size_x=25, size_y=25, mass=10.0, friction=100):
+    points = [(-size_x, -size_y), (-size_x, size_y), (size_x, size_y), (size_x, -size_y)]
+    moment = pymunk.moment_for_poly(mass, points, (0, 0))
+    body = pymunk.Body(mass, moment)
+    body.position = point
+    shape = pymunk.Poly(body, points)
+    shape.friction = friction
+    return body, shape
+
+   
+
+  
+football_img = pygame.image.load('img/Bird.png')
 
 def create_football():
     vs = [(-30, 0), (0, 3), (10, 0), (0, -3)]
@@ -40,7 +52,7 @@ def create_football():
     football_shape = pymunk.Poly(football_body, vs)
     football_shape.friction = 0.5
     football_shape.collision_type = 1
-    football_shape.density = 0.1
+    football_shape.density = 0.08
 
     
     
@@ -126,6 +138,7 @@ def main():
 
     flying_footballs: List[pymunk.Body] = []
     football_shapes: List[pymunk.Shape] = []
+    coins: List[pymunk.Shape] = []
     football_shapes.append(football_shape)
     handler = space.add_collision_handler(0, 1)
     handler.data["flying_footballs"] = flying_footballs
@@ -144,7 +157,7 @@ def main():
         football_shapes.clear()
 
         return False
-
+    
     while running:
         
         for event in pygame.event.get():
@@ -156,8 +169,12 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 state = event.button
                 if state == 3:
-                    body, shape = create_ball(pygame.mouse.get_pos())
+                    body, shape = create_rectangle(pygame.mouse.get_pos())
                     space.add(body,shape)
+                if state == 2:
+                   body, shape = create_ball(pygame.mouse.get_pos())
+                   space.add(body,shape) 
+
                     
                 
             if (
@@ -282,6 +299,8 @@ def main():
             pygame.draw.circle(screen,(0,0,0),(pos_x,pos_y),27)
             coin_rect = football_img.get_rect(center = (pos_x,pos_y))
             screen.blit(football_img,coin_rect)
+        
+    
         ### Update physics
         fps = 60
         dt = 1.0 / fps
