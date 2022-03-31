@@ -230,7 +230,7 @@
         {
             "normal_image":{
                 "package": "img",
-                "resource": "Line.png",
+                "resource": "Attach.png",
                 "sub_surface_rect": "0,0,78,78"
             }
         },

@@ -59,7 +59,7 @@ class Sandbox(object):
         self._custom_color = pygame.Color(0,0,0)
         self._color_choice = None
         self._shape_selected = "Circle"
-        self._line = None
+        self._attachment_points = []
         self._point_a = None
         self._point_b = None
         self._mass = 10.0
@@ -101,7 +101,7 @@ class Sandbox(object):
                 r = self.queried_item.radius + 10
                 p = pymunk.pygame_util.to_pygame(self.queried_item.body.position, self._screen)
                 pygame.draw.circle(self._screen, pygame.Color("red"), p, int(r), 6)
-                self.console_text = "Velocity: " + str(fDisplay.display_values(self.queried_item.body, "velocity"))
+                self.console_text = "Velocity: {0} Mass: {1}".format(str(fDisplay.display_values(self.queried_item.body, "velocity")), str(fDisplay.display_values(self.queried_item.body, "mass")))
                 self.console_output.set_text(self.console_text)
             pygame.display.update()
             pygame.display.set_caption("Sandbox - fps: " + str(self._clock.get_fps()))
@@ -181,8 +181,8 @@ class Sandbox(object):
                 self._size_text_x = "Width"
                 self._size_text_y = "Height"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._line_button.check_pressed():
-                self._shape_selected = "Line"
-                self._size_text_x = "Thickness"
+                self._shape_selected = "Attach"
+                self._size_text_x = ""
                 self._size_text_y = ""
 
         self.on_mouse_motion()
@@ -319,8 +319,17 @@ class Sandbox(object):
         size_y = self._size_slider_y.get_current_value()
 
         if len(shape_list) > 0:
+            if self._shape_selected == "Attach":
+                self._attachment_points.append(shape_list[0])
+                if len(self._attachment_points) == 2:
+                    a = self._attachment_points[0]
+                    b = self._attachment_points[1]
+                    if a != b:
+                        joint = pymunk.PinJoint(a.shape.body, b.shape.body)
+                        self._space.add(joint)
+                    self._attachment_points.clear()
             #Destroy
-            if not self.toggle_spawn.get_state():
+            elif not self.toggle_spawn.get_state():
                 self._space.remove(shape_list[0].shape)
             else:
                 #Query shape
@@ -354,14 +363,6 @@ class Sandbox(object):
                     shapes.create_triangle(self, self._point_a, 
                         size_x=size_x, 
                         size_y=size_y,
-                        elasticity=self._elasticity,
-                        friction=self._friction,
-                        mass=self._mass,
-                        color=self._custom_color)
-                if self._shape_selected == "Line":
-                    shapes.create_line(self, point_a=self._point_a,
-                        point_b=self._point_a, 
-                        thickness=size_x,
                         elasticity=self._elasticity,
                         friction=self._friction,
                         mass=self._mass,
