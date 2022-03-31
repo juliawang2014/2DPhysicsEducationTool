@@ -1,6 +1,6 @@
-"""Football can be launched into the air and will stick where they land, the user will be able to see 
-how far the football has traveled and can change the air resistance to see how it effects the football 
-and its distance. 
+""" A bird can be launched into the air and will stick where they land, the user will be able to see 
+how far the bird has traveled and can change the air resistance to see how it effects the bird
+and its distance. And can watch it knock over  
 """
 import sys
 from typing import List
@@ -11,6 +11,25 @@ import pymunk
 import pymunk.pygame_util
 from pymunk.vec2d import Vec2d
 
+import globals
+
+# Library imports
+
+import libraries.shapes as shapes
+import random
+
+def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None:
+    """
+    Create a ball.
+    :return:
+    """
+    inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
+    body = pymunk.Body(mass, inertia)
+    body.position = point
+    shape = pymunk.Circle(body, radius, (0, 0))
+    shape.elasticity = elasticity
+    shape.friction = friction
+    return body,shape
 
 football_img = pygame.image.load('img/football.png')
 
@@ -127,11 +146,19 @@ def main():
         return False
 
     while running:
+        
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
             if reset_b:
                 reset_b = reset()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                state = event.button
+                if state == 3:
+                    body, shape = create_ball(pygame.mouse.get_pos())
+                    space.add(body,shape)
+                    
                 
             if (
                 event.type == pygame.QUIT
@@ -141,7 +168,7 @@ def main():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
-            
+                
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and event.pos[1] < 560:
                 end_time = pygame.time.get_ticks()
 
@@ -162,8 +189,13 @@ def main():
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 print(event.value)
                 drag_constant = event.value
-            manager.process_events(event)
 
+
+            
+                
+
+            manager.process_events(event)
+           
 
 
         mouse_position = pymunk.pygame_util.from_pygame(
