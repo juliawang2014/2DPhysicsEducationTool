@@ -1,49 +1,24 @@
-import pygame, sys, math
+import massspring as m
 
-pygame.init()
+m.acceleration.x = 0
+m.acceleration.y = -m.ge
+m.acceleration.z = -m.ge
 
-FPS = 60 # frames per second setting
-fpsClock = pygame.time.Clock()
+m1 = m.mass(x=0, y=0, z=0, vx=0, vy=0, vz=0, m=20, r=10, q=0, moveable=False,
+            solid=True, bound=True, gravitational=False, resistible=False,
+            electrical=False, conductive=False,
+            color=m.colors.WHITE, visible=True)
+m2 = m.mass(x=-50, y=-50, z=-100, vx=0, vy=0, vz=0, m=200, r=10, q=0,
+            moveable=True, solid=True, bound=True, gravitational=False,
+            resistible=False, electrical=False, conductive=False,
+            color=m.colors.RED, visible=True)
+m3 = m.mass(x=0, y=0, z=-100, vx=0, vy=0, vz=0, m=20, r=10, q=0,
+            moveable=True, solid=True, bound=True, gravitational=False,
+            resistible=False, electrical=False, conductive=False,
+            color=m.colors.GREEN, visible=True)
+s1 = m.spring(k=1000000, nl=0, m1=m1, m2=m2,
+              color=m.colors.CYAN, visible=True)
+s2 = m.spring(k=1000000, nl=0, m1=m2, m2=m3,
+              color=m.colors.MAGENTA, visible=True)
 
-# set up the window
-screen = pygame.display.set_mode((400, 300), 0, 32)
-pygame.display.set_caption('Projectile Motion')
-
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-delta_t = 0.01
-m = 1
-g = 9.8
-
-fx = 0
-fy = m * g
-
-x = 0
-y = 300
-
-angle = 50
-theta = math.radians(angle)
-
-v = 60
-vx = v * math.cos(theta) 
-vy = -v * math.sin(theta)
-
-while True:
-    screen.fill(BLACK)
-
-    vx = vx + (fx / m) * delta_t
-    vy = vy + (fy / m) * delta_t
-
-    x = x + vx * delta_t
-    y = y + vy * delta_t
-
-    pygame.draw.circle(screen, WHITE, (int(x), int(y)), 5)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    pygame.display.update()
-    fpsClock.tick(FPS)
+m.mainloop(10, 0)
