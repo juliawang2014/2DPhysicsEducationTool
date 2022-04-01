@@ -31,7 +31,7 @@ def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None
     shape.friction = friction
     return body,shape
 
-def create_rectangle(point, size_x=25, size_y=25, mass=10.0, friction=100):
+def create_rectangle(point, size_x=25, size_y=25, mass=5.0, friction=1):
     points = [(-size_x, -size_y), (-size_x, size_y), (size_x, size_y), (size_x, -size_y)]
     moment = pymunk.moment_for_poly(mass, points, (0, 0))
     body = pymunk.Body(mass, moment)
@@ -119,7 +119,9 @@ def main():
         pymunk.Segment(space.static_body, (1150, 50), (1150, 550), 5),
         pymunk.Segment(space.static_body, (50, 550), (1150, 550), 5),
     ]
-    
+    for line in static:
+        line.elasticity = 0
+        line.friction = 1
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
     slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.002, value_range = (.0002,.02), manager= manager)
