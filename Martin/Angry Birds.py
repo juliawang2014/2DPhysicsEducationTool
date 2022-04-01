@@ -282,15 +282,7 @@ def main():
             ),
             (5, 650),
         )
-        screen.blit(font.render("10",True,pygame.Color("black"),),(210,560),)
-        screen.blit(font.render("20",True,pygame.Color("black"),),(310,560),)
-        screen.blit(font.render("30",True,pygame.Color("black"),),(410,560),)
-        screen.blit(font.render("40",True,pygame.Color("black"),),(510,560),)
-        screen.blit(font.render("50",True,pygame.Color("black"),),(610,560),)
-        screen.blit(font.render("40",True,pygame.Color("black"),),(710,560),)
-        screen.blit(font.render("30",True,pygame.Color("black"),),(810,560),)
-        screen.blit(font.render("20",True,pygame.Color("black"),),(910,560),)
-        screen.blit(font.render("10",True,pygame.Color("black"),),(1010,560),)
+    
         #pygame.display.flip()
 
         for f in football_shapes:
