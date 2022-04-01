@@ -62,7 +62,7 @@ class BouncyBalls(object):
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((675, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
         self.done_box_text = ""
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((25, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
-        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((900, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
+        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((875, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
         self.time_delta = 0.0
     
         #self.GUI_background = pygame.Surface((1000,100))
