@@ -2,6 +2,7 @@
 how far the bird has traveled and can change the air resistance to see how it effects the bird
 and its distance. And can watch it knock over  
 """
+from pickle import NONE
 import sys
 from typing import List
 
@@ -22,66 +23,120 @@ import globals
 import libraries.shapes as shapes
 import libraries.toggleButton as toggleButton
 import random
-def _GUI():
+
+friction = 1
+elasticity = 0
+mass = 10
+
+pygame.init()
+font = pygame.font.SysFont("Arial", 16)
+
+width, height = 1200, 700
+manager = pygame_gui.UIManager((width, height))
     
+shape_selected = "Square"
+#textboxes and buttons for main gui
 
-    #textboxes and buttons for main gui
-    
-    #Text 1
-    text_box = UITextBox(html_text="Gravity",relative_rect=pygame.Rect(50, 17, 100, 35),manager=manager,object_id='textb')
+#Text 1
+text_box = UITextBox(html_text="Gravity",relative_rect=pygame.Rect(50, 17, 100, 35),manager=manager,object_id='textb')
 
-    #first text box
-    gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=manager,object_id='entryb')
-    gravity_box.set_text("900")
+#first text box
+gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=manager,object_id='entryb')
+gravity_box.set_text("900")
 
-    #text 2
-    text_box = UITextBox(html_text="Mass",relative_rect=pygame.Rect(150, 17, 100, 35),manager=manager,object_id='textb')
+#text 2
+text_box = UITextBox(html_text="Mass",relative_rect=pygame.Rect(150, 17, 100, 35),manager=manager,object_id='textb')
 
-    #second text box
-    mass_box = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=manager,object_id='entryb')
-    mass_box.set_text("10")
-    #text 3
-    text_box = UITextBox(html_text="Elasticity",relative_rect=pygame.Rect(250, 17, 100, 35),manager=manager,object_id='textb')
+#second text box
+mass_box = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=manager,object_id='entryb')
+mass_box.set_text("10")
+#text 3
+text_box = UITextBox(html_text="Elasticity",relative_rect=pygame.Rect(250, 17, 100, 35),manager=manager,object_id='textb')
 
-    #third text box
-    elas_box = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=manager,object_id='entryb')
-    elas_box.set_text("0")
-    #text 4
-    text_box = UITextBox(html_text="Friction",relative_rect=pygame.Rect(350, 17, 100, 35),manager=manager,object_id='textb')
+#third text box
+elas_box = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=manager,object_id='entryb')
+elas_box.set_text("0")
+#text 4
+text_box = UITextBox(html_text="Friction",relative_rect=pygame.Rect(350, 17, 100, 35),manager=manager,object_id='textb')
 
-    #fourth text box
-    friction_box = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=manager,object_id='entryb')
-    friction_box.set_text('1')
-    #text 5
-    color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=manager,object_id='toggleButton')
-
-    #second text box
-    #color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=manager,object_id='textb', visible=0)
-
-    size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
-    size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
-
-    #Shapes buttons
-    circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 250), (100, 100)),text='',manager=manager,object_id='circleButton')
-    square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 250), (100, 100)),text='',manager=manager,object_id='squareButton')
-
-    #Pause Button
-    
-
-    #Info Button
-    menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=manager,object_id='button')
-    
-    ### Reed Code -----------------------------------------------------------
-    
-
-    toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((950,100),(250,50)), text1="Query Mode: On", text2="Move Mode: On", manager=manager, object_id="toggleButton")
-    toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,150),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
-    toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
+#fourth text box
+friction_box = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=manager,object_id='entryb')
+friction_box.set_text('1')
+#text 5
+color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=manager,object_id='toggleButton')
 
 
+size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+
+#Shapes buttons
+circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 250), (100, 100)),text='',manager=manager,object_id='circleButton')
+square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 250), (100, 100)),text='',manager=manager,object_id='squareButton')
+
+#Pause Button
 
 
-def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None:
+#Info Button
+menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=manager,object_id='button')
+
+toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,150),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
+toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
+
+space = pymunk.Space()
+space.gravity = 0, 1400
+def update_values():
+        try:
+            num_grav = float(gravity_box.get_text())
+        except:
+            grav = ''
+        else:
+            grav = num_grav
+
+        try:
+            num_elas = float(elas_box.get_text())
+        except:
+            elas = ''
+        else:
+            elas = num_elas
+        
+        try:
+            num_fric = float(friction_box.get_text())
+        except:
+            fric = ''
+        else:
+            fric = num_fric
+        
+        try:
+            num_mass = float(mass_box.get_text())
+        except:
+            mass = ''
+        else:
+            mass = num_mass
+
+        if grav == '':
+            grav_value = 0.0
+        else:
+            grav_value = float(grav)
+            
+        space.gravity = (0.0, grav_value)
+
+        if elas == '':
+            elasticity = 0.0
+        else:
+            elasticity = float(elas)
+
+        if fric == '':
+            friction = 0.0
+        else:
+            friction = float(fric)
+        
+        if mass == '':
+            mass = 1.0
+        else:
+            mass = float(mass)
+        
+
+def create_ball(point, mass=5, radius=20, elasticity=0.95, friction=0.9) -> None:
     """
     Create a ball.
     :return:
@@ -94,13 +149,14 @@ def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None
     shape.friction = friction
     return body,shape
 
-def create_rectangle(point, size_x=25, size_y=25, mass=5.0, friction=1):
+def create_rectangle(point, size_x=25, size_y=25, mass=5.0, friction=1 , elasticity=0 ):
     points = [(-size_x, -size_y), (-size_x, size_y), (size_x, size_y), (size_x, -size_y)]
     moment = pymunk.moment_for_poly(mass, points, (0, 0))
     body = pymunk.Body(mass, moment)
     body.position = point
     shape = pymunk.Poly(body, points)
     shape.friction = friction
+    shape.elasticity = elasticity
     return body, shape
 
    
@@ -159,10 +215,7 @@ def post_solve_football_hit(arbiter, space, data):
         )
 
 
-width, height = 1200, 700
-pygame.init()
-font = pygame.font.SysFont("Arial", 16)
-manager = pygame_gui.UIManager((width, height))
+
 def main():
     ### PyGame init
     #pygame.init()
@@ -172,8 +225,6 @@ def main():
     #font = pygame.font.SysFont("Arial", 16)
     pygame.display.set_caption("2DPhysicsEducationTool- Angry Birds Simulation")
     ### Physics stuff
-    space = pymunk.Space()
-    space.gravity = 0, 1400
     draw_options = pymunk.pygame_util.DrawOptions(screen)
     drag_constant = 0.002
     
@@ -185,7 +236,7 @@ def main():
         pymunk.Segment(space.static_body, (50, 550), (1150, 550), 5),
     ]
     for line in static:
-        line.elasticity = 0
+        line.elasticity = 1
         line.friction = 1
     space.add(*static)
    # manager = pygame_gui.UIManager((width, height))
@@ -224,7 +275,7 @@ def main():
         football_shapes.clear()
 
         return False
-    _GUI()
+    
     while running:
         
         for event in pygame.event.get():
@@ -235,12 +286,16 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 state = event.button
-                if state == 3:
-                    body, shape = create_rectangle(pygame.mouse.get_pos())
-                    space.add(body,shape)
-                if state == 2:
-                   body, shape = create_ball(pygame.mouse.get_pos())
-                   space.add(body,shape) 
+                if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
+                    size_x = size_slider_x.get_current_value()
+                    size_y = size_slider_y.get_current_value()
+                    if state == 3 and shape_selected == "Square":
+                         body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = mass, friction=friction, elasticity = elasticity)
+                         space.add(body,shape)
+                    if state == 3 and shape_selected == "Circle":
+                        body, shape = create_ball(pygame.mouse.get_pos(),mass = mass, friction=friction, elasticity = elasticity)
+                        space.add(body,shape) 
+                
 
                     
                 
@@ -253,7 +308,7 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
                 
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and event.pos[1] < 560:
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                 end_time = pygame.time.get_ticks()
 
                 diff = end_time - start_time
@@ -274,8 +329,14 @@ def main():
                 print(event.value)
                 drag_constant = event.value
 
-
-            
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and circle_button.check_pressed():
+                shape_selected = "Circle"
+                
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and square_button.check_pressed():
+                shape_selected = "Square"
+                
+            elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+                update_values()
                 
 
             manager.process_events(event)
