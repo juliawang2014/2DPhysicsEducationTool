@@ -226,7 +226,7 @@ def main():
     pygame.display.set_caption("2DPhysicsEducationTool- Angry Birds Simulation")
     ### Physics stuff
     draw_options = pymunk.pygame_util.DrawOptions(screen)
-    drag_constant = 0.002
+    drag_constant = 0.003
     
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
@@ -240,7 +240,7 @@ def main():
         line.friction = 1
     space.add(*static)
    # manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.002, value_range = (.0002,.02), manager= manager)
+ 
     
    
     # this is where the firing of the football is located
@@ -248,7 +248,7 @@ def main():
     cannon_shape = pymunk.Circle(cannon_body, 25)
     cannon_shape.sensor = True
     
-    cannon_body.position = 50, 550
+    cannon_body.position = 50, 400
     
 
     football_body, football_shape = create_football()
@@ -260,7 +260,9 @@ def main():
     football_shapes.append(football_shape)
     handler = space.add_collision_handler(0, 1)
     handler.data["flying_footballs"] = flying_footballs
-    handler.post_solve = post_solve_football_hit
+    
+    #Sticking line
+    #handler.post_solve = post_solve_football_hit
 
     reset_b = False
     def reset():
@@ -326,8 +328,8 @@ def main():
                 space.add(football_body, football_shape)
                 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                print(event.value)
-                drag_constant = event.value
+                pass
+                
 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and circle_button.check_pressed():
                 shape_selected = "Circle"
