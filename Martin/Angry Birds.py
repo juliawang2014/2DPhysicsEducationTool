@@ -7,6 +7,10 @@ from typing import List
 
 import pygame
 import pygame_gui
+from pygame_gui.elements import UITextEntryLine
+from pygame_gui.elements import UITextBox
+from pygame_gui.elements import UIHorizontalSlider
+
 import pymunk
 import pymunk.pygame_util
 from pymunk.vec2d import Vec2d
@@ -16,7 +20,66 @@ import globals
 # Library imports
 
 import libraries.shapes as shapes
+import libraries.toggleButton as toggleButton
 import random
+def _GUI():
+    
+
+    #textboxes and buttons for main gui
+    
+    #Text 1
+    text_box = UITextBox(html_text="Gravity",relative_rect=pygame.Rect(50, 17, 100, 35),manager=manager,object_id='textb')
+
+    #first text box
+    gravity_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=manager,object_id='entryb')
+    gravity_box.set_text("900")
+
+    #text 2
+    text_box = UITextBox(html_text="Mass",relative_rect=pygame.Rect(150, 17, 100, 35),manager=manager,object_id='textb')
+
+    #second text box
+    mass_box = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=manager,object_id='entryb')
+    mass_box.set_text("10")
+    #text 3
+    text_box = UITextBox(html_text="Elasticity",relative_rect=pygame.Rect(250, 17, 100, 35),manager=manager,object_id='textb')
+
+    #third text box
+    elas_box = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=manager,object_id='entryb')
+    elas_box.set_text("0")
+    #text 4
+    text_box = UITextBox(html_text="Friction",relative_rect=pygame.Rect(350, 17, 100, 35),manager=manager,object_id='textb')
+
+    #fourth text box
+    friction_box = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=manager,object_id='entryb')
+    friction_box.set_text('1')
+    #text 5
+    color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=manager,object_id='toggleButton')
+
+    #second text box
+    #color_choice = UIColourPickerDialog(rect=pygame.Rect(450,50, 390, 390),manager=manager,object_id='textb', visible=0)
+
+    size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((630, 37), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+    size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((630, 70), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+
+    #Shapes buttons
+    circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 250), (100, 100)),text='',manager=manager,object_id='circleButton')
+    square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 250), (100, 100)),text='',manager=manager,object_id='squareButton')
+
+    #Pause Button
+    
+
+    #Info Button
+    menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=manager,object_id='button')
+    
+    ### Reed Code -----------------------------------------------------------
+    
+
+    toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((950,100),(250,50)), text1="Query Mode: On", text2="Move Mode: On", manager=manager, object_id="toggleButton")
+    toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,150),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
+    toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
+
+
+
 
 def create_ball(point, mass=5, radius=10, elasticity=0.95, friction=0.9) -> None:
     """
@@ -97,15 +160,17 @@ def post_solve_football_hit(arbiter, space, data):
 
 
 width, height = 1200, 700
-
+pygame.init()
+font = pygame.font.SysFont("Arial", 16)
+manager = pygame_gui.UIManager((width, height))
 def main():
     ### PyGame init
-    pygame.init()
+    #pygame.init()
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     running = True
-    font = pygame.font.SysFont("Arial", 16)
-    pygame.display.set_caption("2DPhysicsEducationTool- Air Resistance Simulation")
+    #font = pygame.font.SysFont("Arial", 16)
+    pygame.display.set_caption("2DPhysicsEducationTool- Angry Birds Simulation")
     ### Physics stuff
     space = pymunk.Space()
     space.gravity = 0, 1400
@@ -123,7 +188,7 @@ def main():
         line.elasticity = 0
         line.friction = 1
     space.add(*static)
-    manager = pygame_gui.UIManager((width, height))
+   # manager = pygame_gui.UIManager((width, height))
     slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((80, 600), (250, 50)), start_value=.002, value_range = (.0002,.02), manager= manager)
     
    
@@ -159,7 +224,7 @@ def main():
         football_shapes.clear()
 
         return False
-    
+    _GUI()
     while running:
         
         for event in pygame.event.get():
