@@ -100,10 +100,10 @@ while running:
 
     if button2.draw(screen) == True:
         print("Plinko Button clicked")
-        os.system('Plinko.py')
+        os.system('python3 Plinko.py')
     if button3.draw(screen) == True:
         print("Air Resistance clicked")
-        os.system('AirRes-Drag.py')
+        os.system('python3 AirRes-Drag.py')
     if button4.draw(screen) == True:
         print("Button 4 clicked")
 
