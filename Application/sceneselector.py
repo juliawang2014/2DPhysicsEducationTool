@@ -96,7 +96,7 @@ while running:
 
     if button1.draw(screen) == True:
         print("Gravity Button Clicked")
-        os.system('gravity.py')
+        os.system('python3 gravityGUI.py')
 
     if button2.draw(screen) == True:
         print("Plinko Button clicked")
