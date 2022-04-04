@@ -101,7 +101,11 @@ class Sandbox(object):
                 r = self.queried_item.radius + 10
                 p = pymunk.pygame_util.to_pygame(self.queried_item.body.position, self._screen)
                 pygame.draw.circle(self._screen, pygame.Color("red"), p, int(r), 6)
-                self.console_text = "Velocity: {0} Mass: {1}".format(str(fDisplay.display_values(self.queried_item.body, "velocity")), str(fDisplay.display_values(self.queried_item.body, "mass")))
+                self.console_text = "Velocity: {0} Mass: {1} Elasticity: {2} Friction: {3}".format(
+                    str(fDisplay.display_values(self.queried_item.body, "velocity")), 
+                    str(fDisplay.display_values(self.queried_item.body, "mass")),
+                    str(self.queried_item.elasticity),
+                    str(self.queried_item.friction))
                 self.console_output.set_text(self.console_text)
             pygame.display.update()
             pygame.display.set_caption("Sandbox - fps: " + str(self._clock.get_fps()))
