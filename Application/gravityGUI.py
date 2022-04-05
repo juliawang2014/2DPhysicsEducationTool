@@ -1,5 +1,6 @@
+from email.mime import application
 import sys
-sys.path.append('../Reed')
+sys.path.append('../Application')
 
 from typing import List
 import globals
@@ -40,7 +41,6 @@ class BouncyBalls(object):
         # pygame
         pygame.init()
         self._screen = globals.screen
-        #self._screen2 = pygame.display.set_mode((1000,100))
         self._clock = globals.clock
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
 
@@ -54,26 +54,24 @@ class BouncyBalls(object):
         self._running = True
         
         #set up pygame stuff
-        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height),'Reed/GUI/Combination_GUI/GUI_Theme.json')
-        #self.manager2 = pygame_gui.UIManager((globals.screen_width, 100),'Reed/GUI/Combination_GUI/GUI_Theme.json')
+        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height),'GUI_Theme.json')
         self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((175, 25), (150, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((350, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
         self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((475, 12.5), (175, 75)), manager=self.manager, object_id="velocityBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((675, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
         self.done_box_text = ""
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((25, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
-        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((900, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
+        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((875, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
         self.time_delta = 0.0
     
         #self.GUI_background = pygame.Surface((1000,100))
         #self.backcolor.fill(pygame.Color('#1d1135'))
 
-        self.GUI_background = pygame.image.load('Reed/GUI/Combination_GUI/img/4999GUIbackground.png')
+        self.GUI_background = pygame.image.load('img/4999GUIbackground.png')
         self.GUI_background = pygame.transform.scale(self.GUI_background, (1000,100))
 
         #BALL SIZE
         self.ball_size = 25 #default is 25 from shapes.py
-        
         self.ball_start_time = 0 #time object used to see when the ball is spawned
         self.ball_end_time = 0
         self.is_ball_done_rolling = False #turns true once ball is at the bottom of the ramp
