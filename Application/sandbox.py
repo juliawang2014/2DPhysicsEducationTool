@@ -128,6 +128,11 @@ class Sandbox(object):
             line.elasticity = 0.95
             line.friction = 0.9
         self._space.add(*static_lines)
+    
+    def _reset(self):
+        for s in self._space.shapes:
+            self._space.remove(s)
+        self._add_static_scenery()
 
     def _process_events(self) -> None:
         """
@@ -142,6 +147,8 @@ class Sandbox(object):
                 self._running = False
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                self._reset()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self._color_choice is not None:
                     pass
