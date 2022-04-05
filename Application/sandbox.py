@@ -188,6 +188,8 @@ class Sandbox(object):
                 self._shape_selected = "Attach"
                 self._size_text_x = ""
                 self._size_text_y = ""
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
+                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message="Information about the Experiment",rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
 
         self.on_mouse_motion()
             
@@ -305,7 +307,7 @@ class Sandbox(object):
         self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 
         #Info Button
-        self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=self._guimanager,object_id='button')
+        self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Info',manager=self._guimanager,object_id='button')
         
         ### Reed Code -----------------------------------------------------------
         self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="textb")
@@ -330,6 +332,7 @@ class Sandbox(object):
                     b = self._attachment_points[1]
                     if a != b:
                         joint = pymunk.PinJoint(a.shape.body, b.shape.body)
+                        #joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 5, 5)
                         self._space.add(joint)
                     self._attachment_points.clear()
             #Destroy
