@@ -48,6 +48,7 @@ class Sandbox(object):
         # Shapes that exist in the world
         self._balls: List[pymunk.Circle] = []
         self._rects: List[pymunk.Poly] = []
+        self._joints: List[pymunk.PinJoint] = []
         # Execution control
         self._running = True
         self._pause = False
@@ -58,6 +59,7 @@ class Sandbox(object):
         self.console_text = ""
         self._custom_color = pygame.Color(0,0,0)
         self._color_choice = None
+        self.ui_window1 = None
         self._shape_selected = "Circle"
         self._attachment_points = []
         self._point_a = None
@@ -130,6 +132,8 @@ class Sandbox(object):
         self._space.add(*static_lines)
     
     def _reset(self):
+        for j in self._joints:
+            self._space.remove(j)
         for s in self._space.shapes:
             self._space.remove(s)
         self._add_static_scenery()
@@ -150,14 +154,14 @@ class Sandbox(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 self._reset()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self._color_choice is not None:
+                if self._color_choice is not None or self.ui_window1 is not None:
                     pass
                 elif event.button == 4:
                     self.rotate_shape_left()
                 elif event.button == 5:
                     self.rotate_shape_right()
                 elif pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
-                    self.on_mouse_press()
+                    self.on_mouse_press(event)
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 4 or event.button == 5:
                     pass
@@ -179,6 +183,8 @@ class Sandbox(object):
             elif (event.type == pygame_gui.UI_WINDOW_CLOSE and event.ui_element == self._color_choice):
                 self._color_button.enable()
                 self._color_choice = None
+            elif (event.type == pygame_gui.UI_WINDOW_CLOSE and event.ui_element == self.ui_window1):
+                self.ui_window1 = None
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._circle_button.check_pressed():
                 self._shape_selected = "Circle"
                 self._size_text_x = "Radius"
@@ -196,7 +202,10 @@ class Sandbox(object):
                 self._size_text_x = ""
                 self._size_text_y = ""
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
-                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message="Information about the Experiment",rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
+                info_message = """Keyboard shortcuts: p to pause, r to reset
+                While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
+                """
+                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
 
         self.on_mouse_motion()
             
@@ -323,7 +332,7 @@ class Sandbox(object):
         self.toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,150),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=self._guimanager, object_id="toggleButton")
         self.toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,200),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=self._guimanager, object_id="toggleButton")
 
-    def on_mouse_press(self):
+    def on_mouse_press(self, event):
         
         self._point_a = pygame.mouse.get_pos()
         shape_list = self._space.point_query(self._point_a, 1, pymunk.ShapeFilter())
@@ -341,9 +350,10 @@ class Sandbox(object):
                         joint = pymunk.PinJoint(a.shape.body, b.shape.body)
                         #joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 5, 5)
                         self._space.add(joint)
+                        self._joints.append(joint)
                     self._attachment_points.clear()
             #Destroy
-            elif not self.toggle_spawn.get_state():
+            elif not self.toggle_spawn.get_state() or event.button == 3:
                 self._space.remove(shape_list[0].shape)
             else:
                 #Query shape
