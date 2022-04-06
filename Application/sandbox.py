@@ -346,7 +346,7 @@ class Sandbox(object):
                 if len(self._attachment_points) == 2:
                     a = self._attachment_points[0]
                     b = self._attachment_points[1]
-                    if a != b:
+                    if a.shape != b.shape:
                         joint = pymunk.PinJoint(a.shape.body, b.shape.body)
                         #joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 5, 5)
                         self._space.add(joint)
