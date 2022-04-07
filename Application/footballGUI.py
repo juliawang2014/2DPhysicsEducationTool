@@ -77,7 +77,7 @@ def main():
 
     ### Reed Code -------------------------------
     
-    guimanager = pygame_gui.UIManager((1200,200),'GUI_theme.json')
+    guimanager = pygame_gui.UIManager((1200,200),'themes/GUI_theme.json')
 
     #backcolor = pygame.Surface((1200,100))
     
