@@ -24,15 +24,41 @@ import libraries.shapes as shapes
 import libraries.toggleButton as toggleButton
 import random
 
-friction = 1
-elasticity = 0
-mass = 10
+#friction = 1
+#elasticity = 0
+#mass = 10
+
+class Values:
+    def __init__(self, friction=1, elasticity=0, mass=10) -> None:
+        self._friction = friction
+        self._elasticity = elasticity
+        self._mass = mass
+    
+    def get_friction(self):
+        return self._friction
+    
+    def get_elasticity(self):
+        return self._elasticity
+    
+    def get_mass(self):
+        return self._mass
+    
+    def set_friction(self, f):
+        self._friction = f
+    
+    def set_elasticity(self, e):
+        self._elasticity = e
+    
+    def set_mass(self, m):
+        self._mass = m
+
+values = Values()
 
 pygame.init()
 font = pygame.font.SysFont("Arial", 16)
 
 width, height = 1200, 700
-manager = pygame_gui.UIManager((width, height))
+manager = pygame_gui.UIManager((width, height), 'themes/GUI_Theme.json')
     
 shape_selected = "Square"
 #textboxes and buttons for main gui
@@ -70,8 +96,8 @@ size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((450, 25), (250, 25
 size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((450, 58), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
 
 #Shapes buttons
-circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((700, 25), (100, 100)),text='',manager=manager,object_id='circleButton')
-square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25), (100, 100)),text='',manager=manager,object_id='squareButton')
+circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((725, 25), (75, 75)),text='',manager=manager,object_id='circleButton')
+square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25), (75, 75)),text='',manager=manager,object_id='squareButton')
 
 #Pause Button
 
@@ -81,7 +107,7 @@ square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25)
 
 #NOT DOING ANYTHING YET!!!
 toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,15),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
-toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,55),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
+#toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,55),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
 
 space = pymunk.Space()
 space.gravity = 0, 1400
@@ -122,19 +148,19 @@ def update_values():
         space.gravity = (0.0, grav_value)
 
         if elas == '':
-            elasticity = 0.0
+            values.set_elasticity(0.0)
         else:
-            elasticity = float(elas)
+            values.set_elasticity(elas)
 
         if fric == '':
-            friction = 0.0
+            values.set_friction(0.0)
         else:
-            friction = float(fric)
+            values.set_friction(fric)
         
         if mass == '':
-            mass = 1.0
+            values.set_mass(1.0)
         else:
-            mass = float(mass)
+            values.set_mass(mass)
         
 
 def create_ball(point, mass=5, radius=20, elasticity=0.95, friction=0.9) -> None:
@@ -231,7 +257,7 @@ def main():
     
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
-        pymunk.Segment(space.static_body, (55, 650), (50, 150), 5),
+        pymunk.Segment(space.static_body, (50, 650), (50, 150), 5),
         pymunk.Segment(space.static_body, (50, 150), (1150, 150), 5),
         pymunk.Segment(space.static_body, (1150, 150), (1150, 650), 5),
         pymunk.Segment(space.static_body, (50, 650), (1150, 650), 5),
@@ -293,12 +319,13 @@ def main():
                     size_x = size_slider_x.get_current_value()
                     size_y = size_slider_y.get_current_value()
                     if state == 3 and shape_selected == "Square":
-                         body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = mass, friction=friction, elasticity = elasticity)
+                         body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
                          space.add(body,shape)
                     if state == 3 and shape_selected == "Circle":
-                        body, shape = create_ball(pygame.mouse.get_pos(),mass = mass, friction=friction, elasticity = elasticity)
+                        body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
                         space.add(body,shape) 
-                
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and toggle_spawn.pressed():
+                toggle_spawn.toggle()
 
                     
                 
@@ -327,10 +354,6 @@ def main():
                 football_body, football_shape = create_football()
                 football_shapes.append(football_shape)
                 space.add(football_body, football_shape)
-                
-            elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                pass
-                
 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and circle_button.check_pressed():
                 shape_selected = "Circle"
@@ -339,13 +362,10 @@ def main():
                 shape_selected = "Square"
                 
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
-                update_values()
-                
+                update_values()               
 
             manager.process_events(event)
            
-
-
         mouse_position = pymunk.pygame_util.from_pygame(
             Vec2d(*pygame.mouse.get_pos()), screen
 
@@ -394,7 +414,7 @@ def main():
             diff = current_time - start_time
             power = max(min(diff, 1000), 10)
             h = power // 2
-            pygame.draw.line(screen, pygame.Color("black"), (30, 550), (30, 550 - h), 10)
+            pygame.draw.line(screen, pygame.Color("black"), (30, 650), (30, 650 - h), 10)
 
         # Info and flip screen
         screen.blit(
@@ -426,6 +446,9 @@ def main():
         
         #update GUI stuff
         manager.update(delta)
+        GUI_background = pygame.image.load('img/4999GUIbackground.png')
+        GUI_background = pygame.transform.scale(GUI_background, (1200,100))
+        screen.blit(GUI_background, (0,0))
         manager.draw_ui(screen)
         pygame.display.flip()
         
