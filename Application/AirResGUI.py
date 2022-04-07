@@ -81,7 +81,7 @@ def main():
 
  ### Reed Code -------------------------------
     
-    guimanager = pygame_gui.UIManager((1200,200),'GUI_theme.json')
+    guimanager = pygame_gui.UIManager((1200,200),'\themes\GUI_Theme.json')
 
     pygame.display.set_caption("2DPhysicsEducationTool- Air Resistance Simulation")
     
@@ -91,35 +91,11 @@ def main():
     #first text box
     text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=guimanager,object_id='entryb')
 
-    #text 2
-    text_box = UITextBox(html_text="Text2",relative_rect=pygame.Rect(150, 17, 100, 35),manager=guimanager,object_id='textb')
-
-    #second text box
-    text_box2 = UITextEntryLine(relative_rect=pygame.Rect(150,50, 100, 35),manager=guimanager,object_id='entryb')
-
-    #text 3
-    text_box = UITextBox(html_text="Text3",relative_rect=pygame.Rect(250, 17, 100, 35),manager=guimanager,object_id='textb')
-
-    #third text box
-    text_box3 = UITextEntryLine(relative_rect=pygame.Rect(250,50, 100, 35),manager=guimanager,object_id='entryb')
-
-    #text 4
-    text_box = UITextBox(html_text="Text4",relative_rect=pygame.Rect(350, 17, 100, 35),manager=guimanager,object_id='textb')
-
-    #fourth text box
-    text_box4 = UITextEntryLine(relative_rect=pygame.Rect(350,50, 100, 35),manager=guimanager,object_id='entryb')
-
-    #text 5
-    text_box = UITextBox(html_text="Text5",relative_rect=pygame.Rect(450, 17, 100, 35),manager=guimanager,object_id='textb')
-
-    #second text box
-    text_box5 = UITextEntryLine(relative_rect=pygame.Rect(450,50, 100, 35),manager=guimanager,object_id='entryb')
-
     #Pause Button
-    menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 25), (100, 50)),text='Pause',manager=guimanager,object_id='button')
+    #menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 25), (100, 50)),text='Pause',manager=guimanager,object_id='button')
 
     #Menu Button
-    info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Menu',manager=guimanager,object_id='button')
+    menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Menu',manager=guimanager,object_id='button')
     
     #Info Button
     info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((875, 25), (100, 50)),text='Info',manager=guimanager,object_id='info')       
@@ -144,7 +120,7 @@ def main():
     
     space.add(*static)
     manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((600, 25), (250, 50)), start_value=.002, value_range = (.0002,.02), manager= manager)
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((600, 25), (250, 50)), start_value=.002, value_range = (.0002,.02), manager=guimanager)
     
    
     # this is where the firing of the football is located
@@ -222,7 +198,7 @@ def main():
                 if event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")    
-            manager.process_events(event)
+            guimanager.process_events(event)
 
 
 
