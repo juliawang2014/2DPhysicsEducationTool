@@ -36,7 +36,7 @@ spring_right = helix(pos=wall_right.pos, axis=ball.pos-wall_right.pos, constant=
 spring_left = helix(pos=wall_left.pos, axis=ball.pos-wall_left.pos, constant=1, coils=10, thickness=0.2, radius=1, color=color.red)
 
 sl1 = slider(min=0.3, max=10, value=massball, length=220, bind=change_massball, right=15)
-sl2 = slider(min=0.3, max=10, value=radius,   length=220, bind=change_radius,   right=15)
+sl2 = slider(min=0.3, max=10, value=radius, length=220, bind=change_radius, right=15)
 
 ball.trail = curve(color=ball.color)
 

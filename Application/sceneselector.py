@@ -1,4 +1,4 @@
-#import pygame module 
+#import pygame module
 from numpy import true_divide
 import pygame
 import button
@@ -24,7 +24,7 @@ background_color = (Grey)
 #fps variable
 clock = pygame.time.Clock()
 
-#Dimensions of the screen for the scene 
+#Dimensions of the screen for the scene
 screen = pygame.display.set_mode((X,Y))
 
 #Load in images here
@@ -42,7 +42,7 @@ button8_img = pygame.image.load('img/AngryBirdsButton.png').convert_alpha()
 button9_img = pygame.image.load('img/SandboxButton.png').convert_alpha()
 #Set the caption of screen(top left corner words)
 pygame.display.set_caption("2DPhysicsEducationTool")
-#set the color of scene 
+#set the color of scene
 screen.fill(background_color)
 
 #information on screen for our program
@@ -80,27 +80,27 @@ atom.draw(screen)
 atom1.draw(screen)
 
 
-    
+
 
 #---------------------------------------------------------------
 
 
 #-----------where the game runs!-----------------------------
 running = True
-#game loop here: 
+#game loop here:
 
 while running:
     clock.tick(60)
 
-    
+
 
     if button1.draw(screen) == True:
         print("Gravity Button Clicked")
-        os.system('gravity.py')
+        os.system('python3 gravityGUI.py')
 
     if button2.draw(screen) == True:
         print("Plinko Button clicked")
-        os.system('Plinko.py')
+        os.system('python3 Plinko.py')
     if button3.draw(screen) == True:
         print("Air Resistance clicked")
         os.system('AirResGUI.py')
@@ -110,8 +110,8 @@ while running:
     if button5.draw(screen) == True:
         print("Friction Button Clicked")
         #os.system(')
-    
-    
+
+
     if button8.draw(screen) == True:
         print("AngryBirds Button Clicked")
         os.system('AngryBirds.py')
@@ -121,13 +121,13 @@ while running:
 
     if exit_button.draw(screen) == True:
         running = False
-        
+
     #for loop for the event queue
     for event in pygame.event.get():
 
 
         if event.type == pygame.QUIT:
             running = False
-        
+
 
         pygame.display.update()
