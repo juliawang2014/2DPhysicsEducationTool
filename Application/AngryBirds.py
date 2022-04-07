@@ -29,11 +29,12 @@ import random
 #mass = 10
 
 class Values:
-    def __init__(self, friction=1, elasticity=0, mass=10, shape_selected="Square") -> None:
+    def __init__(self, friction=1, elasticity=0, mass=10, shape_selected="Square", shape_being_dragged=None) -> None:
         self._friction = friction
         self._elasticity = elasticity
         self._mass = mass
         self._shape_selected = shape_selected
+        self._shape_dragged = shape_being_dragged
     
     def get_friction(self):
         return self._friction
@@ -46,6 +47,9 @@ class Values:
     
     def get_shape(self):
         return self._shape_selected
+    
+    def get_shape_dragged(self):
+        return self._shape_dragged
 
     def set_friction(self, f):
         self._friction = f
@@ -58,6 +62,9 @@ class Values:
     
     def set_shape(self, s):
         self._shape_selected = s
+
+    def set_shape_dragged(self, s):
+        self._shape_dragged = s
 
 values = Values()
 
@@ -112,8 +119,8 @@ square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25)
 #menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=manager,object_id='button')
 
 #NOT DOING ANYTHING YET!!!
-toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,15),(250,50)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
-#toggle_kinematic = toggleButton.ToggleButton(rect=pygame.Rect((950,55),(250,50)), text1="Kinematic Shapes: On", text2="Static Shapes: On", manager=manager, object_id="toggleButton")
+toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,15),(250,45)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
+toggle_move = toggleButton.ToggleButton(rect=pygame.Rect((950,55),(250,45)), text1="Move mode: Off", text2="Move mode: On", manager=manager, object_id="toggleButton")
 
 space = pymunk.Space()
 space.gravity = 0, 1400
@@ -196,6 +203,7 @@ def create_rectangle(point, size_x=25, size_y=25, mass=5.0, friction=1 , elastic
 
   
 football_img = pygame.image.load('img/Bird.png')
+pig_img = pygame.image.load('img/pig.png')
 
 def create_football():
     vs = [(-30, 0), (0, 3), (10, 0), (0, -3)]
@@ -247,8 +255,11 @@ def post_solve_football_hit(arbiter, space, data):
             data["flying_footballs"],
         )
 
-
-
+def on_mouse_motion():
+    if values.get_shape_dragged() is not None:
+        values.get_shape_dragged().shape.body.position = pygame.mouse.get_pos()
+        values.get_shape_dragged().shape.body.velocity = 0, 0
+        
 def main():
     ### PyGame init
     #pygame.init()
@@ -289,7 +300,7 @@ def main():
 
     flying_footballs: List[pymunk.Body] = []
     football_shapes: List[pymunk.Shape] = []
-    coins: List[pymunk.Shape] = []
+    pigs: List[pymunk.Shape] = []
     football_shapes.append(football_shape)
     handler = space.add_collision_handler(0, 1)
     handler.data["flying_footballs"] = flying_footballs
@@ -308,6 +319,9 @@ def main():
         for c in football_shapes:
             space.remove(c)
         football_shapes.clear()
+        for p in pigs:
+            space.remove(p)
+        pigs.clear()
 
         return False
     
@@ -324,21 +338,31 @@ def main():
                 if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                     size_x = size_slider_x.get_current_value()
                     size_y = size_slider_y.get_current_value()
-                    if state == 3 and toggle_spawn.get_state():
-                        if values.get_shape() == "Square":
-                             body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                             space.add(body,shape)
-                        elif values.get_shape() == "Circle":
-                            body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                            space.add(body,shape)
-                    elif state == 3 and not toggle_spawn.get_state():
-                        shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
-                        if len(shape_list) > 0:
-                            if not toggle_spawn.get_state():
-                                space.remove(shape_list[0].shape)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED and toggle_spawn.pressed():
-                toggle_spawn.toggle()
-
+                    if toggle_move.get_state():
+                        if state == 3 and not toggle_move.get_state():
+                            shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+                            values.set_shape_dragged(shape_list[0])
+                        elif state == 3 and toggle_spawn.get_state():
+                            if values.get_shape() == "Square":
+                                body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                                space.add(body,shape)
+                            elif values.get_shape() == "Circle":
+                                body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                                pigs.append(shape)
+                                space.add(body,shape)
+                        elif state == 3 and not toggle_spawn.get_state():
+                            shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+                            if len(shape_list) > 0:
+                                if not toggle_spawn.get_state():
+                                    space.remove(shape_list[0].shape)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if toggle_spawn.pressed():
+                    toggle_spawn.toggle()
+                elif toggle_move.pressed():
+                    toggle_move.toggle()
+            
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+                values.set_shape_dragged(None)
                     
                 
             if (
@@ -377,7 +401,8 @@ def main():
                 update_values()               
 
             manager.process_events(event)
-           
+        on_mouse_motion()
+
         mouse_position = pymunk.pygame_util.from_pygame(
             Vec2d(*pygame.mouse.get_pos()), screen
 
@@ -431,7 +456,7 @@ def main():
         # Info and flip screen
         screen.blit(
             font.render(
-                "Aim with your mouse, hold down left click until bar is full, let go to launch bird",
+                "Aim with your mouse, hold down left click until bar is full, let go to launch bird. Right click to interact with building the scene (spawn, destroy, move).",
                 True,
                 pygame.Color("black"),
             ),
@@ -448,6 +473,12 @@ def main():
             coin_rect = football_img.get_rect(center = (pos_x,pos_y))
             screen.blit(football_img,coin_rect)
         
+        for p in pigs:
+            pos_x = int(p.body.position.x)
+            pos_y = int(p.body.position.y)
+            pygame.draw.circle(screen,(0,0,0),(pos_x,pos_y),1)
+            coin_rect = pig_img.get_rect(center = (pos_x,pos_y))
+            screen.blit(pig_img,coin_rect)
     
         ### Update physics
         fps = 60
