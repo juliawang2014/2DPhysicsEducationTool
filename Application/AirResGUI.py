@@ -81,7 +81,7 @@ def main():
 
  ### Reed Code -------------------------------
     
-    guimanager = pygame_gui.UIManager((1200,200),'\themes\GUI_Theme.json')
+    guimanager = pygame_gui.UIManager((1200,700),'\themes\GUI_Theme.json')
 
     pygame.display.set_caption("2DPhysicsEducationTool- Air Resistance Simulation")
     
