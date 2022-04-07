@@ -29,10 +29,11 @@ import random
 #mass = 10
 
 class Values:
-    def __init__(self, friction=1, elasticity=0, mass=10) -> None:
+    def __init__(self, friction=1, elasticity=0, mass=10, shape_selected="Square") -> None:
         self._friction = friction
         self._elasticity = elasticity
         self._mass = mass
+        self._shape_selected = shape_selected
     
     def get_friction(self):
         return self._friction
@@ -43,6 +44,9 @@ class Values:
     def get_mass(self):
         return self._mass
     
+    def get_shape(self):
+        return self._shape_selected
+
     def set_friction(self, f):
         self._friction = f
     
@@ -51,6 +55,9 @@ class Values:
     
     def set_mass(self, m):
         self._mass = m
+    
+    def set_shape(self, s):
+        self._shape_selected = s
 
 values = Values()
 
@@ -60,7 +67,6 @@ font = pygame.font.SysFont("Arial", 16)
 width, height = 1200, 700
 manager = pygame_gui.UIManager((width, height), 'themes/GUI_Theme.json')
     
-shape_selected = "Square"
 #textboxes and buttons for main gui
 
 #Text 1
@@ -96,7 +102,7 @@ size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((450, 25), (250, 25
 size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((450, 58), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
 
 #Shapes buttons
-circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((725, 25), (75, 75)),text='',manager=manager,object_id='circleButton')
+circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((725, 25), (75, 75)),text='',manager=manager,object_id='pigButton')
 square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25), (75, 75)),text='',manager=manager,object_id='squareButton')
 
 #Pause Button
@@ -318,12 +324,18 @@ def main():
                 if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                     size_x = size_slider_x.get_current_value()
                     size_y = size_slider_y.get_current_value()
-                    if state == 3 and shape_selected == "Square":
-                         body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                         space.add(body,shape)
-                    if state == 3 and shape_selected == "Circle":
-                        body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                        space.add(body,shape) 
+                    if state == 3 and toggle_spawn.get_state():
+                        if values.get_shape() == "Square":
+                             body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                             space.add(body,shape)
+                        elif values.get_shape() == "Circle":
+                            body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                            space.add(body,shape)
+                    elif state == 3 and not toggle_spawn.get_state():
+                        shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+                        if len(shape_list) > 0:
+                            if not toggle_spawn.get_state():
+                                space.remove(shape_list[0].shape)
             if event.type == pygame_gui.UI_BUTTON_PRESSED and toggle_spawn.pressed():
                 toggle_spawn.toggle()
 
@@ -356,10 +368,10 @@ def main():
                 space.add(football_body, football_shape)
 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and circle_button.check_pressed():
-                shape_selected = "Circle"
+                values.set_shape("Circle")
                 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and square_button.check_pressed():
-                shape_selected = "Square"
+                values.set_shape("Square")
                 
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 update_values()               
