@@ -338,23 +338,22 @@ def main():
                 if pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[0] <= pygame.display.Info().current_w - 250:
                     size_x = size_slider_x.get_current_value()
                     size_y = size_slider_y.get_current_value()
-                    if toggle_move.get_state():
-                        if state == 3 and not toggle_move.get_state():
-                            shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
-                            values.set_shape_dragged(shape_list[0])
-                        elif state == 3 and toggle_spawn.get_state():
-                            if values.get_shape() == "Square":
-                                body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                                space.add(body,shape)
-                            elif values.get_shape() == "Circle":
-                                body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
-                                pigs.append(shape)
-                                space.add(body,shape)
-                        elif state == 3 and not toggle_spawn.get_state():
-                            shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
-                            if len(shape_list) > 0:
-                                if not toggle_spawn.get_state():
-                                    space.remove(shape_list[0].shape)
+                    if state == 3 and not toggle_move.get_state():
+                        shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+                        values.set_shape_dragged(shape_list[0])
+                    elif state == 3 and toggle_spawn.get_state():
+                        if values.get_shape() == "Square":
+                            body, shape = create_rectangle(pygame.mouse.get_pos(),size_x = size_x, size_y=size_y,mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                            space.add(body,shape)
+                        elif values.get_shape() == "Circle":
+                            body, shape = create_ball(pygame.mouse.get_pos(),mass = values.get_mass(), friction=values.get_friction(), elasticity = values.get_elasticity())
+                            pigs.append(shape)
+                            space.add(body,shape)
+                    elif state == 3 and not toggle_spawn.get_state():
+                        shape_list = space.point_query(pygame.mouse.get_pos(), 1, pymunk.ShapeFilter())
+                        if len(shape_list) > 0:
+                            if not toggle_spawn.get_state():
+                                space.remove(shape_list[0].shape)
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if toggle_spawn.pressed():
                     toggle_spawn.toggle()
