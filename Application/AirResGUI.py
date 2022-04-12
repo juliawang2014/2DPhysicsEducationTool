@@ -201,7 +201,8 @@ def main():
                     createmessage()
                     print("Info Button Pressed")
                 if event.ui_object_id == "quitbutton": 
-                    pygame.quit(); sys.exit();
+                    pygame.quit()
+                    sys.exit()
             
 
             guimanager.process_events(event)
