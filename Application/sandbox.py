@@ -320,10 +320,10 @@ class Sandbox(object):
         self._tri_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 350), (100, 100)),text='',manager=self._guimanager,object_id='triButton')
         self._line_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 350), (100, 100)),text='',manager=self._guimanager,object_id='lineButton')
         #Pause Button
-        self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((900, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
+        self._pause_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 25), (100, 50)),text='Pause',manager=self._guimanager,object_id='button')
 
         #Info Button
-        self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Info',manager=self._guimanager,object_id='button')
+        self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Info',manager=self._guimanager,object_id='button')
         
         ### Reed Code -----------------------------------------------------------
         self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="textb")
