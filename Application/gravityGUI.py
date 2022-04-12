@@ -67,7 +67,7 @@ class BouncyBalls(object):
         self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((410, 12.5), (100, 75)), manager=self.manager, object_id="velocityBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((520, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
         self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((730, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
-        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((865, 25), (125, 50)), text="Menu", manager=self.manager, object_id="Menu")
+        self.quit_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((865, 25), (125, 50)), text="Quit", manager=self.manager, object_id="quit")
         self.done_box_text = ""
 
         self.GUI_background = pygame.image.load('img/4999GUIbackground.png')
@@ -150,6 +150,8 @@ class BouncyBalls(object):
                 elif event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")
+                elif event.ui_object_id == "quit":
+                    pygame.quit(); sys.exit();
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:
