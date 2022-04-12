@@ -1,6 +1,6 @@
 """Football can be launched into the air and will stick where they land, the user will be able to see 
-how far the football has traveled and can change the air resistance to see how it effects the football 
-and its distance. 
+how far the football has traveled and can change the air resistance to see how it effects the football
+and its distance.
 """
 import sys
 from typing import List
@@ -27,8 +27,8 @@ def create_football():
     football_shape.collision_type = 1
     football_shape.density = 0.1
 
-    
-    
+
+
     return football_body, football_shape
 
 
@@ -37,7 +37,7 @@ gear = []
 
 def stick_football_to_target(space, football_body, target_body, position, flying_footballs):
     pivot_joint = pymunk.PivotJoint(football_body, target_body, position)
-    
+
     phase = target_body.angle - football_body.angle
     gear_joint = pymunk.GearJoint(football_body, target_body, phase, 1)
     space.add(pivot_joint)
@@ -80,11 +80,11 @@ def main():
     font = pygame.font.SysFont("Arial", 16)
 
  ### Reed Code -------------------------------
-    
+
     guimanager = pygame_gui.UIManager((1200,700),'themes/GUI_theme.json')
 
     pygame.display.set_caption("2DPhysicsEducationTool- Air Resistance Simulation")
-    
+
      #Text 1
     text_box = UITextBox(html_text="Text1",relative_rect=pygame.Rect(50, 17, 100, 35),manager=guimanager,object_id='textb')
 
@@ -96,16 +96,16 @@ def main():
 
     #Menu Button
     menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Menu',manager=guimanager,object_id='button')
-    
+
     #Info Button
-    info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((875, 25), (100, 50)),text='Info',manager=guimanager,object_id='info')       
-        
+    info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((875, 25), (100, 50)),text='Info',manager=guimanager,object_id='info')
+
     ### Physics stuff
     space = pymunk.Space()
     space.gravity = 0, 1400
     draw_options = pymunk.pygame_util.DrawOptions(screen)
     drag_constant = 0.002
-    
+
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
         pymunk.Segment(space.static_body, (55, 650), (50, 150), 5),
@@ -113,19 +113,19 @@ def main():
         pymunk.Segment(space.static_body, (1150, 150), (1150, 650), 5),
         pymunk.Segment(space.static_body, (50, 650), (1150, 650), 5),
     ]
-    
+
     space.add(*static)
     #manager = pygame_gui.UIManager((width, height))
     slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((600, 25), (250, 50)), start_value=.002, value_range = (.0002,.02), manager=guimanager)
-    
-   
+
+
     # this is where the firing of the football is located
     cannon_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
     cannon_shape = pymunk.Circle(cannon_body, 25)
     cannon_shape.sensor = True
-    
+
     cannon_body.position = 50, 550
-    
+
 
     football_body, football_shape = create_football()
     space.add(football_body, football_shape)
@@ -144,7 +144,7 @@ def main():
         pivot.clear()
         for x in gear:
             space.remove(x)
-        gear.clear()   
+        gear.clear()
         for c in football_shapes:
             space.remove(c)
         football_shapes.clear()
@@ -156,13 +156,11 @@ def main():
             def createmessage():
                 print('test')
                 ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=guimanager, object_id="Messagebx")
-            
-            
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
             if reset_b:
                 reset_b = reset()
-                
+
             if (
                 event.type == pygame.QUIT
                 or event.type == pygame.KEYDOWN
@@ -171,7 +169,7 @@ def main():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
-            
+
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 and pygame.mouse.get_pos()[1] >= 100:
                 end_time = pygame.time.get_ticks()
 
@@ -182,20 +180,20 @@ def main():
                 football_body.body_type = pymunk.Body.DYNAMIC
                 football_body.apply_impulse_at_world_point(impulse, football_body.position)
 
-              
+
                 flying_footballs.append(football_body)
 
                 football_body, football_shape = create_football()
                 football_shapes.append(football_shape)
                 space.add(football_body, football_shape)
-                
+
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 print(event.value)
                 drag_constant = event.value
             elif event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "info":
                     createmessage()
-                    print("Info Button Pressed")  
+                    print("Info Button Pressed")
             guimanager.process_events(event)
 
 
@@ -219,7 +217,7 @@ def main():
             flight_direction, flight_speed = flight_direction.normalized_and_length()
 
             dot = flight_direction.dot(pointing_direction)
-            
+
             drag_force_magnitude = (
                 (1 - abs(dot)) * flight_speed ** 2 * drag_constant * flying_football.mass
             )
@@ -237,8 +235,8 @@ def main():
 
         ### Draw stuff
         space.debug_draw(draw_options)
-        
-        
+
+
 
         # Power meter
         if pygame.mouse.get_pressed()[0] and pygame.mouse.get_pos()[1] < 560:
@@ -249,7 +247,7 @@ def main():
             pygame.draw.line(screen, pygame.Color("black"), (30, 550), (30, 550 - h), 10)
 
         # Info and flip screen
-        
+
         screen.blit(
               font.render(
                 "Move the slider to either increase or decrease air resistance!",
@@ -291,12 +289,12 @@ def main():
         pygame.display.update()
 
         #Reed Code
-    
+
         #update GUI stuff
         #manager.update(delta)
         #manager.draw_ui(screen)
         pygame.display.flip()
-        
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,4 +1,4 @@
-#import pygame module 
+#import pygame module
 from numpy import true_divide
 import pygame
 import button
@@ -24,7 +24,7 @@ background_color = (Grey)
 #fps variable
 clock = pygame.time.Clock()
 
-#Dimensions of the screen for the scene 
+#Dimensions of the screen for the scene
 screen = pygame.display.set_mode((X,Y))
 
 #Load in images here
@@ -35,14 +35,14 @@ button1_img = pygame.image.load('img/GravityButton.png').convert_alpha()
 button2_img = pygame.image.load('img/PlinkoButton.png').convert_alpha()
 button3_img = pygame.image.load('img/Airresistance.png').convert_alpha()
 button4_img = pygame.image.load('img/SpringsButton.png').convert_alpha()
-button5_img = pygame.image.load('img/button1.png').convert_alpha()
-button6_img = pygame.image.load('img/button1.png').convert_alpha()
-button7_img = pygame.image.load('img/button1.png').convert_alpha()
-button8_img = pygame.image.load('img/button1.png').convert_alpha()
+button5_img = pygame.image.load('img/FrictionButton.png').convert_alpha()
+#button6_img = pygame.image.load('img/button1.png').convert_alpha()
+#button7_img = pygame.image.load('img/button1.png').convert_alpha()
+button8_img = pygame.image.load('img/AngryBirdsButton.png').convert_alpha()
 button9_img = pygame.image.load('img/SandboxButton.png').convert_alpha()
 #Set the caption of screen(top left corner words)
 pygame.display.set_caption("2DPhysicsEducationTool")
-#set the color of scene 
+#set the color of scene
 screen.fill(background_color)
 
 #information on screen for our program
@@ -60,11 +60,11 @@ button1 = button.Button(85, 125, button1_img, 0.2)
 button2 = button.Button(400, 125, button2_img, 0.2)
 button3 = button.Button(715, 125, button3_img, 0.2)
 button4 = button.Button(85, 250, button4_img, 0.2)
-button5 = button.Button(400, 250, button5_img, 0.43)
-button6 = button.Button(715, 250, button5_img, 0.43)
-button7 = button.Button(85, 375, button5_img, 0.43)
-button8 = button.Button(400, 375, button5_img, 0.43)
-button9 = button.Button(715, 375, button9_img, 0.2)
+button5 = button.Button(400, 250, button5_img, 0.2)
+#button6 = button.Button(715, 250, button7_img, 0.43)
+#button7 = button.Button(85, 375, button7_img, 0.43)
+button8 = button.Button(715, 250, button8_img, 0.2)
+button9 = button.Button(400, 375, button9_img, 0.2)
 atom = button.Button(70,0,atom_img,.3)
 atom1 = button.Button(820,0,atom_img,.3)
 button1.draw(screen)
@@ -72,27 +72,27 @@ button2.draw(screen)
 button3.draw(screen)
 button4.draw(screen)
 button5.draw(screen)
-button6.draw(screen)
-button7.draw(screen)
+#button6.draw(screen)
+#button7.draw(screen)
 button8.draw(screen)
 button9.draw(screen)
 atom.draw(screen)
 atom1.draw(screen)
 
 
-    
+
 
 #---------------------------------------------------------------
 
 
 #-----------where the game runs!-----------------------------
 running = True
-#game loop here: 
+#game loop here:
 
 while running:
     clock.tick(60)
 
-    
+
 
     if button1.draw(screen) == True:
         print("Gravity Button Clicked")
@@ -103,37 +103,31 @@ while running:
         os.system('python3 Plinko.py')
     if button3.draw(screen) == True:
         print("Air Resistance clicked")
-        os.system('python3 AirRes-Drag.py')
+        os.system('AirResGUI.py')
     if button4.draw(screen) == True:
-        print("Button 4 clicked")
-
+        print("Springs Button Clicked")
+        #os.system('')
     if button5.draw(screen) == True:
-        print("Button 5 clicked")
+        print("Friction Button Clicked")
+        #os.system(')
 
-    if button6.draw(screen) == True:
-        print("Button 6 clicked")
-        
-        
-    
-    if button7.draw(screen) == True:
-        print("Button 7 clicked")
-    
+
     if button8.draw(screen) == True:
-        print("Button 8 clicked")
-
+        print("AngryBirds Button Clicked")
+        os.system('AngryBirds.py')
     if button9.draw(screen) == True:
         print("SandBox Button Clicked")
-        os.system('rectsandballs.py')
+        os.system('sandbox.py')
 
     if exit_button.draw(screen) == True:
         running = False
-        
+
     #for loop for the event queue
     for event in pygame.event.get():
 
 
         if event.type == pygame.QUIT:
             running = False
-        
+
 
         pygame.display.update()
