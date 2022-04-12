@@ -105,12 +105,12 @@ friction_box.set_text('1')
 #color_button = pygame_gui.elements.UIButton(text="Color",relative_rect=pygame.Rect(450, 17, 100, 35),manager=manager,object_id='toggleButton')
 
 
-size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((450, 25), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
-size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((450, 58), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+size_slider_x = UIHorizontalSlider(relative_rect=pygame.Rect((465, 25), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
+size_slider_y = UIHorizontalSlider(relative_rect=pygame.Rect((465, 58), (250, 25)), start_value=25, value_range=[1, 100], manager=manager, object_id='button')
 
 #Shapes buttons
-circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((725, 25), (75, 75)),text='',manager=manager,object_id='pigButton')
-square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25), (75, 75)),text='',manager=manager,object_id='squareButton')
+circle_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((725, 15), (75, 75)),text='',manager=manager,object_id='pigButton')
+square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((800, 15), (75, 75)),text='',manager=manager,object_id='squareButton')
 
 #Pause Button
 
@@ -119,8 +119,13 @@ square_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((825, 25)
 #menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Menu',manager=manager,object_id='button')
 
 #NOT DOING ANYTHING YET!!!
-toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((950,15),(250,45)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
-toggle_move = toggleButton.ToggleButton(rect=pygame.Rect((950,55),(250,45)), text1="Move mode: Off", text2="Move mode: On", manager=manager, object_id="toggleButton")
+toggle_spawn = toggleButton.ToggleButton(rect=pygame.Rect((890,0),(150,45)), text1="Spawn Mode: On", text2="Destroy Mode: On", manager=manager, object_id="toggleButton")
+toggle_move = toggleButton.ToggleButton(rect=pygame.Rect((890,50),(150,45)), text1="Move mode: Off", text2="Move mode: On", manager=manager, object_id="toggleButton")
+
+#Info and Quit Buttons
+info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1050, 0), (100, 45)),text='Info',manager=manager,object_id='info')           
+quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1050, 50), (100, 45)),text='Quit',manager=manager,object_id='quit')
+
 
 space = pymunk.Space()
 space.gravity = 0, 1400
@@ -326,8 +331,11 @@ def main():
         return False
     
     while running:
-        
         for event in pygame.event.get():
+            def createmessage():
+                print('test')
+                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=manager, object_id="Messagebx")
+
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
             if reset_b:
@@ -395,7 +403,14 @@ def main():
                 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and square_button.check_pressed():
                 values.set_shape("Square")
-                
+
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and info_button.check_pressed():
+                createmessage()
+            
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and quit_button.check_pressed():
+                pygame.quit()
+                sys.exit()
+
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 update_values()               
 
