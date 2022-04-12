@@ -96,17 +96,17 @@ while running:
 
     if button1.draw(screen) == True:
         print("Gravity Button Clicked")
-        os.system('python3 gravityGUI.py')
+        os.system('gravityGUI.py')
 
     if button2.draw(screen) == True:
         print("Plinko Button clicked")
-        os.system('python3 Plinko.py')
+        os.system('Plinko.py')
     if button3.draw(screen) == True:
         print("Air Resistance clicked")
         os.system('AirResGUI.py')
     if button4.draw(screen) == True:
         print("Springs Button Clicked")
-        #os.system('')
+        os.system('Spring.py')
     if button5.draw(screen) == True:
         print("Friction Button Clicked")
         #os.system(')
