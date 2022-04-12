@@ -85,21 +85,24 @@ def main():
 
     pygame.display.set_caption("2DPhysicsEducationTool- Air Resistance Simulation")
 
-     #Text 1
-    text_box = UITextBox(html_text="Text1",relative_rect=pygame.Rect(50, 17, 100, 35),manager=guimanager,object_id='textb')
+    
+    #  #Text 1
+    text_box = UITextBox(html_text="",relative_rect=pygame.Rect(50, 25, 100, 50),manager=guimanager,object_id='textb')
 
-    #first text box
-    text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=guimanager,object_id='entryb')
+
+    # #first text box
+    # text_box = UITextEntryLine(relative_rect=pygame.Rect(50,50, 100, 35),manager=guimanager,object_id='entryb')
 
     #Pause Button
     #menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 25), (100, 50)),text='Pause',manager=guimanager,object_id='button')
 
-    #Menu Button
-    menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Menu',manager=guimanager,object_id='button')
 
+    #Quit Button
+    quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1075, 25), (100, 50)),text='Quit',manager=guimanager,object_id='quitbutton')
+    
     #Info Button
-    info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((875, 25), (100, 50)),text='Info',manager=guimanager,object_id='info')
-
+    info_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((975, 25), (100, 50)),text='Info',manager=guimanager,object_id='info')       
+        
     ### Physics stuff
     space = pymunk.Space()
     space.gravity = 0, 1400
@@ -116,8 +119,10 @@ def main():
 
     space.add(*static)
     #manager = pygame_gui.UIManager((width, height))
-    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((600, 25), (250, 50)), start_value=.002, value_range = (.0002,.02), manager=guimanager)
 
+    slider = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((200, 25), (400, 50)), start_value=.002, value_range = (.0002,.02), manager=guimanager)
+    
+   
 
     # this is where the firing of the football is located
     cannon_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
@@ -188,12 +193,17 @@ def main():
                 space.add(football_body, football_shape)
 
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+                text_box.set_text(str(round((event.value * 100),5)))
                 print(event.value)
                 drag_constant = event.value
             elif event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")
+                if event.ui_object_id == "quitbutton": 
+                    pygame.quit(); sys.exit();
+            
+
             guimanager.process_events(event)
 
 

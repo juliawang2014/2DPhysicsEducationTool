@@ -242,6 +242,36 @@
             "text_vert_alignment": "center"
         }
     },
+
+    "window": {
+        "misc": {
+            "title_bar_height": "50"
+        }
+    },
+    "window.#title_bar": {
+        "misc": {
+            "text_horiz_alignment": "center"
+        }
+    },
+    "#message_window.#dismiss_button": {
+        "font": {
+            "name": "arial",
+            "size": "10",
+            "regular_resource": {
+                "package": "fonts",
+                "resource": "arial.ttf"
+            }
+        }
+    },
+    "text_box": {
+        "colours": {
+            "dark_bg": "#0c164f"
+        },
+        "misc": {
+            "shape":"rounded_rectangle",
+            "shape_corner_radius": "5",
+            "text_horiz_alignment":"center"
+
     "pigButton":
     {
         "colours":
@@ -275,6 +305,7 @@
             "shape_corner_radius": "5",
             "text_horiz_alignment": "center",
             "text_vert_alignment": "center"
+
         }
     }
 }

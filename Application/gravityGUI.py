@@ -24,6 +24,7 @@ from pygame_gui.elements import UITextEntryLine
 from pygame_gui.elements import UITextBox
 from pygame_gui.core import ObjectID
 from pygame_gui import UIManager
+from pygame_gui.elements import UITextBox
 
 class BouncyBalls(object):
 
@@ -54,18 +55,20 @@ class BouncyBalls(object):
         self._running = True
         
         #set up pygame stuff
-        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height),'GUI_Theme.json')
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((175, 25), (150, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
-        self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((350, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
-        self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((475, 12.5), (175, 75)), manager=self.manager, object_id="velocityBox")
-        self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((675, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
-        self.done_box_text = ""
-        self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((25, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
-        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((875, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
+        self.manager = pygame_gui.UIManager((globals.screen_width, globals.screen_height),'themes/GUI_Theme.json')
+        
+        
         self.time_delta = 0.0
     
-        #self.GUI_background = pygame.Surface((1000,100))
-        #self.backcolor.fill(pygame.Color('#1d1135'))
+        #Offical Order of Items
+        self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 50)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
+        self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((305, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
+        self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((410, 12.5), (100, 75)), manager=self.manager, object_id="velocityBox")
+        self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((520, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
+        self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((730, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
+        self.quit_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((865, 25), (125, 50)), text="Quit", manager=self.manager, object_id="quit")
+        self.done_box_text = ""
 
         self.GUI_background = pygame.image.load('img/4999GUIbackground.png')
         self.GUI_background = pygame.transform.scale(self.GUI_background, (1000,100))
@@ -147,6 +150,8 @@ class BouncyBalls(object):
                 elif event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")
+                elif event.ui_object_id == "quit":
+                    pygame.quit(); sys.exit();
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:
@@ -197,7 +202,7 @@ class BouncyBalls(object):
         
         if self._balls:
             if abs(self._balls[0].body.velocity) > 0.01:
-                self.ui_textbox3.set_text("Velocity: " + str(abs(self._balls[0].body.velocity)))
+                self.ui_textbox3.set_text("Velocity: " + str(round((abs(self._balls[0].body.velocity)),2)))
             else:
                 self.ui_textbox3.set_text("Velocity: 0.0")
 
