@@ -348,7 +348,7 @@ class Spring(object):
                     b = self._attachment_points[1]
                     if a.shape != b.shape:
                         #joint = pymunk.PinJoint(a.shape.body, b.shape.body)
-                        joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 5, 5)
+                        joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 40, 5)
                         self._space.add(joint)
                         self._joints.append(joint)
                     self._attachment_points.clear()
