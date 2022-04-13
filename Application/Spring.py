@@ -130,6 +130,14 @@ class Spring(object):
             line.elasticity = 0.95
             line.friction = 0.9
         self._space.add(*static_lines)
+        shapes.create_static_circle((200, 200))
+        shapes.create_static_circle((400, 200))
+        shapes.create_static_circle((600, 200))
+        shapes.create_static_circle((800, 200))
+        shapes.create_static_rect((200, 400), 25, 25)
+        shapes.create_static_rect((400, 400), 25, 25)
+        shapes.create_static_rect((600, 400), 25, 25)
+        shapes.create_static_rect((800, 400), 25, 25)
     
     def _reset(self):
         for j in self._joints:
@@ -199,8 +207,8 @@ class Spring(object):
                 self._size_text_y = "Height"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._line_button.check_pressed():
                 self._shape_selected = "Attach"
-                self._size_text_x = ""
-                self._size_text_y = ""
+                self._size_text_x = "Stiffness"
+                self._size_text_y = "Damping"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """Keyboard shortcuts: p to pause, r to reset
                 While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
@@ -348,7 +356,7 @@ class Spring(object):
                     b = self._attachment_points[1]
                     if a.shape != b.shape:
                         #joint = pymunk.PinJoint(a.shape.body, b.shape.body)
-                        joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, 40, 5)
+                        joint = pymunk.DampedSpring(a.shape.body, b.shape.body, (0,0), (0,0), 5, size_x, size_y)
                         self._space.add(joint)
                         self._joints.append(joint)
                     self._attachment_points.clear()
