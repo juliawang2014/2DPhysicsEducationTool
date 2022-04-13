@@ -1,11 +1,8 @@
-# #Reed Code
-
 import pygame_gui
 from pygame_gui.elements import UITextEntryLine
 from pygame_gui.elements import UITextBox
 from pygame_gui.elements import UIHorizontalSlider
 from pygame_gui.windows import UIColourPickerDialog
-# Reed Code
 
 from typing import List
 
@@ -17,6 +14,8 @@ import libraries.shapes as shapes
 import globals
 import libraries.formulaDisplay as fDisplay
 import libraries.toggleButton as toggleButton
+
+import sys
 
 GUI_background = pygame.image.load('img/4999GUIbackground.png')
 
@@ -201,6 +200,9 @@ class Sandbox(object):
                 self._shape_selected = "Attach"
                 self._size_text_x = ""
                 self._size_text_y = ""
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._quit_button.check_pressed():
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """Keyboard shortcuts: p to pause, r to reset
                 While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
@@ -325,7 +327,9 @@ class Sandbox(object):
         #Info Button
         self._menu_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1000, 25), (100, 50)),text='Info',manager=self._guimanager,object_id='button')
         
-        ### Reed Code -----------------------------------------------------------
+        #Quit Button
+        self._quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((1100, 25), (100, 50)),text='Quit',manager=self._guimanager,object_id='button')
+
         self.console_output = pygame_gui.elements.UITextBox(html_text="", relative_rect=pygame.Rect((950, 450), (250, 250),), manager=self._guimanager, object_id="textb")
 
         self.toggle_query = toggleButton.ToggleButton(rect=pygame.Rect((950,100),(250,50)), text1="Query Mode: On", text2="Move Mode: On", manager=self._guimanager, object_id="toggleButton")
