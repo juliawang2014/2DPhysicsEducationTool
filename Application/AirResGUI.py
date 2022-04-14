@@ -159,8 +159,11 @@ def main():
     while running:
         for event in pygame.event.get():
             def createmessage():
-                print('test')
-                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=guimanager, object_id="window")
+                info_message = """Aim with your mouse. Hold right click to fill power bar and release to throw the football!
+                Change the slider for air resistance to see how it effects how far the football will go. 
+                Keyboard shortcuts:r to reset
+                """
+                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message= info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=guimanager, object_id="window")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
             if reset_b:
@@ -265,7 +268,7 @@ def main():
                 True,
                 pygame.Color("black"),
             ),
-            (500, 100),
+            (200, 100),
         )
         screen.blit(font.render("10",True,pygame.Color("black"),),(210,660),)
         screen.blit(font.render("20",True,pygame.Color("black"),),(310,660),)
