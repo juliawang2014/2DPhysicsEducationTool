@@ -131,7 +131,7 @@ class BouncyBalls(object):
         for event in pygame.event.get():
             #create messagebox to open with button
             def createmessage():
-                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message="Information about the Experiment",rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="Messagebx")
+                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message="Information about the Experiment",rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="window")
             
             #event handling
             if event.type == pygame.QUIT:

@@ -160,7 +160,7 @@ def main():
         for event in pygame.event.get():
             def createmessage():
                 print('test')
-                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=guimanager, object_id="Messagebx")
+                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=guimanager, object_id="window")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
             if reset_b:

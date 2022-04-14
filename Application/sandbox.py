@@ -207,7 +207,7 @@ class Sandbox(object):
                 info_message = """Keyboard shortcuts: p to pause, r to reset
                 While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
                 """
-                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
+                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="window")
 
         self.on_mouse_motion()
             
