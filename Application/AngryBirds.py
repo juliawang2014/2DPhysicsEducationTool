@@ -333,8 +333,13 @@ def main():
     while running:
         for event in pygame.event.get():
             def createmessage():
-                print('test')
-                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message='Information about the Experiment',rect=pygame.Rect((400, 150), (300, 300)), manager=manager, object_id="window")
+                info_message = """Spawn in shapes by using right click and use slider to adjust the size of shapes. Spawn in a pig by clicking the pig button and right clicking where you would like the pig
+                left click to shoot a bird at what you have built to watch it get destroyed
+                After editing a shapes mass or the gravity click enter to submit the change
+                right clicking in this scene effects the shapes that are placed in the scene. So if destroy mode is on right clicking a shape will remove it!
+                Keyboard shortcuts: R - reset
+                """
+                ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=manager, object_id="window")
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 reset_b = True
