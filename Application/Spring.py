@@ -111,7 +111,7 @@ class Spring(object):
                     str(self.queried_item.friction))
                 self.console_output.set_text(self.console_text)
             pygame.display.update()
-            pygame.display.set_caption("Sandbox - fps: " + str(self._clock.get_fps()))
+            pygame.display.set_caption("2DPhysicsEducationTool- Spring Simulation")
 
     def _add_static_scenery(self) -> None:
         """
