@@ -102,7 +102,7 @@ class BouncyBalls(object):
             #Reed
             # Delay fixed time between frames
             self.time_delta = self._clock.tick(60)
-            pygame.display.set_caption("Bouncing balls - fps: " + str(self._clock.get_fps()))
+            pygame.display.set_caption("2DPhysicsEducationTool- Gravity")
 
     def _add_static_scenery(self) -> None:
         """
@@ -131,7 +131,9 @@ class BouncyBalls(object):
         for event in pygame.event.get():
             #create messagebox to open with button
             def createmessage():
-                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message="Information about the Experiment",rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="window")
+                info_message="""Spawn a ball on the screen by clicking the spawn button. The time it takes will be recorded and displayed. After move the slider to change gravity to see how the time changes!
+                """
+                self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="window")
             
             #event handling
             if event.type == pygame.QUIT:
