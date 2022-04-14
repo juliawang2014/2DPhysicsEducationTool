@@ -134,10 +134,10 @@ class Spring(object):
         shapes.create_static_circle((400, 200))
         shapes.create_static_circle((600, 200))
         shapes.create_static_circle((800, 200))
-        shapes.create_static_rect((200, 400), 25, 25)
-        shapes.create_static_rect((400, 400), 25, 25)
-        shapes.create_static_rect((600, 400), 25, 25)
-        shapes.create_static_rect((800, 400), 25, 25)
+        shapes.create_static_rect((200, 350), 25, 25)
+        shapes.create_static_rect((400, 350), 25, 25)
+        shapes.create_static_rect((600, 350), 25, 25)
+        shapes.create_static_rect((800, 350), 25, 25)
     
     def _reset(self):
         for j in self._joints:
@@ -210,8 +210,13 @@ class Spring(object):
                 self._size_text_x = "Stiffness"
                 self._size_text_y = "Damping"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
-                info_message = """Keyboard shortcuts: p to pause, r to reset
-                While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
+                info_message = """ To use the scene, change the mass to the mass you would like a ball and click enter.
+                After click on the ball icon on the side and right click to spawn a ball on the pre spawned cubes. Do this for 4 balls, feel free to change the mass of each one.
+                After click on the spring icon(bottom right of the 4) change the damping and stiffness sliders to change the effects of the spring before spawning them in.
+                To add the spring, right click on each circle and a spring will connect them.
+                Click on the spawn mode button and it will change to delete. click on a shape that is not the spring then Right click the cubes below and watch the spring work!
+                Keyboard shortcuts: p to pause, r to reset
+                Right click to delete shapes.
                 """
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
 
