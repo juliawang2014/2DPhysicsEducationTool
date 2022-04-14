@@ -206,7 +206,7 @@ class Sandbox(object):
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """Keyboard shortcuts: p to pause, r to reset
                 While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
-                Select a shape on the right side, adjust the properties of the shape on the top and click enter. Right click to spawn them in.
+                Select a shape on the right side, adjust the properties of the shape on the top and side bars and click enter. Right click to spawn them in.
                 """
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="window")
 
