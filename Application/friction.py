@@ -46,10 +46,10 @@ class Friction(object):
         self._clock = globals.clock
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
 
-        # Static barrier walls (lines) that the balls bounce off of
+        # Static barrier walls (lines) that the cubes can't pass
         self._add_static_scenery()
 
-        # Balls that exist in the world
+        # rects that exist in the world
         self._rects: List[pymunk.Circle] = []
 
         # Execution control
@@ -74,11 +74,11 @@ class Friction(object):
         self.GUI_background = pygame.image.load('img/4999GUIbackground.png')
         self.GUI_background = pygame.transform.scale(self.GUI_background, (1000,100))
 
-        #BALL SIZE
+        #cube SIZE
         self.rect_size = 25 #default is 25 from shapes.py
-        self.ball_start_time = 0 #time object used to see when the ball is spawned
-        self.ball_end_time = 0
-        self.is_rect_done_sliding = False #turns true once ball is at the bottom of the ramp
+        self.rect_start_time = 0 #time object used to see when the rect is spawned
+        self.rect_end_time = 0
+        self.is_rect_done_sliding = False #turns true once rect is at the bottom of the ramp
 
     def run(self) -> None:
         """
@@ -152,7 +152,7 @@ class Friction(object):
                     shapes.create_rectangle(self, (33,373), size_x=self.rect_size, size_y=self.rect_size, elasticity=0.1, friction=self._rect_friction)
                     self._rects[0].body.angle = 0.1
                     self.is_rect_done_sliding = False
-                    self.ball_start_time = datetime.datetime.now()
+                    self.rect_start_time = datetime.datetime.now()
                 elif event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")
@@ -188,24 +188,24 @@ class Friction(object):
         
 
     def _deleteAllRectangles(self) -> None:
-        """remove all balls from self._rects"""
-        for ball in self._rects:
-            self._space.remove(ball)
+        """remove all rects from self._rects"""
+        for rect in self._rects:
+            self._space.remove(rect)
         self._rects = []
         
     def _handle_rectangle_timing(self) -> None:
         """take care of some timing stuff"""
         if self._rects and self._rects[0].body.position.x > 970 and not self.is_rect_done_sliding:
             #section to calculate time delta
-            self.ball_end_time = datetime.datetime.now()
-            time_delta = self.ball_end_time - self.ball_start_time
+            self.rect_end_time = datetime.datetime.now()
+            time_delta = self.rect_end_time - self.rect_start_time
             
-            self.done_box_text += "ball done rolling, time:" + str(time_delta) + "<br>"
+            self.done_box_text += "Cube done sliding, time:" + str(time_delta) + "<br>"
             self.ui_textbox2.set_text(self.done_box_text)
             self.is_rect_done_sliding = True
             
     def _show_rectangle_velocity(self) -> None:
-        """update velocity text box to show ball velocity"""
+        """update velocity text box to show cube velocity"""
         
         if self._rects:
             if abs(self._rects[0].body.velocity) > 0.01:
