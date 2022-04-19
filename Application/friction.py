@@ -64,7 +64,7 @@ class Friction(object):
     
         #Offical Order of Items
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 50)), start_value=self._rect_friction, value_range=(0, 2), manager=self.manager, click_increment=0.1, object_id="friction") #gravity
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 50)), start_value=self._rect_friction, value_range=(0, 2), manager=self.manager, click_increment=0.1, object_id="friction") #friction
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Friction:<br>0.25", relative_rect=pygame.Rect((305, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
         self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((410, 12.5), (100, 75)), manager=self.manager, object_id="velocityBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((520, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
@@ -105,7 +105,7 @@ class Friction(object):
             #Reed
             # Delay fixed time between frames
             self.time_delta = self._clock.tick(60)
-            pygame.display.set_caption("2DPhysicsEducationTool- Gravity")
+            pygame.display.set_caption("2DPhysicsEducationTool - Friction")
 
     def _add_static_scenery(self) -> None:
         """
