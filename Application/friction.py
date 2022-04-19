@@ -65,7 +65,7 @@ class Friction(object):
         #Offical Order of Items
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
         self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 25)), start_value=self._rect_friction, value_range=(0, 2), manager=self.manager, click_increment=0.1, object_id="friction") #friction
-        self.ui_slider3 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 50), (150, 25)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
+        self.ui_slider3 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 50), (150, 25)), start_value=-100, value_range=(-100, 200), manager=self.manager, click_increment=10, object_id="slope") #slope
         self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Friction:<br>0.25", relative_rect=pygame.Rect((305, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
         self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((410, 12.5), (100, 75)), manager=self.manager, object_id="velocityBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((520, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
@@ -171,18 +171,18 @@ class Friction(object):
                 if event.ui_object_id == "friction":
                     if self._rects and event.value != self._rects[0].friction:
                         self._rects[0].friction = event.value
-                        self._rect_friction = event.value
-                        self.ui_textbox.clear_text_surface()
-                        self.ui_textbox.set_text("Friction:<br>" + str(round(event.value, 4)))   
+                        self.ui_textbox.clear_text_surface() 
+                    self.ui_textbox.set_text("Friction:<br>" + str(round(event.value, 4)))   
+                    self._rect_friction = event.value
+                if event.ui_object_id == "slope":
                     if self.slopeSegment:
-                       # print(self.slopeSegment.b)
                         #update slope endpoints, based on friction slider rn
                         window_w = pygame.display.Info().current_w
                         window_h = pygame.display.Info().current_h
-                        self.slopeSegment.unsafe_set_endpoints(self.slopeSegment.a.int_tuple, (window_w, window_h- (event.value * 100) - 100))
+                        self.slopeSegment.unsafe_set_endpoints(self.slopeSegment.a.int_tuple, (window_w, window_h- (event.value) - 100))
                         self._space.reindex_static()
                         
-                        if self._rects[0] and (self.getSlopeYCoordAtX(self._rects[0].body.position.x) - self._rects[0].body.position.y) < 30:
+                        if self._rects and (self.getSlopeYCoordAtX(self._rects[0].body.position.x) - self._rects[0].body.position.y) < 30:
                             #30 is the magic number, cube should always be 30 pixels above slope, so update position of cube when stuff moves
                             currentXPosition = self._rects[0].body.position.x
                             self._rects[0].body.position = pymunk.vec2d.Vec2d(currentXPosition, (self.getSlopeYCoordAtX(currentXPosition) - 30))
