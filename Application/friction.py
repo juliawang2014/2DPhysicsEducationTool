@@ -48,6 +48,7 @@ class Friction(object):
 
         # Static barrier walls (lines) that the cubes can't pass
         self._add_static_scenery()
+        #self.staticSlopeBody = None
 
         # rects that exist in the world
         self._rects: List[pymunk.Circle] = []
@@ -118,13 +119,20 @@ class Friction(object):
             pymunk.Segment(static_body, (0, 0), (window_w, 0), 1.0),
             pymunk.Segment(static_body, (0, 0), (0, window_h), 1.0),
             pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 1.0),
-            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h-100), 5.0),
+          #  pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h-100), 5.0),
         ]
         for line in static_lines:
             line.elasticity = 0.0
             line.friction = 0.0
-        static_lines[3].friction = 0.15
+        #static_lines[3].friction = 0.15
         self._space.add(*static_lines)
+        
+        #section for creating line segment at bottom
+        staticSlopeBody = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.slopeSegment = pymunk.Segment(staticSlopeBody, (0, window_h-200), (window_w, window_h-100), 5.0)
+        self.slopeSegment.friction = 0.15
+        self._space.add(staticSlopeBody)
+        self._space.add(self.slopeSegment)
 
     def _process_events(self) -> None:
         """
@@ -165,6 +173,12 @@ class Friction(object):
                         self._rect_friction = event.value
                         self.ui_textbox.clear_text_surface()
                         self.ui_textbox.set_text("Friction:<br>" + str(round(event.value, 4)))   
+                    if self.slopeSegment:
+                       # print(self.slopeSegment.b)
+                        window_w = pygame.display.Info().current_w
+                        window_h = pygame.display.Info().current_h
+                        self.slopeSegment.unsafe_set_endpoints(self.slopeSegment.a.int_tuple, (window_w, window_h- (event.value * 100) - 100))
+                        self._space.reindex_static()
 
             self.manager.process_events(event)
 
