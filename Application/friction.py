@@ -26,12 +26,13 @@ from pygame_gui.core import ObjectID
 from pygame_gui import UIManager
 from pygame_gui.elements import UITextBox
 
-class BouncyBalls(object):
+class Friction(object):
 
     def __init__(self) -> None:
         # Space
         self._space = globals.space
         self._space.gravity = globals.gravity
+        self._rect_friction = 0.25
 
         # Physics
         # Time step
@@ -45,11 +46,12 @@ class BouncyBalls(object):
         self._clock = globals.clock
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
 
-        # Static barrier walls (lines) that the balls bounce off of
+        # Static barrier walls (lines) that the cubes can't pass
         self._add_static_scenery()
+        #self.staticSlopeBody = None
 
-        # Balls that exist in the world
-        self._balls: List[pymunk.Circle] = []
+        # rects that exist in the world
+        self._rects: List[pymunk.Circle] = []
 
         # Execution control
         self._running = True
@@ -62,9 +64,8 @@ class BouncyBalls(object):
     
         #Offical Order of Items
         self.spawn_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((10, 25), (125, 50)), text="Spawn", manager=self.manager, object_id="spawn")
-        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 25)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
-        self.ui_slider3 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 50), (150, 25)), start_value=900, value_range=(0, 2000), manager=self.manager, click_increment=100, object_id="gravity") #gravity
-        self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Gravity: "+str(self._space.gravity.int_tuple[1]), relative_rect=pygame.Rect((305, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
+        self.ui_slider2 = pygame_gui.elements.ui_horizontal_slider.UIHorizontalSlider(relative_rect=pygame.Rect((145, 25), (150, 50)), start_value=self._rect_friction, value_range=(0, 2), manager=self.manager, click_increment=0.1, object_id="friction") #friction
+        self.ui_textbox = pygame_gui.elements.ui_text_box.UITextBox(html_text="Friction:<br>0.25", relative_rect=pygame.Rect((305, 12.5), (100, 75)), manager=self.manager, object_id="gravityInfoTextBox")
         self.ui_textbox3 = pygame_gui.elements.ui_text_box.UITextBox(html_text="Velocity:", relative_rect=pygame.Rect((410, 12.5), (100, 75)), manager=self.manager, object_id="velocityBox")
         self.ui_textbox2 = pygame_gui.elements.ui_text_box.UITextBox(html_text="", relative_rect=pygame.Rect((520, 12.5), (200, 75)), manager=self.manager, object_id="doneBox")
         self.info_button = pygame_gui.elements.ui_button.UIButton(relative_rect=pygame.Rect((730, 25), (125, 50)), text="Info", manager=self.manager, object_id="info")
@@ -74,11 +75,11 @@ class BouncyBalls(object):
         self.GUI_background = pygame.image.load('img/4999GUIbackground.png')
         self.GUI_background = pygame.transform.scale(self.GUI_background, (1000,100))
 
-        #BALL SIZE
-        self.ball_size = 25 #default is 25 from shapes.py
-        self.ball_start_time = 0 #time object used to see when the ball is spawned
-        self.ball_end_time = 0
-        self.is_ball_done_rolling = False #turns true once ball is at the bottom of the ramp
+        #cube SIZE
+        self.rect_size = 25 #default is 25 from shapes.py
+        self.rect_start_time = 0 #time object used to see when the rect is spawned
+        self.rect_end_time = 0
+        self.is_rect_done_sliding = False #turns true once rect is at the bottom of the ramp
 
     def run(self) -> None:
         """
@@ -92,18 +93,19 @@ class BouncyBalls(object):
             for _ in range(self._physics_steps_per_frame):
                 self._space.step(self._dt)
 
-            self._handle_ball_timing()
-            self._show_ball_velocity()
+            self._handle_rectangle_timing()
+            self._show_rectangle_velocity()
             self._process_events()
             self._clear_screen()
             self._draw_objects()
             pygame.display.flip()
+            
             #Reed
             pygame.display.update()
             #Reed
             # Delay fixed time between frames
             self.time_delta = self._clock.tick(60)
-            pygame.display.set_caption("2DPhysicsEducationTool- Gravity")
+            pygame.display.set_caption("2DPhysicsEducationTool - Friction")
 
     def _add_static_scenery(self) -> None:
         """
@@ -117,12 +119,20 @@ class BouncyBalls(object):
             pymunk.Segment(static_body, (0, 0), (window_w, 0), 1.0),
             pymunk.Segment(static_body, (0, 0), (0, window_h), 1.0),
             pymunk.Segment(static_body, (window_w, 0), (window_w, window_h), 1.0),
-            pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h-100), 5.0),
+          #  pymunk.Segment(static_body, (0, window_h-200), (window_w, window_h-100), 5.0),
         ]
         for line in static_lines:
             line.elasticity = 0.0
             line.friction = 0.0
+        #static_lines[3].friction = 0.15
         self._space.add(*static_lines)
+        
+        #section for creating line segment at bottom
+        staticSlopeBody = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.slopeSegment = pymunk.Segment(staticSlopeBody, (0, window_h-200), (window_w, window_h-100), 5.0)
+        self.slopeSegment.friction = 0.15
+        self._space.add(staticSlopeBody)
+        self._space.add(self.slopeSegment)
 
     def _process_events(self) -> None:
         """
@@ -132,7 +142,7 @@ class BouncyBalls(object):
         for event in pygame.event.get():
             #create messagebox to open with button
             def createmessage():
-                info_message="""Spawn a ball on the screen by clicking the spawn button. The time it takes will be recorded and displayed. After move the slider to change gravity to see how the time changes!
+                info_message="""Spawn a rectangle on the screen by clicking the spawn button. The time it takes will be recorded and displayed. After move the slider to change friction to see how the time changes!
                 """
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="window")
             
@@ -142,27 +152,52 @@ class BouncyBalls(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                pygame.image.save(self._screen, "bouncing_balls.png")
+                pygame.image.save(self._screen, "bouncing_rects.png")
         #    elif event.type == pygame.MOUSEBUTTONDOWN:
             elif event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "spawn":
-                    self._deleteAllBalls()
-                    shapes.create_ball(self, (33,173), 10, self.ball_size, elasticity=0.1)
-                    self.is_ball_done_rolling = False
-                    self.ball_start_time = datetime.datetime.now()
+                    self._deleteAllRectangles()
+                    shapes.create_rectangle(self, (33,373), size_x=self.rect_size, size_y=self.rect_size, elasticity=0.1, friction=self._rect_friction)
+                    self._rects[0].body.angle = 0.1
+                    self.is_rect_done_sliding = False
+                    self.rect_start_time = datetime.datetime.now()
                 elif event.ui_object_id == "info":
                     createmessage()
                     print("Info Button Pressed")
                 elif event.ui_object_id == "quit":
                     pygame.quit(); sys.exit();
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-                if event.ui_object_id == "gravity":
-                    if event.value != self._space.gravity.int_tuple[1]:
-                        self._space.gravity = (0, event.value)
+                if event.ui_object_id == "friction":
+                    if self._rects and event.value != self._rects[0].friction:
+                        self._rects[0].friction = event.value
+                        self._rect_friction = event.value
                         self.ui_textbox.clear_text_surface()
-                        self.ui_textbox.set_text("Gravity: " + str(self._space.gravity.int_tuple[1]))         
+                        self.ui_textbox.set_text("Friction:<br>" + str(round(event.value, 4)))   
+                    if self.slopeSegment:
+                       # print(self.slopeSegment.b)
+                        #update slope endpoints, based on friction slider rn
+                        window_w = pygame.display.Info().current_w
+                        window_h = pygame.display.Info().current_h
+                        self.slopeSegment.unsafe_set_endpoints(self.slopeSegment.a.int_tuple, (window_w, window_h- (event.value * 100) - 100))
+                        self._space.reindex_static()
+                        
+                        if self._rects[0] and (self.getSlopeYCoordAtX(self._rects[0].body.position.x) - self._rects[0].body.position.y) < 30:
+                            #30 is the magic number, cube should always be 30 pixels above slope, so update position of cube when stuff moves
+                            currentXPosition = self._rects[0].body.position.x
+                            self._rects[0].body.position = pymunk.vec2d.Vec2d(currentXPosition, (self.getSlopeYCoordAtX(currentXPosition) - 30))
 
             self.manager.process_events(event)
+            
+    def getSlopeYCoordAtX(self, x):
+        """
+        Helper function to get the y coordinate of static slope at a given x coordinate
+        """
+        #print(self.slopeSegment.a.y, self.slopeSegment.b.y)
+        window_w = pygame.display.Info().current_w
+        rise = self.slopeSegment.b.y - self.slopeSegment.a.y
+        slope = rise / window_w
+        yCord = self.slopeSegment.a.y + slope * x
+        return yCord
 
     def _clear_screen(self) -> None:
         """
@@ -183,32 +218,32 @@ class BouncyBalls(object):
         self.manager.draw_ui(self._screen)
         
 
-    def _deleteAllBalls(self) -> None:
-        """remove all balls from self._balls"""
-        for ball in self._balls:
-            self._space.remove(ball)
-        self._balls = []
+    def _deleteAllRectangles(self) -> None:
+        """remove all rects from self._rects"""
+        for rect in self._rects:
+            self._space.remove(rect)
+        self._rects = []
         
-    def _handle_ball_timing(self) -> None:
+    def _handle_rectangle_timing(self) -> None:
         """take care of some timing stuff"""
-        if self._balls and self._balls[0].body.position.x > 974 and not self.is_ball_done_rolling:
+        if self._rects and self._rects[0].body.position.x > 970 and not self.is_rect_done_sliding:
             #section to calculate time delta
-            self.ball_end_time = datetime.datetime.now()
-            time_delta = self.ball_end_time - self.ball_start_time
+            self.rect_end_time = datetime.datetime.now()
+            time_delta = self.rect_end_time - self.rect_start_time
             
-            self.done_box_text += "ball done rolling, time:" + str(time_delta) + "<br>"
+            self.done_box_text += "Cube done sliding, time:" + str(time_delta) + "<br>"
             self.ui_textbox2.set_text(self.done_box_text)
-            self.is_ball_done_rolling = True
+            self.is_rect_done_sliding = True
             
-    def _show_ball_velocity(self) -> None:
-        """update velocity text box to show ball velocity"""
+    def _show_rectangle_velocity(self) -> None:
+        """update velocity text box to show cube velocity"""
         
-        if self._balls:
-            if abs(self._balls[0].body.velocity) > 0.01:
-                self.ui_textbox3.set_text("Velocity: " + str(round((abs(self._balls[0].body.velocity)),2)))
+        if self._rects:
+            if abs(self._rects[0].body.velocity) > 0.01:
+                self.ui_textbox3.set_text("Velocity: " + str(round((abs(self._rects[0].body.velocity)),2)))
             else:
                 self.ui_textbox3.set_text("Velocity: 0.0")
 
 if __name__ == "__main__":
-    game = BouncyBalls()
+    game = Friction()
     game.run()
