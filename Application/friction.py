@@ -175,12 +175,29 @@ class Friction(object):
                         self.ui_textbox.set_text("Friction:<br>" + str(round(event.value, 4)))   
                     if self.slopeSegment:
                        # print(self.slopeSegment.b)
+                        #update slope endpoints, based on friction slider rn
                         window_w = pygame.display.Info().current_w
                         window_h = pygame.display.Info().current_h
                         self.slopeSegment.unsafe_set_endpoints(self.slopeSegment.a.int_tuple, (window_w, window_h- (event.value * 100) - 100))
                         self._space.reindex_static()
+                        
+                        if self._rects[0] and (self.getSlopeYCoordAtX(self._rects[0].body.position.x) - self._rects[0].body.position.y) < 30:
+                            #30 is the magic number, cube should always be 30 pixels above slope, so update position of cube when stuff moves
+                            currentXPosition = self._rects[0].body.position.x
+                            self._rects[0].body.position = pymunk.vec2d.Vec2d(currentXPosition, (self.getSlopeYCoordAtX(currentXPosition) - 30))
 
             self.manager.process_events(event)
+            
+    def getSlopeYCoordAtX(self, x):
+        """
+        Helper function to get the y coordinate of static slope at a given x coordinate
+        """
+        #print(self.slopeSegment.a.y, self.slopeSegment.b.y)
+        window_w = pygame.display.Info().current_w
+        rise = self.slopeSegment.b.y - self.slopeSegment.a.y
+        slope = rise / window_w
+        yCord = self.slopeSegment.a.y + slope * x
+        return yCord
 
     def _clear_screen(self) -> None:
         """
