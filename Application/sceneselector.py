@@ -95,28 +95,18 @@ while running:
 
 
     if button1.draw(screen) == True:
-        print("Gravity Button Clicked")
         os.system('python gravityGUI.py')
-
     if button2.draw(screen) == True:
-        print("Plinko Button clicked")
         os.system('python Plinko.py')
     if button3.draw(screen) == True:
-        print("Air Resistance clicked")
         os.system('python AirResGUI.py')
     if button4.draw(screen) == True:
-        print("Springs Button Clicked")
         os.system('python Spring.py')
     if button5.draw(screen) == True:
-        print("Friction Button Clicked")
-        #os.system(')
-
-
+        os.system('python friction.py')
     if button8.draw(screen) == True:
-        print("AngryBirds Button Clicked")
         os.system('python AngryBirds.py')
     if button9.draw(screen) == True:
-        print("SandBox Button Clicked")
         os.system('python sandbox.py')
 
     if exit_button.draw(screen) == True:

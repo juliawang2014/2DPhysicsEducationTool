@@ -143,7 +143,7 @@ class Friction(object):
         for event in pygame.event.get():
             #create messagebox to open with button
             def createmessage():
-                info_message="""Spawn a rectangle on the screen by clicking the spawn button. The time it takes will be recorded and displayed. After move the slider to change friction to see how the time changes!
+                info_message="""Spawn a rectangle on the screen by clicking the spawn button. The time it takes will be recorded and displayed. After move the slider to change friction (top slider) and the slope(bottom Slider) to see how the time changes!
                 """
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self.manager, object_id="window")
             
