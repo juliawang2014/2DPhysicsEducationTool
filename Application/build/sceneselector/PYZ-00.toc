@@ -1367,6 +1367,10 @@
    'C:\\Users\\Yii '
    'Jung\\AppData\\Local\\Programs\\Python\\Python310\\lib\\imp.py',
    'PYMODULE'),
+  ('tracemalloc',
+   'C:\\Users\\Yii '
+   'Jung\\AppData\\Local\\Programs\\Python\\Python310\\lib\\tracemalloc.py',
+   'PYMODULE'),
   ('stringprep',
    'C:\\Users\\Yii '
    'Jung\\AppData\\Local\\Programs\\Python\\Python310\\lib\\stringprep.py',
@@ -1374,10 +1378,6 @@
   ('_py_abc',
    'C:\\Users\\Yii '
    'Jung\\AppData\\Local\\Programs\\Python\\Python310\\lib\\_py_abc.py',
-   'PYMODULE'),
-  ('tracemalloc',
-   'C:\\Users\\Yii '
-   'Jung\\AppData\\Local\\Programs\\Python\\Python310\\lib\\tracemalloc.py',
    'PYMODULE'),
   ('os',
    'C:\\Users\\Yii '
