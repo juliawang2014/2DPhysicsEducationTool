@@ -12,7 +12,7 @@ Steps to install:
 
 3).Open Command prompt and change directory to the extracted folder
 
-4)Install dependencies with `pip install -r requirements.txt`
+4).Install dependencies with `pip install -r requirements.txt`
 
 5).Go into the application folder
 
