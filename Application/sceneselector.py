@@ -109,7 +109,11 @@ while running:
             sys.modules.pop('Plinko')
         #os.system('python Plinko.py')
     if button3.draw(screen) == True:
-        os.system('python AirResGUI.py')
+        import AirResGUI
+        AirResGUI.main()
+        if "AirResGUI" in sys.modules:
+            sys.modules.pop('AirResGUI')
+        #os.system('python AirResGUI.py')
     if button4.draw(screen) == True:
         os.system('python Spring.py')
     if button5.draw(screen) == True:

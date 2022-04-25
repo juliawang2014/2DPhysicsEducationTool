@@ -18,6 +18,8 @@ from typing import List
 
 football_img = pygame.image.load('img/football.png')
 
+
+
 def create_football():
     vs = [(-30, 0), (0, 3), (10, 0), (0, -3)]
     football_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
@@ -72,6 +74,10 @@ def post_solve_football_hit(arbiter, space, data):
 width, height = 1200, 700
 
 def main():
+
+    #remove sceneselector so it will initialize right later
+    if "sceneselector" in sys.modules:
+        sys.modules.pop('sceneselector')
     ### PyGame init
     pygame.init()
     screen = pygame.display.set_mode((width, height))
@@ -108,6 +114,7 @@ def main():
     space.gravity = 0, 1400
     draw_options = pymunk.pygame_util.DrawOptions(screen)
     drag_constant = 0.002
+    start_time = 0
 
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
@@ -175,6 +182,7 @@ def main():
                 and (event.key in [pygame.K_ESCAPE, pygame.K_q])
             ):
                 running = False
+                import sceneselector
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
 
@@ -204,9 +212,10 @@ def main():
                     createmessage()
                     print("Info Button Pressed")
                 if event.ui_object_id == "quitbutton": 
-                    pygame.quit()
-                    sys.exit()
-            
+                   # pygame.quit()
+                   # sys.exit()
+                    running = False
+                    import sceneselector
 
             guimanager.process_events(event)
 

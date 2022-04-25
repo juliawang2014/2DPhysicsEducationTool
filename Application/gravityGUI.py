@@ -142,9 +142,12 @@ class BouncyBalls(object):
             
             #event handling
             if event.type == pygame.QUIT:
+            
                 self._running = False
+                import sceneselector
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
+                import sceneselector
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
         #    elif event.type == pygame.MOUSEBUTTONDOWN:
