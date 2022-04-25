@@ -115,7 +115,10 @@ while running:
             sys.modules.pop('AirResGUI')
         #os.system('python AirResGUI.py')
     if button4.draw(screen) == True:
-        os.system('python Spring.py')
+        import Spring
+        tmp = Spring.Spring()
+        tmp.run()
+        #os.system('python Spring.py')
     if button5.draw(screen) == True:
         os.system('python friction.py')
     if button8.draw(screen) == True:

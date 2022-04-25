@@ -23,6 +23,11 @@ GUI_background = pygame.image.load('img/4999GUIbackground.png')
 
 class Spring(object):
     def __init__(self) -> None:
+    
+        #remove sceneselector so it will initialize right later
+        if "sceneselector" in sys.modules:
+            sys.modules.pop('sceneselector')
+        
         # Space
         self._space = globals.space
         self._space.gravity = globals.gravity
@@ -156,8 +161,10 @@ class Spring(object):
             self._guimanager.process_events(event)
             if event.type == pygame.QUIT:
                 self._running = False
+                import sceneselector
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._running = False
+                import sceneselector
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
@@ -211,8 +218,8 @@ class Spring(object):
                 self._size_text_x = "Stiffness"
                 self._size_text_y = "Damping"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._quit_button.check_pressed():
-                pygame.quit()
-                sys.exit()
+                self._running = False
+                import sceneselector
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """ To use the scene, change the mass to the mass you would like a ball and click enter.
                 After click on the ball icon on the side and right click to spawn a ball on the pre spawned cubes. Do this for 4 balls, feel free to change the mass of each one.
