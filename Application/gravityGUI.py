@@ -29,6 +29,11 @@ from pygame_gui.elements import UITextBox
 class BouncyBalls(object):
 
     def __init__(self) -> None:
+        
+        #remove sceneselector so it will initialize right later
+        if "sceneselector" in sys.modules:
+            sys.modules.pop('sceneselector')
+    
         # Space
         self._space = globals.space
         self._space.gravity = globals.gravity
@@ -153,7 +158,10 @@ class BouncyBalls(object):
                     createmessage()
                     print("Info Button Pressed")
                 elif event.ui_object_id == "quit":
-                    pygame.quit(); sys.exit();
+                    #go back to scene selector
+                    self._running = False
+                    #pygame.quit();
+                    import sceneselector
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:

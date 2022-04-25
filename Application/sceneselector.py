@@ -99,7 +99,10 @@ while running:
 
 
     if button1.draw(screen) == True:
-        os.system('python gravityGUI.py')
+        import gravityGUI
+        tmp = gravityGUI.BouncyBalls()
+        tmp.run()
+      #  os.system('python gravityGUI.py')
     if button2.draw(screen) == True:
         os.system('python Plinko.py')
     if button3.draw(screen) == True:
