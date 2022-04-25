@@ -190,10 +190,12 @@ def draw_letters():
     Green = (0,255,0)
     Blue = (0,225,225)
     Purple = (127,0,255)
+    White = (255,255,255)
 
 
 
-    font1 = pygame.font.Font("fonts/Xolonium-Regular.ttf", 45)
+    font1 = pygame.font.Font("fonts/Xolonium-Regular.ttf", 35)
+    font2 = pygame.font.Font("fonts/Xolonium-Regular.ttf", 16)
     text1 = font1.render('O', True, Brown)
     text2 = font1.render('A', True, Brown)
     text3 = font1.render('K', True, Brown)
@@ -208,6 +210,7 @@ def draw_letters():
     text11 = font1.render('N', True, Green)
     text12 = font1.render('K', True, Blue)
     text13 = font1.render('O', True, Purple)
+    text14 = font2.render('Click to spawn coin. Click "r" on keyboard to remove coins', True, White)
 
     screen.blit(text1,(90,700))
     screen.blit(text2,(225,700))
@@ -223,6 +226,7 @@ def draw_letters():
     screen.blit(text11,(530,0))
     screen.blit(text12,(585,0))
     screen.blit(text13,(630,0))
+    screen.blit(text14,(275,40))
 
 while running:
     for event in pygame.event.get():
