@@ -2,7 +2,7 @@
 from numpy import true_divide
 import pygame
 import button
-import os
+import os, sys
 pygame.init()
 
 #preset colors
@@ -104,7 +104,10 @@ while running:
         tmp.run()
       #  os.system('python gravityGUI.py')
     if button2.draw(screen) == True:
-        os.system('python Plinko.py')
+        import Plinko
+        if "Plinko" in sys.modules:
+            sys.modules.pop('Plinko')
+        #os.system('python Plinko.py')
     if button3.draw(screen) == True:
         os.system('python AirResGUI.py')
     if button4.draw(screen) == True:

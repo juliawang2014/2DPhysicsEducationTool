@@ -1,6 +1,11 @@
 from turtle import width
 import pygame,sys,pymunk
 
+
+#remove sceneselector so it will initialize right later
+if "sceneselector" in sys.modules:
+    sys.modules.pop('sceneselector')
+
 def _add_static_scenery(self) -> None:
         """
         Create the static bodies.
@@ -210,7 +215,7 @@ def draw_letters():
     text11 = font1.render('N', True, Green)
     text12 = font1.render('K', True, Blue)
     text13 = font1.render('O', True, Purple)
-    text14 = font2.render('Click to spawn coin. Click "r" on keyboard to remove coins', True, White)
+    text14 = font2.render('Click to spawn coin. Click "r" on keyboard to remove coins, and "q" to quit', True, White)
 
     screen.blit(text1,(90,700))
     screen.blit(text2,(225,700))
@@ -226,15 +231,17 @@ def draw_letters():
     screen.blit(text11,(530,0))
     screen.blit(text12,(585,0))
     screen.blit(text13,(630,0))
-    screen.blit(text14,(275,40))
+    screen.blit(text14,(200,40))
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
             reset_b = True
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+            #pygame.quit()
+            #sys.exit()
+            running = False
+            import sceneselector
         if event.type == pygame.MOUSEBUTTONDOWN:
             coins.append(create_coin(space,event.pos))
         if not pause:
