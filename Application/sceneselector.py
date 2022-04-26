@@ -120,7 +120,10 @@ while running:
         tmp.run()
         #os.system('python Spring.py')
     if button5.draw(screen) == True:
-        os.system('python friction.py')
+        import friction
+        tmp = friction.Friction()
+        tmp.run()
+        #os.system('python friction.py')
     if button8.draw(screen) == True:
         os.system('python AngryBirds.py')
     if button9.draw(screen) == True:

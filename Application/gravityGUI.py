@@ -142,12 +142,9 @@ class BouncyBalls(object):
             
             #event handling
             if event.type == pygame.QUIT:
-            
-                self._running = False
-                import sceneselector
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self._running = False
-                import sceneselector
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
         #    elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -161,10 +158,7 @@ class BouncyBalls(object):
                     createmessage()
                     print("Info Button Pressed")
                 elif event.ui_object_id == "quit":
-                    #go back to scene selector
-                    self._running = False
-                    #pygame.quit();
-                    import sceneselector
+                    self.quit()
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "gravity":
                     if event.value != self._space.gravity.int_tuple[1]:
@@ -218,6 +212,12 @@ class BouncyBalls(object):
                 self.ui_textbox3.set_text("Velocity: " + str(round((abs(self._balls[0].body.velocity)),2)))
             else:
                 self.ui_textbox3.set_text("Velocity: 0.0")
+    def quit(self):
+        #go back to scene selector
+        self._running = False
+        #have to make a new space because it gets referenced multiple times
+        globals.space = pymunk.Space()
+        import sceneselector    
 
 if __name__ == "__main__":
     game = BouncyBalls()

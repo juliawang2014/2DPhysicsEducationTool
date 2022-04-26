@@ -29,6 +29,10 @@ from pygame_gui.elements import UITextBox
 class Friction(object):
 
     def __init__(self) -> None:
+        #remove sceneselector so it will initialize right later
+        if "sceneselector" in sys.modules:
+            sys.modules.pop('sceneselector')
+        
         # Space
         self._space = globals.space
         self._space.gravity = globals.gravity
@@ -149,9 +153,9 @@ class Friction(object):
             
             #event handling
             if event.type == pygame.QUIT:
-                self._running = False
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self._running = False
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_rects.png")
         #    elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -166,7 +170,7 @@ class Friction(object):
                     createmessage()
                     print("Info Button Pressed")
                 elif event.ui_object_id == "quit":
-                    pygame.quit(); sys.exit();
+                    self.quit()
             elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_object_id == "friction":
                     if self._rects and event.value != self._rects[0].friction:
@@ -188,6 +192,13 @@ class Friction(object):
                             self._rects[0].body.position = pymunk.vec2d.Vec2d(currentXPosition, (self.getSlopeYCoordAtX(currentXPosition) - 30))
 
             self.manager.process_events(event)
+            
+    def quit(self):
+        #go back to scene selector
+        self._running = False
+        #have to make a new space because it gets referenced multiple times
+        globals.space = pymunk.Space()
+        import sceneselector  
             
     def getSlopeYCoordAtX(self, x):
         """

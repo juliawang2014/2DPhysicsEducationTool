@@ -160,11 +160,9 @@ class Spring(object):
         for event in pygame.event.get():
             self._guimanager.process_events(event)
             if event.type == pygame.QUIT:
-                self._running = False
-                import sceneselector
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self._running = False
-                import sceneselector
+                self.quit()
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
@@ -218,8 +216,7 @@ class Spring(object):
                 self._size_text_x = "Stiffness"
                 self._size_text_y = "Damping"
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._quit_button.check_pressed():
-                self._running = False
-                import sceneselector
+                self.quit()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """ To use the scene, change the mass to the mass you would like a ball and click enter.
                 After click on the ball icon on the side and right click to spawn a ball on the pre spawned cubes. Do this for 4 balls, feel free to change the mass of each one.
@@ -232,6 +229,12 @@ class Spring(object):
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="Messagebx")
 
         self.on_mouse_motion()
+        
+    def quit(self):
+        self._running = False
+        #have to make a new space because it gets referenced multiple times
+        globals.space = pymunk.Space()
+        import sceneselector
             
     def update_values(self):
         try:
