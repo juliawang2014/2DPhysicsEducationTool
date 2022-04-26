@@ -21,6 +21,11 @@ GUI_background = pygame.image.load('img/4999GUIbackground.png')
 
 class Sandbox(object):
     def __init__(self) -> None:
+    
+        #remove sceneselector so it will initialize right later
+        if "sceneselector" in sys.modules:
+            sys.modules.pop('sceneselector')
+        
         # Space
         self._space = globals.space
         self._space.gravity = globals.gravity
@@ -145,9 +150,9 @@ class Sandbox(object):
         for event in pygame.event.get():
             self._guimanager.process_events(event)
             if event.type == pygame.QUIT:
-                self._running = False
+                self.quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self._running = False
+                self.quit()
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_p) or (event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_element == self._pause_button):
                 self._pause = not self._pause
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
@@ -201,8 +206,7 @@ class Sandbox(object):
                 self._size_text_x = ""
                 self._size_text_y = ""
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._quit_button.check_pressed():
-                pygame.quit()
-                sys.exit()
+                self.quit()
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and self._menu_button.check_pressed():
                 info_message = """Keyboard shortcuts: p to pause, r to reset
                 While dragging an object, use scroll wheel to rotate the shape. Right click to delete shapes.
@@ -211,6 +215,13 @@ class Sandbox(object):
                 self.ui_window1 = pygame_gui.windows.UIMessageWindow(html_message=info_message,rect=pygame.Rect((400, 150), (300, 300)), manager=self._guimanager, object_id="window")
 
         self.on_mouse_motion()
+        
+    def quit(self):
+        #go back to scene selector
+        self._running = False
+        #have to make a new space because it gets referenced multiple times
+        globals.space = pymunk.Space()
+        import sceneselector          
             
     def update_values(self):
         try:

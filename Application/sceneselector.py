@@ -131,10 +131,14 @@ while running:
             sys.modules.pop('AngryBirds')
         #os.system('python AngryBirds.py')
     if button9.draw(screen) == True:
-        os.system('python sandbox.py')
+        import sandbox
+        tmp = sandbox.Sandbox()
+        tmp.run()
+        #os.system('python sandbox.py')
 
     if exit_button.draw(screen) == True:
         running = False
+        sys.exit()
 
     #for loop for the event queue
     for event in pygame.event.get():
@@ -142,6 +146,7 @@ while running:
 
         if event.type == pygame.QUIT:
             running = False
+            sys.exit()
 
 
         pygame.display.update()
