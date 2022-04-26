@@ -266,8 +266,15 @@ def on_mouse_motion():
         values.get_shape_dragged().shape.body.velocity = 0, 0
         
 def main():
+
+    #remove sceneselector so it will initialize right later
+    if "sceneselector" in sys.modules:
+        sys.modules.pop('sceneselector')
+    
     ### PyGame init
     #pygame.init()
+    space = pymunk.Space()
+    space.gravity = 0, 1400
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     running = True
@@ -276,6 +283,7 @@ def main():
     ### Physics stuff
     draw_options = pymunk.pygame_util.DrawOptions(screen)
     drag_constant = 0.003
+    start_time = 0
     
     # walls - the left-top-right walls
     static: List[pymunk.Shape] = [
@@ -383,6 +391,7 @@ def main():
                 and (event.key in [pygame.K_ESCAPE, pygame.K_q])
             ):
                 running = False
+                import sceneselector  
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and event.pos[1] < 560:
                 start_time = pygame.time.get_ticks()
                 
@@ -413,8 +422,8 @@ def main():
                 createmessage()
             
             elif event.type == pygame_gui.UI_BUTTON_PRESSED and quit_button.check_pressed():
-                pygame.quit()
-                sys.exit()
+                running = False
+                import sceneselector  
 
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 update_values()               
@@ -514,6 +523,5 @@ def main():
         manager.draw_ui(screen)
         pygame.display.flip()
         
-
 if __name__ == "__main__":
     sys.exit(main())

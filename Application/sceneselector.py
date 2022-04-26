@@ -125,7 +125,11 @@ while running:
         tmp.run()
         #os.system('python friction.py')
     if button8.draw(screen) == True:
-        os.system('python AngryBirds.py')
+        import AngryBirds
+        AngryBirds.main()
+        if "AngryBirds" in sys.modules:
+            sys.modules.pop('AngryBirds')
+        #os.system('python AngryBirds.py')
     if button9.draw(screen) == True:
         os.system('python sandbox.py')
 
