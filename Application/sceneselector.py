@@ -3,6 +3,7 @@ from numpy import true_divide
 import pygame
 import button
 import os, sys
+import fileNameTranslator
 pygame.init()
 
 #preset colors
@@ -14,8 +15,8 @@ Purple = (100, 20, 140)
 Grey = (169,169,169)
 
 #Fonts and color for fonts
-font1 = pygame.font.Font("fonts/Xolonium-Bold.ttf", 28)
-font2 = pygame.font.Font("fonts/Xolonium-Regular.ttf", 20)
+font1 = pygame.font.Font(fileNameTranslator.translateFileName("fonts/Xolonium-Bold.ttf"), 28)
+font2 = pygame.font.Font(fileNameTranslator.translateFileName("fonts/Xolonium-Regular.ttf"), 20)
 
 #--------------Start of program----------------------
 X = 1000
@@ -28,18 +29,18 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((X,Y))
 
 #Load in images here
-exit_img = pygame.image.load('img/quit_btn.png').convert_alpha()
-blank_img = pygame.image.load('img/blank.png').convert_alpha()
-atom_img = pygame.image.load('img/atom.png').convert_alpha()
-button1_img = pygame.image.load('img/GravityButton.png').convert_alpha()
-button2_img = pygame.image.load('img/PlinkoButton.png').convert_alpha()
-button3_img = pygame.image.load('img/Airresistance.png').convert_alpha()
-button4_img = pygame.image.load('img/SpringsButton.png').convert_alpha()
-button5_img = pygame.image.load('img/FrictionButton.png').convert_alpha()
+exit_img = pygame.image.load(fileNameTranslator.translateFileName('img/quit_btn.png')).convert_alpha()
+blank_img = pygame.image.load(fileNameTranslator.translateFileName('img/blank.png')).convert_alpha()
+atom_img = pygame.image.load(fileNameTranslator.translateFileName('img/atom.png')).convert_alpha()
+button1_img = pygame.image.load(fileNameTranslator.translateFileName('img/GravityButton.png')).convert_alpha()
+button2_img = pygame.image.load(fileNameTranslator.translateFileName('img/PlinkoButton.png')).convert_alpha()
+button3_img = pygame.image.load(fileNameTranslator.translateFileName('img/Airresistance.png')).convert_alpha()
+button4_img = pygame.image.load(fileNameTranslator.translateFileName('img/SpringsButton.png')).convert_alpha()
+button5_img = pygame.image.load(fileNameTranslator.translateFileName('img/FrictionButton.png')).convert_alpha()
 #button6_img = pygame.image.load('img/button1.png').convert_alpha()
 #button7_img = pygame.image.load('img/button1.png').convert_alpha()
-button8_img = pygame.image.load('img/AngryBirdsButton.png').convert_alpha()
-button9_img = pygame.image.load('img/SandboxButton.png').convert_alpha()
+button8_img = pygame.image.load(fileNameTranslator.translateFileName('img/AngryBirdsButton.png')).convert_alpha()
+button9_img = pygame.image.load(fileNameTranslator.translateFileName('img/SandboxButton.png')).convert_alpha()
 #Set the caption of screen(top left corner words)
 pygame.display.set_caption("2DPhysicsEducationTool")
 #set the color of scene
